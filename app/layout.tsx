@@ -18,7 +18,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={classNames(openSans.className, "bg-light min-h-screen text-dark")}>
+      <body
+        className={classNames(
+          openSans.className,
+          "bg-light min-h-screen text-dark",
+        )}
+      >
         <>
           <Navbar />
           {children}

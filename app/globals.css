@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .apply-outline-styles {
+    @apply focus:outline-dotted outline-2 outline-offset-2 outline-light;
+  }
+}
+
+a,
+section,
+button {
+  @apply apply-outline-styles;
+}

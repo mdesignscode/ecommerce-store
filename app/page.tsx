@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import ProductsGroup from "./Components/Home/ProductsGroup";
+import ProductsGroup from "./Components/ProductsGroup";
 
 export default async function Home() {
   const discountedProducts = await prisma.product.findMany({
@@ -18,11 +18,11 @@ export default async function Home() {
     });
 
   return (
-    <main className="flex flex-col gap-4">
+    <main className="flex flex-col gap-4 overflow-x-hidden">
       <ProductsGroup
         products={discountedProducts}
         groupTitle="Discounted Products"
-        groupUrl=""
+        groupUrl="discountedProducts"
       />
 
       {groupedProducts.map(({ category }) => (
@@ -36,7 +36,7 @@ export default async function Home() {
   );
 }
 
-function capitalizeAndReplace(str: string) {
+export function capitalizeAndReplace(str: string) {
   // Split the string by hyphens, capitalize each word, and join them with spaces
   const formattedString = str
     .split("-")

@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
 const Product = dynamic(() => import("./Product"));
 
@@ -43,16 +44,21 @@ export default async function ProductsGroup({
       });
 
   return (
-    <section className="w-full flex flex-col gap-4 bg-secondary p-2">
+    <section className="w-full gap-2 flex flex-col bg-secondary p-2 items-start">
       <h2 className="font-bold">{groupTitle}</h2>
 
-      <section className="flex gap-4 whitespace-nowrap overflow-x-auto w-full snap-x">
+      <section className="flex overflow-x-auto w-full whitespace-nowrap snap-x">
         {productsGroup.slice(0, 5).map((product) => (
           <Product key={product.id} product={product} />
         ))}
       </section>
 
-      <p>View More</p>
+      <Link
+        href={"/categories/" + groupUrl}
+        className="text-primary no-underline hover:underline underline-offset-2"
+      >
+        View More {groupTitle}
+      </Link>
     </section>
   );
 }
