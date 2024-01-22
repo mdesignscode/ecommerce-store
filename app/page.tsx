@@ -36,7 +36,7 @@ export default async function Home() {
   );
 }
 
-export function capitalizeAndReplace(str: string) {
+function capitalizeAndReplace(str: string) {
   // Split the string by hyphens, capitalize each word, and join them with spaces
   const formattedString = str
     .split("-")

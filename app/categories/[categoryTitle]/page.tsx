@@ -1,5 +1,4 @@
 import Product from "@/app/Components/Product";
-import { capitalizeAndReplace } from "@/app/page";
 import prisma from "@/lib/prisma";
 
 export default async function Page({
@@ -37,4 +36,14 @@ export default async function Page({
       ))}
     </main>
   );
+}
+
+function capitalizeAndReplace(str: string) {
+  // Split the string by hyphens, capitalize each word, and join them with spaces
+  const formattedString = str
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+  return formattedString;
 }
