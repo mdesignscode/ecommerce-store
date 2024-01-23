@@ -7,7 +7,7 @@ export default async function Navbar() {
     by: ["category"],
   });
   return (
-    <header className="sticky top-0 flex flex-col">
+    <header className="sticky top-0 z-20 flex flex-col">
       <MobileNavbar />
       <ProductCategories categories={categories} />
     </header>

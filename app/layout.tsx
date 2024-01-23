@@ -3,6 +3,7 @@ import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import classNames from "classnames";
 import Navbar from "./Components/Navigation";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
 
@@ -17,18 +18,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={classNames(
-          openSans.className,
-          "bg-light min-h-screen text-dark",
-        )}
-      >
-        <>
-          <Navbar />
-          {children}
-        </>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body
+          className={classNames(
+            openSans.className,
+            "bg-light min-h-screen text-dark"
+          )}
+        >
+          <>
+            <Navbar />
+            {children}
+          </>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
