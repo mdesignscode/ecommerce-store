@@ -36,14 +36,14 @@ model Image {
 }
 
 model User {
-  id                Int             @id
-  shoppingCart      ShoppingCart    @relation(fields: [shoppingCartId], references: [id])
-  wishList          WishList        @relation(fields: [wishListId], references: [id])
-  shoppingCartId    Int
-  wishListId        Int
-  purchaseHistory   PurchaseHistory @relation(fields: [purchaseHistoryId], references: [id])
-  purchaseHistoryId Int
+  id                String           @id
+  shoppingCart      ShoppingCart?    @relation(fields: [shoppingCartId], references: [id])
+  wishList          WishList?        @relation(fields: [wishListId], references: [id])
+  purchaseHistory   PurchaseHistory? @relation(fields: [purchaseHistoryId], references: [id])
   name              String
+  shoppingCartId    Int?
+  wishListId        Int?
+  purchaseHistoryId Int?
 }
 
 model ShoppingCart {

@@ -69,7 +69,8 @@ export async function POST(req: Request) {
   const eventType = evt.type;
 
   let response = "An error occured";
-  const { id, username } = payload.data;
+  const { id } = payload.data,
+    username = payload.data["email_addresses"][0]["email_address"]
 
   switch (eventType) {
     // handle signup
@@ -79,15 +80,6 @@ export async function POST(req: Request) {
         data: {
           name: username,
           id,
-          purchaseHistory: {
-            create: [] as PurchaseHistory[]
-          },
-          shoppingCart: {
-            create: [] as ShoppingCart[]
-          },
-          wishList: {
-            create: [] as WishList[]
-          }
         }
       })
 
