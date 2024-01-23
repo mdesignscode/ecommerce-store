@@ -1,8 +1,6 @@
-"use client";
-
 import { Prisma } from "@prisma/client";
 import classNames from "classnames";
-import { Button } from "react-aria-components";
+import Link from "next/link";
 
 type TProductCategories = (Prisma.PickEnumerable<
   Prisma.ProductGroupByOutputType,
@@ -21,15 +19,16 @@ export default function ProductCategories({
       )}
     >
       {categories.map(({ category }) => (
-        <Button
+        <Link
           className={classNames(
             "bg-secondary rounded-lg text-sm p-2 hover:opacity-80",
             "outline-light hover:outline-dotted"
           )}
           key={category}
+          href={"/categories/" + category}
         >
           {category}
-        </Button>
+        </Link>
       ))}
     </section>
   );
