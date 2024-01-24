@@ -1,9 +1,11 @@
+import { ClerkProvider } from "@clerk/nextjs";
+import classNames from "classnames";
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
-import "./globals.css";
-import classNames from "classnames";
 import Navbar from "./Components/Navigation";
-import { ClerkProvider } from "@clerk/nextjs";
+import SetActiveUser from "./Components/SetActiveUser";
+import "./globals.css";
+import QueryProvider from "./queryProvider";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
 
@@ -19,19 +21,22 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body
-          className={classNames(
-            openSans.className,
-            "bg-light min-h-screen text-dark"
-          )}
-        >
-          <>
-            <Navbar />
-            {children}
-          </>
-        </body>
-      </html>
+      <QueryProvider>
+        <html lang="en">
+          <body
+            className={classNames(
+              openSans.className,
+              "bg-light min-h-screen text-dark"
+            )}
+          >
+            <>
+              <Navbar />
+              <SetActiveUser />
+              {children}
+            </>
+          </body>
+        </html>
+      </QueryProvider>
     </ClerkProvider>
   );
 }

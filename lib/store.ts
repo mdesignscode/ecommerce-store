@@ -1,17 +1,18 @@
+import { TUser } from '@/app/Components/SetActiveUser';
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
 interface StoreState {
-  activeCategory: string | null;
-  setActiveCategory: (category?: string) => void;
+  activeUser: TUser | null;
+  setActiveUser: (activeUser: TUser) => void;
 }
 
 const useGlobalStore = create<StoreState>()(
   devtools(
     persist(
       (set) => ({
-        activeCategory: null,
-        setActiveCategory: (category) => set(() => ({ activeCategory: category })),
+        activeUser: null,
+        setActiveUser: (activeUser) => set(() => ({ activeUser })),
       }),
       {
         name: 'global-storage',
