@@ -1,11 +1,11 @@
 "use client";
 
 import useGlobalStore from "@/lib/store";
+import { IGetUser } from "@/models/customRequests";
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { IGetUser } from "../api/models";
 import axios from "axios";
+import { useEffect } from "react";
 
 export type TUser = {
   wishList:

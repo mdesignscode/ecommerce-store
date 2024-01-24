@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Product {
-  id                 Int              @id @default(autoincrement())
+  id                 Int     @id @default(autoincrement())
   title              String
   price              Float
   description        String
@@ -20,12 +20,6 @@ model Product {
   rating             Int
   discountPercentage Int?
   stock              Int
-  ShoppingCart       ShoppingCart?    @relation(fields: [shoppingCartId], references: [id])
-  shoppingCartId     Int?
-  WishList           WishList?        @relation(fields: [wishListId], references: [id])
-  wishListId         Int?
-  PurchaseHistory    PurchaseHistory? @relation(fields: [purchaseHistoryId], references: [id])
-  purchaseHistoryId  Int?
 }
 
 model Image {
@@ -47,19 +41,30 @@ model User {
 }
 
 model ShoppingCart {
-  id       Int       @id @default(autoincrement())
-  products Product[]
+  id       Int         @id @default(autoincrement())
+  products ProductId[]
   User     User[]
 }
 
 model WishList {
-  id       Int       @id @default(autoincrement())
-  products Product[]
+  id       Int         @id @default(autoincrement())
+  products ProductId[]
   User     User[]
 }
 
 model PurchaseHistory {
-  id       Int       @id @default(autoincrement())
-  products Product[]
+  id       Int         @id @default(autoincrement())
+  products ProductId[]
   User     User[]
+}
+
+model ProductId {
+  id                Int              @id @default(autoincrement())
+  productId         Int
+  ShoppingCart      ShoppingCart?    @relation(fields: [shoppingCartId], references: [id])
+  shoppingCartId    Int?
+  WishList          WishList?        @relation(fields: [wishListId], references: [id])
+  wishListId        Int?
+  PurchaseHistory   PurchaseHistory? @relation(fields: [purchaseHistoryId], references: [id])
+  purchaseHistoryId Int?
 }

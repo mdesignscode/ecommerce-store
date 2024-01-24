@@ -1,6 +1,7 @@
 "use client";
 
 import useGlobalStore from "@/lib/store";
+import { IUpdateUserList } from "@/models/customRequests";
 import { useUser } from "@clerk/nextjs";
 import {
   HeartIcon as HeartIconOutline,
@@ -14,9 +15,8 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button } from "react-aria-components";
-import { IUpdateUserList } from "../api/models";
-import {} from "../api/users/addToWishList/route";
 import { TProduct } from "./ProductsGroup";
+import { TUser } from "./SetActiveUser";
 
 export default function AddToUserList({ product }: { product: TProduct }) {
   const [shouldAddToWishList, setShouldAddToWishList] = useState(false),
@@ -42,27 +42,26 @@ export default function AddToUserList({ product }: { product: TProduct }) {
   }, [activeUser, product.id, setProductInWishList]);
 
   // prepare url for updating list
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const url = baseUrl + "users/updateList";
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL + "users/";
 
-  // add to wish list stats
-  const { isFetched: addedToWishList, isSuccess: wishListUpdated } = useQuery<
-    Record<string, number>
-  >({
+  // add to wish list
+  const {
+    isFetched: addedToWishList,
+    isSuccess: wishListUpdated,
+    data: updatedWishList,
+  } = useQuery<Record<string, number>>({
     queryKey: ["addToWishList-" + product.id],
     queryFn: async () => {
       if (!activeUser) return;
 
       try {
-        const { data } = await axios.post(url, {
+        const { data } = await axios.post(baseUrl + "addToWishList", {
           userId: user?.id,
           product,
           listType: "wishList",
           listId: activeUser.wishListId,
         } as IUpdateUserList);
-        setActiveUser(data);
-        setShouldAddToWishList(false);
-        console.log(data);
+
         return data;
       } catch (error) {
         console.log(error);
@@ -72,16 +71,25 @@ export default function AddToUserList({ product }: { product: TProduct }) {
     enabled: shouldAddToWishList,
   });
 
+  useEffect(() => {
+    if (addedToWishList && wishListUpdated) {
+      setActiveUser(updatedWishList as any as TUser);
+      setShouldAddToWishList(false);
+    }
+  }, [addedToWishList, setActiveUser, updatedWishList, wishListUpdated]);
+
   // add to shopping cart
-  const { isSuccess: cartUpdated, isFetched: addedToCart } = useQuery<
-    Record<string, number>
-  >({
+  const {
+    isSuccess: cartUpdated,
+    isFetched: addedToCart,
+    data: updatedCart,
+  } = useQuery<Record<string, number>>({
     queryKey: ["addToShoppingCart"],
     queryFn: async () => {
       if (!activeUser) return;
 
       try {
-        const { data } = await axios.post(url, {
+        const { data } = await axios.post(baseUrl + "addToShoppingCart", {
           userId: user?.id,
           product,
           listType: "shoppingCart",
@@ -95,6 +103,13 @@ export default function AddToUserList({ product }: { product: TProduct }) {
     initialData: {},
     enabled: shouldAddToCart,
   });
+
+  useEffect(() => {
+    if (cartUpdated && addedToCart) {
+      setActiveUser(updatedCart as any as TUser);
+      setShouldAddToCart(false);
+    }
+  }, [addedToCart, cartUpdated, setActiveUser, updatedCart]);
 
   return (
     <section className="flex justify-between peer">

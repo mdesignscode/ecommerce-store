@@ -69,8 +69,7 @@ export async function POST(req: Request) {
   const eventType = evt.type;
 
   let response = "An error occured";
-  const { id } = payload.data,
-    username = payload.data["email_addresses"][0]["email_address"]
+  const { id } = payload.data;
 
   switch (eventType) {
     // handle signup
@@ -78,7 +77,7 @@ export async function POST(req: Request) {
       // create new user
       const newUser = await prisma.user.create({
         data: {
-          name: username,
+          name: payload.data["email_addresses"][0]["email_address"],
           id,
         }
       })
@@ -100,7 +99,7 @@ export async function POST(req: Request) {
     // handle update
     case "user.updated":
       const updatedUser = await prisma.user.update({
-        where: { id }, data: { name: username }
+        where: { id }, data: { name: payload.data["email_addresses"][0]["email_address"] }
       })
       console.log(updatedUser)
       response = `${id} updated`;

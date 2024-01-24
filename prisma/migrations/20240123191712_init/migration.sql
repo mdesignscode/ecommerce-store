@@ -7,13 +7,7 @@ CREATE TABLE "Product" (
     "category" TEXT NOT NULL,
     "rating" INTEGER NOT NULL,
     "discountPercentage" INTEGER,
-    "stock" INTEGER NOT NULL,
-    "shoppingCartId" INTEGER,
-    "wishListId" INTEGER,
-    "purchaseHistoryId" INTEGER,
-    CONSTRAINT "Product_shoppingCartId_fkey" FOREIGN KEY ("shoppingCartId") REFERENCES "ShoppingCart" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT "Product_wishListId_fkey" FOREIGN KEY ("wishListId") REFERENCES "WishList" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT "Product_purchaseHistoryId_fkey" FOREIGN KEY ("purchaseHistoryId") REFERENCES "PurchaseHistory" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    "stock" INTEGER NOT NULL
 );
 
 -- CreateTable
@@ -49,4 +43,16 @@ CREATE TABLE "WishList" (
 -- CreateTable
 CREATE TABLE "PurchaseHistory" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+);
+
+-- CreateTable
+CREATE TABLE "ProductId" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "productId" INTEGER NOT NULL,
+    "shoppingCartId" INTEGER,
+    "wishListId" INTEGER,
+    "purchaseHistoryId" INTEGER,
+    CONSTRAINT "ProductId_shoppingCartId_fkey" FOREIGN KEY ("shoppingCartId") REFERENCES "ShoppingCart" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT "ProductId_wishListId_fkey" FOREIGN KEY ("wishListId") REFERENCES "WishList" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT "ProductId_purchaseHistoryId_fkey" FOREIGN KEY ("purchaseHistoryId") REFERENCES "PurchaseHistory" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );

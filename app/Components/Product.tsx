@@ -1,7 +1,12 @@
-import Image from "next/image";
-import { TProduct } from "./ProductsGroup";
+"use client";
+
 import classNames from "classnames";
-import Link from "next/link";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { TProduct } from "./ProductsGroup";
+
+const AddToUserList = dynamic(() => import("./AddToUserList"));
 
 interface IProductProps {
   product: TProduct;
@@ -9,11 +14,14 @@ interface IProductProps {
 }
 
 export default function Product({ product, styles }: IProductProps) {
+  const router = useRouter();
   return (
-    <Link
-      href={"/products/" + product.id}
+    <section
+      role="Navigation"
+      aria-label={`Navigate to ${product.title}`}
+      onClick={() => router.push("/products/" + product.id)}
       className={classNames(
-        "bg-light flex flex-col w-60 hover:shadow-lg rounded-lg p-2 flex-none gap-2 transition-all hover:scale-105 m-3",
+        "bg-light flex flex-col w-60 hover:shadow-lg rounded-lg p-2 flex-none gap-2 transition-all hover:scale-105 m-3 cursor-pointer",
         styles
       )}
     >
@@ -43,6 +51,8 @@ export default function Product({ product, styles }: IProductProps) {
           <p className="font-bold">${product.price}</p>
         )}
       </div>
-    </Link>
+
+      <AddToUserList product={product} />
+    </section>
   );
 }
