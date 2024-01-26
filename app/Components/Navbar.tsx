@@ -1,5 +1,6 @@
 "use client";
 
+import useGlobalStore from "@/lib/store";
 import {
   SignInButton,
   SignedIn,
@@ -7,58 +8,28 @@ import {
   UserButton,
   useUser,
 } from "@clerk/nextjs";
-import { UserCircleIcon } from "@heroicons/react/24/outline";
-import { HeartIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
-import classNames from "classnames";
-import { useState } from "react";
-import { Button } from "react-aria-components";
-import Loading from "../loading";
-import useGlobalStore from "@/lib/store";
+import { HeartIcon, ShoppingCartIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import Loading from "../loading";
 
 export default function Navbar() {
-  const [tooltip, setTooltip] = useState({
-      show: false,
-      text: "",
-      x: 0,
-    }),
-    { user, isLoaded } = useUser(),
+  const { user, isLoaded } = useUser(),
     { activeUser } = useGlobalStore();
 
   return (
     <div className="w-full fixed z-20 bottom-6 ">
-      <nav className="flex shadow-lg border-secondary border-2 shadow-dark text-dark bg-light justify-around items-center rounded-lg w-2/3 h-14 m-auto">
-        <div
-          style={{ left: tooltip.x - 60 }}
-          className={classNames(
-            "transition-all absolute bottom-16 bg-secondary-dark text-light p-[12px] rounded-md z-20 duration-300 delay-150 text-sm",
-            { "opacity-95": tooltip.show },
-            { "opacity-0 hidden": !tooltip.show }
-          )}
-        >
-          <p>{tooltip.text}</p>
-        </div>
-
-        <Button
-          onHoverStart={(e) =>
-            setTooltip({
-              show: true,
-              text: "View Your Shopping Cart",
-              x: e.target.offsetLeft,
-            })
+      <nav className="flex shadow-lg border-secondary border-2 shadow-dark text-dark bg-light justify-around items-center rounded-lg w-2/3 md:w-96 h-14 md:h-20 md:text-secondary-dark m-auto">
+        <Link
+          href={
+            activeUser
+              ? `/shoppingCart/${activeUser.shoppingCartId || "empty"}`
+              : "/sign-in"
           }
-          onHoverEnd={() => setTooltip({ show: false, text: "", x: 0 })}
+          className="outline-dark flex flex-col items-center"
         >
-          <Link
-            href={
-              activeUser
-                ? `/shoppingCart/${activeUser.shoppingCartId || "empty"}`
-                : "/sign-in"
-            }
-          >
-            <ShoppingCartIcon className="fill-primary" width={50} />
-          </Link>
-        </Button>
+          <ShoppingCartIcon className="fill-primary" width={50} />
+          <p className="hidden md:block">My Cart</p>
+        </Link>
 
         {!isLoaded ? (
           <Loading />
@@ -79,26 +50,17 @@ export default function Navbar() {
           </span>
         )}
 
-        <Button
-          onHoverStart={(e) =>
-            setTooltip({
-              show: true,
-              text: "View Your Wish List",
-              x: e.target.offsetLeft,
-            })
+        <Link
+          href={
+            activeUser
+              ? `/wishList/${activeUser.wishListId || "empty"}`
+              : "/sign-in"
           }
-          onHoverEnd={() => setTooltip({ show: false, text: "", x: 0 })}
+          className="text-center flex flex-col items-center"
         >
-          <Link
-            href={
-              activeUser
-                ? `/wishList/${activeUser.wishListId || "empty"}`
-                : "/sign-in"
-            }
-          >
-            <HeartIcon width={50} fill="hotpink" />
-          </Link>
-        </Button>
+          <HeartIcon width={50} fill="hotpink" />
+          <p className="hidden md:block">My Wish List</p>
+        </Link>
       </nav>
     </div>
   );

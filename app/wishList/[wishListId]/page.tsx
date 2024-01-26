@@ -17,7 +17,8 @@ export default async function Page({
     include: { products: true },
   });
 
-  if (!userWishList) return <EmptyList listType="Wish List" />;
+  if (!userWishList || !userWishList.products.length)
+    return <EmptyList listType="Wish List" />;
 
   const wishItems = await Promise.all(
     userWishList?.products.map(async (item) => {

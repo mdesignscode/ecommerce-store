@@ -17,4 +17,5 @@ button {
 .cl-avatarBox {
   width: 70px;
   height: 70px;
+  @apply md:h-24 md:w-24;
 }

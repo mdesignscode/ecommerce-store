@@ -15,8 +15,9 @@ import {
 } from "@heroicons/react/24/solid";
 import classNames from "classnames";
 import { useRouter } from "next/navigation";
-import { Button } from "react-aria-components";
+import { Button, TooltipTrigger } from "react-aria-components";
 import { TProduct } from "./ProductsGroup";
+import TooltipComponent from "./Tooltip";
 
 export default function AddToUserList({
   product,
@@ -52,71 +53,80 @@ export default function AddToUserList({
 
   return (
     <section className="flex justify-between">
-      <Button
-        className={classNames(
-          {
+      <TooltipTrigger>
+        <Button
+          className={classNames({
             "pointer-events-none": cartLoading || disableAddToShoppingCart,
           },
-          "wobble"
-        )}
-        onPress={() => {
-          if (!user) {
-            router.push("/sign-in");
-            return;
-          }
-          setShouldAddToCart(true);
-        }}
-      >
-        {productInShoppingCart ? (
-          <ShoppingCartIconSolid
-            width={50}
-            className={classNames({
-              moveCart: cartLoading,
-            })}
-          />
-        ) : (
-          <ShoppingCartIconOutline
-            width={50}
-            className={classNames({
-              moveCart: cartLoading,
-            })}
-          />
-        )}
-      </Button>
+          "text-primary")}
+          onPress={() => {
+            if (!user) {
+              router.push("/sign-in");
+              return;
+            }
+            setShouldAddToCart(true);
+          }}
+        >
+          {productInShoppingCart ? (
+            <ShoppingCartIconSolid
+              className={classNames(
+                {
+                  moveCart: cartLoading,
+                },
+                "w-10 md:w-[50px]"
+              )}
+            />
+          ) : (
+            <ShoppingCartIconOutline
+              className={classNames(
+                {
+                  moveCart: cartLoading,
+                },
+                "w-10 md:w-[50px]"
+              )}
+            />
+          )}
+        </Button>
+        <TooltipComponent text="Add or remove from Shopping Cart" />
+      </TooltipTrigger>
 
-      <Button
-        className={classNames(
-          {
+      <TooltipTrigger>
+        <Button
+          className={classNames({
             "pointer-events-none": wishListLoading || disableAddToWishList,
-          },
-          "wobble"
-        )}
-        onPress={() => {
-          if (!user) {
-            router.push("/sign-in");
-            return;
-          }
-          setShouldAddToWishList(true);
-        }}
-      >
-        {productInWishList ? (
-          <HeartIconSolid
-            color="hotpink"
-            className={classNames({
-              heartbeat: wishListLoading,
-            })}
-            width={50}
-          />
-        ) : (
-          <HeartIconOutline
-            className={classNames({
-              heartbeat: wishListLoading,
-            })}
-            color="hotpink"
-            width={50}
-          />
-        )}
-      </Button>
+          })}
+          onPress={() => {
+            if (!user) {
+              router.push("/sign-in");
+              return;
+            }
+            setShouldAddToWishList(true);
+          }}
+        >
+          {productInWishList ? (
+            <HeartIconSolid
+              color="hotpink"
+              className={classNames(
+                {
+                  heartbeat: wishListLoading,
+                },
+                "w-10 md:w-[50px]"
+              )}
+            />
+          ) : (
+            <HeartIconOutline
+              className={classNames(
+                {
+                  heartbeat: wishListLoading,
+                },
+                "w-10 md:w-[50px]"
+              )}
+              color="hotpink"
+            />
+          )}
+        </Button>
+        <TooltipComponent text="Add or remove from Wish List" />
+      </TooltipTrigger>
     </section>
   );
 }

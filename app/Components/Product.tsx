@@ -28,7 +28,7 @@ export default function Product({
       aria-label={`Navigate to ${product.title}`}
       onClick={() => router.push("/products/" + product.id)}
       className={classNames(
-        "bg-light flex flex-col w-60 hover:shadow-lg rounded-lg p-2 flex-none gap-2 transition-all hover:scale-105 m-3 cursor-pointer",
+        "bg-light flex flex-col w-60 md:w-72 hover:shadow-lg rounded-lg p-2 flex-none gap-2 transition-all hover:scale-105 m-3 cursor-pointer",
         styles
       )}
     >

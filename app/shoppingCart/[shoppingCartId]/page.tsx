@@ -1,5 +1,6 @@
 import EmptyList from "@/app/Components/EmpyList";
 import Product from "@/app/Components/Product";
+import ProductInUserList from "@/app/Components/ProductInUserList";
 import prisma from "@/lib/prisma";
 
 export default async function Page({
@@ -16,7 +17,8 @@ export default async function Page({
     include: { products: true },
   });
 
-  if (!userShoppingCart) return <EmptyList listType="Shopping Cart" />;
+  if (!userShoppingCart || !userShoppingCart.products.length)
+    return <EmptyList listType="Shopping Cart" />;
 
   const cartItems = await Promise.all(
     userShoppingCart?.products.map(async (item) => {
@@ -31,10 +33,21 @@ export default async function Page({
   );
 
   return (
-    <section>
-      {cartItems?.map(
-        (item) => item && <Product key={item.id} product={item} />
-      )}
-    </section>
+    <main className="flex flex-col py-4 items-center mb-14">
+      <h1 className="text-xl font-bold">Your Wish List</h1>
+      <section>
+        {cartItems?.map(
+          (item) =>
+            item && (
+              <ProductInUserList
+                queryKey="addToShoppingCart"
+                listType="shoppingCart"
+                product={item}
+                key={item.id}
+              />
+            )
+        )}
+      </section>
+    </main>
   );
 }

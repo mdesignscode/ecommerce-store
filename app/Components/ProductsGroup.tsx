@@ -45,7 +45,7 @@ export default async function ProductsGroup({
 
   return (
     <section className="w-full gap-2 flex flex-col bg-secondary p-2 items-start">
-      <h2 className="font-bold">{groupTitle}</h2>
+      <h2 className="font-bold md:text-xl">{groupTitle}</h2>
 
       <section className="flex overflow-x-auto w-full whitespace-nowrap snap-x">
         {productsGroup.slice(0, 5).map((product) => (
@@ -55,7 +55,7 @@ export default async function ProductsGroup({
 
       <Link
         href={"/categories/" + groupUrl}
-        className="text-primary no-underline hover:underline underline-offset-2"
+        className="text-primary no-underline hover:underline underline-offset-2 md:text-lg"
       >
         View More {groupTitle}
       </Link>
