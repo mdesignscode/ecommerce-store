@@ -13,3 +13,8 @@ section,
 button {
   @apply apply-outline-styles;
 }
+
+.cl-avatarBox {
+  width: 70px;
+  height: 70px;
+}

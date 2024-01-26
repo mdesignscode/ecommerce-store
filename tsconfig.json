@@ -20,7 +20,13 @@
     "paths": {
       "@/*": ["./*"],
       "@models": [
-        "models/customRequests.ts"
+        "./models/customRequests.ts"
+      ],
+      "@/styles/*": [
+        "./app/styles/*"
+      ],
+      "@/hooks/*": [
+        "./app/hooks/*"
       ],
     }
   },

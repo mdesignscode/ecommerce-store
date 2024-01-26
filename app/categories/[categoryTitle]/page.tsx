@@ -27,13 +27,15 @@ export default async function Page({
           : capitalizeAndReplace(categoryTitle)}{" "}
         Products
       </h1>
-      {categoryProducts.map((product) => (
-        <Product
-          key={product.id}
-          styles="w-2/3 border-dark border-2"
-          product={product}
-        />
-      ))}
+      <section>
+        {categoryProducts.map((product) => (
+          <Product
+            key={product.id}
+            styles="border-dark border-2"
+            product={product}
+          />
+        ))}
+      </section>
     </main>
   );
 }

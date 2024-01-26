@@ -2,7 +2,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import classNames from "classnames";
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
-import Navbar from "./Components/Navigation";
+import Header from "./Components/Header";
+import Navbar from "./Components/Navbar";
 import SetActiveUser from "./Components/SetActiveUser";
 import "./globals.css";
 import QueryProvider from "./queryProvider";
@@ -30,6 +31,7 @@ export default function RootLayout({
             )}
           >
             <>
+              <Header />
               <Navbar />
               <SetActiveUser />
               {children}

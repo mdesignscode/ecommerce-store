@@ -11,9 +11,16 @@ const AddToUserList = dynamic(() => import("./AddToUserList"));
 interface IProductProps {
   product: TProduct;
   styles?: string;
+  disableAddToWishList?: boolean;
+  disableAddToShoppingCart?: boolean;
 }
 
-export default function Product({ product, styles }: IProductProps) {
+export default function Product({
+  product,
+  styles,
+  disableAddToWishList,
+  disableAddToShoppingCart,
+}: IProductProps) {
   const router = useRouter();
   return (
     <section
@@ -28,7 +35,7 @@ export default function Product({ product, styles }: IProductProps) {
       <p className="text-ellipsis overflow-hidden">{product.title}</p>
 
       <Image
-        className={classNames("rounded-lg w-full")}
+        className={classNames("m-auto rounded-lg w-full")}
         src={product.images[0].url}
         alt="Preview of product"
         width={200}
@@ -52,7 +59,11 @@ export default function Product({ product, styles }: IProductProps) {
         )}
       </div>
 
-      <AddToUserList product={product} />
+      <AddToUserList
+        disableAddToShoppingCart={disableAddToShoppingCart}
+        disableAddToWishList={disableAddToWishList}
+        product={product}
+      />
     </section>
   );
 }
