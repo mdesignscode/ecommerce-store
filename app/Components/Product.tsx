@@ -25,18 +25,18 @@ export default function Product({
   return (
     <section
       role="Navigation"
-      aria-label={`Navigate to ${product.title}`}
-      onClick={() => router.push("/products/" + product.id)}
+      aria-label={`Navigate to ${product?.title}`}
+      onClick={() => router.push("/products/" + product?.id)}
       className={classNames(
         "bg-light flex flex-col w-60 md:w-72 hover:shadow-lg rounded-lg p-2 flex-none gap-2 transition-all hover:scale-105 m-3 cursor-pointer",
         styles
       )}
     >
-      <p className="text-ellipsis overflow-hidden">{product.title}</p>
+      <p className="text-ellipsis overflow-hidden">{product?.title}</p>
 
       <Image
         className={classNames("m-auto rounded-lg w-full")}
-        src={product.images[0].url}
+        src={product?.images[0].url || ""}
         alt="Preview of product"
         width={200}
         height={200}
@@ -45,17 +45,17 @@ export default function Product({
       <div className="flex gap-4 text-lg">
         <p>Price:</p>
 
-        {product.discountPercentage ? (
+        {product?.discountPercentage ? (
           <>
             <p className="font-bold">
-              ${Math.round(product.price * (product.discountPercentage / 100))}
+              ${Math.round(product?.price.amount * (product?.discountPercentage / 100))}
             </p>
             <p className="line-through font-bold text-red-600">
-              ${product.price}
+              ${product?.price.amount}
             </p>
           </>
         ) : (
-          <p className="font-bold">${product.price}</p>
+          <p className="font-bold">${product?.price.amount}</p>
         )}
       </div>
 

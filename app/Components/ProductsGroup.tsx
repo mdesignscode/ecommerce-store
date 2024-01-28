@@ -4,22 +4,28 @@ import Link from "next/link";
 
 const Product = dynamic(() => import("./Product"));
 
-export type TProduct = {
-  images: {
-    id: number;
-    url: string;
-    productId: number | null;
-  }[];
-} & {
-  id: number;
-  title: string;
-  price: number;
-  description: string;
-  category: string;
-  rating: number;
-  discountPercentage: number | null;
-  stock: number;
-};
+export type TProduct =
+  | ({
+      price: {
+        id: string;
+        amount: number;
+      };
+      images: {
+        id: number;
+        url: string;
+        productId: string | null;
+      }[];
+    } & {
+      id: string;
+      title: string;
+      description: string;
+      category: string;
+      rating: number;
+      discountPercentage: number | null;
+      stock: number;
+      priceId: string;
+    })
+  | null;
 
 interface IProductsGroupProps {
   products?: TProduct[];
@@ -40,6 +46,7 @@ export default async function ProductsGroup({
         },
         include: {
           images: true,
+          price: true
         },
       });
 
@@ -49,7 +56,7 @@ export default async function ProductsGroup({
 
       <section className="flex overflow-x-auto w-full whitespace-nowrap snap-x">
         {productsGroup.slice(0, 5).map((product) => (
-          <Product key={product.id} product={product} />
+          <Product key={product?.id} product={product} />
         ))}
       </section>
 

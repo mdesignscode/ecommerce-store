@@ -26,7 +26,7 @@ export default async function Page({
         where: {
           id: item.productId,
         },
-        include: { images: true },
+        include: { images: true, price: true },
       });
       return product;
     })

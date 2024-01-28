@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { Button } from "react-aria-components";
 
-type TImage = { id: number; url: string; productId: number | null };
+type TImage = { id: number; url: string; productId: string | null };
 
 export default function ImageThumbnails({ images }: { images: TImage[] }) {
   const [activeImage, setActiveImage] = useState<string | null>(null);

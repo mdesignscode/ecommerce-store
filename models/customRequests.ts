@@ -22,6 +22,42 @@ export class UpdateListRequest extends Request {
   }
 }
 
+export interface ICheckOutProduct {
+  price: string;
+  quantity: number;
+}
+
+export interface ICreateCheckoutSession {
+  checkOutProducts: ICheckOutProduct[], userCheckoutId: string,
+  userId: string
+}
+
+export interface ICheckOutProduct {
+  price: string;
+  quantity: number;
+}
+
+export interface ICreateCheckoutSession {
+  checkOutProducts: ICheckOutProduct[], userCheckoutId: string
+}
+
+export class CreateCheckOutSessionRequest extends Request {
+  constructor(url: string, options?: RequestInit, customData?: ICreateCheckoutSession) {
+    super(url, mergeOptions(customData, options));
+  }
+}
+
+export interface ICreateCheckoutUser {
+  email: string
+  userId: string;
+}
+
+export class CreateCheckOutUserRequest extends Request {
+  constructor(url: string, options?: RequestInit, customData?: ICreateCheckoutUser) {
+    super(url, mergeOptions(customData, options));
+  }
+}
+
 function mergeOptions<RequestType>(customData: RequestType, options?: RequestInit) {
   // Serialize your custom data and add it to the request body
   const customBody = JSON.stringify(customData);

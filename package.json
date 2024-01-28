@@ -14,6 +14,8 @@
     "@heroicons/react": "^2.1.1",
     "@prisma/client": "^5.8.1",
     "@react-aria/example-theme": "^1.0.0",
+    "@stripe/react-stripe-js": "^2.4.0",
+    "@stripe/stripe-js": "^2.4.0",
     "@tanstack/react-query": "^5.17.19",
     "@tanstack/react-virtual": "^3.0.2",
     "axios": "^1.6.5",
@@ -24,6 +26,7 @@
     "react-aria-components": "^1.0.1",
     "react-dom": "^18",
     "sharp": "^0.33.2",
+    "stripe": "^14.14.0",
     "svix": "^1.15.0",
     "zustand": "^4.5.0"
   },

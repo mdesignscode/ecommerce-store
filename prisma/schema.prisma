@@ -11,22 +11,29 @@ datasource db {
 }
 
 model Product {
-  id                 Int     @id @default(autoincrement())
+  id                 String  @id
   title              String
-  price              Float
+  price              Price   @relation(fields: [priceId], references: [id])
   description        String
   images             Image[]
   category           String
   rating             Int
   discountPercentage Int?
   stock              Int
+  priceId            String
 }
 
 model Image {
   id        Int      @id @default(autoincrement())
   url       String
   Product   Product? @relation(fields: [productId], references: [id])
-  productId Int?
+  productId String?
+}
+
+model Price {
+  id      String    @id
+  amount  Int
+  Product Product[]
 }
 
 model User {
@@ -38,6 +45,7 @@ model User {
   shoppingCartId    Int?
   wishListId        Int?
   purchaseHistoryId Int?
+  checkoutId        String?
 }
 
 model ShoppingCart {
@@ -60,7 +68,7 @@ model PurchaseHistory {
 
 model ProductId {
   id                Int              @id @default(autoincrement())
-  productId         Int
+  productId         String
   ShoppingCart      ShoppingCart?    @relation(fields: [shoppingCartId], references: [id])
   shoppingCartId    Int?
   WishList          WishList?        @relation(fields: [wishListId], references: [id])

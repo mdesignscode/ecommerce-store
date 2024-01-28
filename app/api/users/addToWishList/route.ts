@@ -7,6 +7,9 @@ export async function POST(request: UpdateListRequest) {
 
   const { userId, product, listId } = body
 
+  if (!product)
+    return new Response("Product not found", { status: 404 })
+
   // first get user
   const user = await prisma.user.findUnique({
     where: {

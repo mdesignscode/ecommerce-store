@@ -8,7 +8,7 @@ export default async function Page({
 }) {
   const isDiscountedProducts = categoryTitle === "discountedProducts",
     categoryProducts = await prisma.product.findMany({
-      include: { images: true },
+      include: { images: true, price: true },
       where: isDiscountedProducts
         ? {
             discountPercentage: {
@@ -28,13 +28,17 @@ export default async function Page({
         Products
       </h1>
       <section>
-        {categoryProducts.map((product) => (
-          <Product
-            key={product.id}
-            styles="border-dark border-2"
-            product={product}
-          />
-        ))}
+        {categoryProducts.map((product) =>
+          !product ? (
+            <></>
+          ) : (
+            <Product
+              key={product.id}
+              styles="border-dark border-2"
+              product={product}
+            />
+          )
+        )}
       </section>
     </main>
   );

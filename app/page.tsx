@@ -4,7 +4,7 @@ import RenderOnScroll from "./Components/RenderOnScroll";
 
 export default async function Home() {
   const discountedProducts = await prisma.product.findMany({
-      include: { images: true },
+      include: { images: true, price: true },
       where: {
         discountPercentage: {
           not: null,

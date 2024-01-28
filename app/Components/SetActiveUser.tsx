@@ -7,55 +7,58 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect } from "react";
 
-export type TUser = {
-  wishList:
-    | ({
-        products: {
-          id: number;
-          productId: number;
-          shoppingCartId: number | null;
-          wishListId: number | null;
-          purchaseHistoryId: number | null;
-        }[];
-      } & {
-        id: number;
-      })
-    | null;
+export type TUser =
+  | ({
+      wishList:
+        | ({
+            products: {
+              id: number;
+              productId: string;
+              shoppingCartId: number | null;
+              wishListId: number | null;
+              purchaseHistoryId: number | null;
+            }[];
+          } & {
+            id: number;
+          })
+        | null;
 
-  shoppingCart:
-    | ({
-        products: {
-          id: number;
-          productId: number;
-          shoppingCartId: number | null;
-          wishListId: number | null;
-          purchaseHistoryId: number | null;
-        }[];
-      } & {
-        id: number;
-      })
-    | null;
+      shoppingCart:
+        | ({
+            products: {
+              id: number;
+              productId: string;
+              shoppingCartId: number | null;
+              wishListId: number | null;
+              purchaseHistoryId: number | null;
+            }[];
+          } & {
+            id: number;
+          })
+        | null;
 
-  purchaseHistory:
-    | ({
-        products: {
-          id: number;
-          productId: number;
-          shoppingCartId: number | null;
-          wishListId: number | null;
-          purchaseHistoryId: number | null;
-        }[];
-      } & {
-        id: number;
-      })
-    | null;
-} & {
-  id: string;
-  name: string;
-  shoppingCartId: number | null;
-  wishListId: number | null;
-  purchaseHistoryId: number | null;
-};
+      purchaseHistory:
+        | ({
+            products: {
+              id: number;
+              productId: string;
+              shoppingCartId: number | null;
+              wishListId: number | null;
+              purchaseHistoryId: number | null;
+            }[];
+          } & {
+            id: number;
+          })
+        | null;
+    } & {
+      id: string;
+      name: string;
+      shoppingCartId: number | null;
+      wishListId: number | null;
+      purchaseHistoryId: number | null;
+      checkoutId: string | null;
+    })
+  | null;
 
 export default function SetActiveUser() {
   const { setActiveUser } = useGlobalStore(),
@@ -65,7 +68,7 @@ export default function SetActiveUser() {
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   const url = baseUrl + "users/get";
 
-  const { isFetched, isSuccess, data } = useQuery<Record<string, number>>({
+  const { isFetched, isSuccess, data } = useQuery<TUser>({
     queryKey: ["getUser", user?.id],
     queryFn: async () => {
       try {
@@ -77,16 +80,14 @@ export default function SetActiveUser() {
         console.log(error);
       }
     },
-    initialData: {},
     enabled: !!user,
   });
 
   useEffect(() => {
     if (isFetched && isSuccess) {
-      setActiveUser((data as any) as TUser);
+      setActiveUser(data);
     }
-
-  }, [isFetched, isSuccess, data, setActiveUser]);
+  }, [isFetched, isSuccess, data, setActiveUser, user]);
 
   return <></>;
 }

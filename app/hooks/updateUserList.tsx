@@ -39,11 +39,11 @@ export default function useUpdateUserList({
     if (activeUser) {
       setProductInUserList(
         !!activeUser[listType]?.products?.filter(
-          (listItem) => listItem.productId === product.id
+          (listItem) => listItem.productId === product?.id
         )[0]
       );
     }
-  }, [activeUser, listType, product.id]);
+  }, [activeUser, listType, product?.id]);
 
   // prepare url for updating list
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL + "users/";
@@ -51,7 +51,7 @@ export default function useUpdateUserList({
 
   // add to user list
   const { isFetched, isSuccess, data, isFetching } = useQuery<TUser>({
-    queryKey: [`${queryKey}-${product.id}`],
+    queryKey: [`${queryKey}-${product?.id}`],
     queryFn: async () => {
       if (!activeUser) return;
 

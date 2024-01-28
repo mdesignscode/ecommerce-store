@@ -7,7 +7,7 @@ export async function POST(request: GetUserRequest
 ) {
   const body: IGetUser = await request.json();
 
-  const user: TUser | null = await getUser(body.id)
+  const user: TUser = await getUser(body.id)
 
   return NextResponse.json(user)
 }

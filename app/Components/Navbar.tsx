@@ -17,8 +17,7 @@ export default function Navbar() {
     { activeUser } = useGlobalStore();
 
   return (
-    <div className="w-full fixed z-20 bottom-6 ">
-      <nav className="flex shadow-lg border-secondary border-2 shadow-dark text-dark bg-light justify-around items-center rounded-lg w-2/3 md:w-96 h-14 md:h-20 md:text-secondary-dark m-auto">
+      <nav className="flex fixed z-20 left-0 right-0 bottom-6 shadow-lg border-secondary border-2 shadow-dark text-dark bg-light justify-around items-center rounded-lg w-2/3 md:w-96 h-14 md:h-20 md:text-secondary-dark m-auto">
         <Link
           href={
             activeUser
@@ -62,6 +61,5 @@ export default function Navbar() {
           <p className="hidden md:block">My Wish List</p>
         </Link>
       </nav>
-    </div>
   );
 }

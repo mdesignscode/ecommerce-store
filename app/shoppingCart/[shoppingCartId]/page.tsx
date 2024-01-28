@@ -1,5 +1,4 @@
 import EmptyList from "@/app/Components/EmpyList";
-import Product from "@/app/Components/Product";
 import ProductInUserList from "@/app/Components/ProductInUserList";
 import prisma from "@/lib/prisma";
 
@@ -26,7 +25,7 @@ export default async function Page({
         where: {
           id: item.productId,
         },
-        include: { images: true },
+        include: { images: true, price: true },
       });
       return product;
     })

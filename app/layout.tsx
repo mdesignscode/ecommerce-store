@@ -27,7 +27,7 @@ export default function RootLayout({
           <body
             className={classNames(
               openSans.className,
-              "bg-light min-h-screen text-dark"
+              "bg-white min-h-screen text-dark"
             )}
           >
             <>
