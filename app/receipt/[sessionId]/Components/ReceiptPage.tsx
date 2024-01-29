@@ -1,6 +1,6 @@
 "use client";
 
-import WaterfallLoader from "@/app/Components/WaterfallLoader";
+import WaterfallLoader from "@/components/WaterfallLoader";
 import useGlobalStore from "@/lib/store";
 import { CheckIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";

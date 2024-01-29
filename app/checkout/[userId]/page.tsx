@@ -1,4 +1,4 @@
-import EmptyList from "@/app/Components/EmpyList";
+import EmptyList from "@/components/EmpyList";
 import prisma from "@/lib/prisma";
 import CheckoutPage from "./Components/CheckoutPage";
 

@@ -1,7 +1,7 @@
 "use client";
 
-import SpinningLoader from "@/app/Components/SpinningLoader";
-import useCreateCheckoutUser from "@/app/hooks/createCheckoutUser";
+import SpinningLoader from "@/components/SpinningLoader";
+import useCreateCheckoutUser from "@/hooks/createCheckoutUser";
 import useGlobalStore from "@/lib/store";
 import {
   CheckIcon, ShoppingBagIcon

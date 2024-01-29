@@ -1,5 +1,5 @@
 import WaterfallLoader from "@/components/WaterfallLoader";
 
 export default function Loading() {
-  return <WaterfallLoader text="Shopping Cart" />
+  return <WaterfallLoader text="Sign Up" />;
 }

@@ -1,5 +1,5 @@
-import EmptyList from "@/app/Components/EmpyList";
-import ProductInUserList from "@/app/Components/ProductInUserList";
+import EmptyList from "@/components/EmpyList";
+import ProductInUserList from "@/components/ProductInUserList";
 import prisma from "@/lib/prisma";
 import "@/styles/index.css";
 

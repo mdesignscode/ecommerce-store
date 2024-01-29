@@ -1,7 +1,7 @@
 "use client";
 
-import { TProduct } from "@/app/Components/ProductsGroup";
-import useCreateCheckoutSession from "@/app/hooks/createCheckoutSession";
+import { TProduct } from "@/components/ProductsGroup";
+import useCreateCheckoutSession from "@/hooks/createCheckoutSession";
 import { ICheckOutProduct } from "@/models/customRequests";
 import {
   EmbeddedCheckout,

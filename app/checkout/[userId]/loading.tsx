@@ -1,4 +1,4 @@
-import WaterfallLoader from "@/app/Components/WaterfallLoader";
+import WaterfallLoader from "@/components/WaterfallLoader";
 
 export default function Loading() {
   return <WaterfallLoader text="Checkout Page" />

@@ -1,6 +1,6 @@
 "use client";
 
-import { TProduct } from "@/app/Components/ProductsGroup";
+import { TProduct } from "@/components/ProductsGroup";
 import { ICheckOutProduct } from "@/models/customRequests";
 import { MinusCircleIcon, PlusIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
