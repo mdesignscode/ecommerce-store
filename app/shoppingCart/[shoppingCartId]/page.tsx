@@ -1,3 +1,4 @@
+import UserList from "@/app/Components/UserList";
 import EmptyList from "@/components/EmpyList";
 import ProductInUserList from "@/components/ProductInUserList";
 import prisma from "@/lib/prisma";
@@ -32,21 +33,6 @@ export default async function Page({
   );
 
   return (
-    <main className="flex flex-col py-4 items-center mb-14">
-      <h1 className="text-xl font-bold">Your Wish List</h1>
-      <section>
-        {cartItems?.map(
-          (item) =>
-            item && (
-              <ProductInUserList
-                queryKey="addToShoppingCart"
-                listType="shoppingCart"
-                product={item}
-                key={item.id}
-              />
-            )
-        )}
-      </section>
-    </main>
+    <UserList list={cartItems} title="Your Shopping Cart" />
   );
 }

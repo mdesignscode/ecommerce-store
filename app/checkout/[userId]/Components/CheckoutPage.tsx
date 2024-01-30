@@ -35,9 +35,9 @@ export default function CheckoutPage({ products }: { products: TProduct[] }) {
   const options = { clientSecret };
 
   return (
-    <section className="flex flex-col md:flex-row md:justify-center items-center w-full p-4 overflow-x-hidden gap-4">
-      <section className="flex flex-col gap-4">
-        <section className="flex gap-2 overflow-x-auto justify-center w-full">
+    <section className="py-4">
+      <section className="flex flex-col gap-6">
+        <section className="flex overflow-x-auto gap-4">
           {products?.map((product) => (
             <CheckoutProduct
               setCheckoutProducts={setCheckoutProducts}
@@ -47,6 +47,7 @@ export default function CheckoutPage({ products }: { products: TProduct[] }) {
             />
           ))}
         </section>
+
         <CheckoutButton
           clientSecret={clientSecret}
           checkoutSessionCreated={isSuccess}

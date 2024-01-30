@@ -60,7 +60,7 @@ export type TUser =
     })
   | null;
 
-export default function SetActiveUser() {
+export default function useSetActiveUser() {
   const { setActiveUser } = useGlobalStore(),
     { user } = useUser();
 
@@ -88,6 +88,4 @@ export default function SetActiveUser() {
       setActiveUser(data);
     }
   }, [isFetched, isSuccess, data, setActiveUser, user]);
-
-  return <></>;
 }

@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import ProductsGroup from "./Components/ProductsGroup";
-import RenderOnScroll from "./Components/RenderOnScroll";
+import FadeIn from "./Components/FadeIn";
 
 export default async function Home() {
   const discountedProducts = await prisma.product.findMany({
@@ -31,13 +31,28 @@ export default async function Home() {
         groupUrl="discountedProducts"
         key="discountedProducts"
       />,
-    ]
+    ];
 
   productsList.push(...categoryComponents);
 
   return (
-    <main className="overflow-x-hidden h-screen">
-      <RenderOnScroll list={productsList} />
+    <main className="flex flex-col gap-4">
+        <FadeIn>
+          <ProductsGroup
+            products={discountedProducts}
+            groupTitle="Discounted Products"
+            groupUrl="discountedProducts"
+            key="discountedProducts"
+          />
+        </FadeIn>
+        {groupedProducts.map(({ category }) => (
+          <FadeIn key={category}>
+            <ProductsGroup
+              groupTitle={capitalizeAndReplace(category)}
+              groupUrl={category}
+            />
+          </FadeIn>
+        ))}
     </main>
   );
 }

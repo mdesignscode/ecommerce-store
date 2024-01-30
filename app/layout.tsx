@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import Header from "./Components/Header";
 import Navbar from "./Components/Navbar";
-import SetActiveUser from "./Components/SetActiveUser";
 import "./globals.css";
 import QueryProvider from "./queryProvider";
 
@@ -27,14 +26,16 @@ export default function RootLayout({
           <body
             className={classNames(
               openSans.className,
-              "bg-white min-h-screen text-dark"
+              "bg-white text-dark mb-20 md:mb-26"
             )}
           >
             <>
               <Header />
               <Navbar />
-              <SetActiveUser />
-              {children}
+              <div className="h-full flex overflow-y-auto flex-col relative">
+                {children}
+                <footer>Footer</footer>
+              </div>
             </>
           </body>
         </html>

@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { TProduct } from "../Components/ProductsGroup";
-import { TUser } from "../Components/SetActiveUser";
+import { TUser } from "./setActiveUser";
 
 export type TListType = "shoppingCart" | "wishList" | "purchaseHistory";
 export type TQueryKey = "addToWishList" | "addToShoppingCart";

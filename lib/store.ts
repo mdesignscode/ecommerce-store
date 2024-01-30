@@ -1,4 +1,4 @@
-import { TUser } from '@/app/Components/SetActiveUser';
+import { TUser } from '@/app/hooks/setActiveUser';
 import { create } from 'zustand'
 
 interface StoreState {

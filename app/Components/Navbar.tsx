@@ -11,10 +11,13 @@ import {
 import { HeartIcon, ShoppingCartIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Loading from "../loading";
+import useSetActiveUser from "../hooks/setActiveUser";
 
 export default function Navbar() {
   const { user, isLoaded } = useUser(),
     { activeUser } = useGlobalStore();
+
+  useSetActiveUser()
 
   return (
       <nav className="flex fixed z-20 left-0 right-0 bottom-6 shadow-lg border-secondary border-2 shadow-dark text-dark bg-light justify-around items-center rounded-lg w-2/3 md:w-96 h-14 md:h-20 md:text-secondary-dark m-auto">

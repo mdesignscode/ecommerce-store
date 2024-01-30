@@ -43,8 +43,8 @@ export default async function Page({
     return <EmptyList listType="Shopping Cart" />;
 
   return (
-    <main className="flex flex-col py-4 items-center mb-14">
-      <h1 className="text-xl font-bold">Checkout</h1>
+    <main className="p-4 text-center">
+      <h1 className="text-2xl font-bold">Checkout</h1>
       <CheckoutPage products={cartItems} />
     </main>
   );

@@ -23,10 +23,12 @@ export default function AddToUserList({
   product,
   disableAddToWishList,
   disableAddToShoppingCart,
+  showingProduct
 }: {
   product: TProduct;
   disableAddToWishList?: boolean;
   disableAddToShoppingCart?: boolean;
+  showingProduct?: boolean;
 }) {
   // add to wish list
   const {
@@ -49,16 +51,22 @@ export default function AddToUserList({
       listType: "shoppingCart",
     }),
     { user } = useUser(),
-    router = useRouter();
+    router = useRouter(),
+    iconWidth = {
+      "w-12": showingProduct,
+      "w-10 md:w-[50px]": !showingProduct,
+    };
 
   return (
     <section className="flex justify-between">
       <TooltipTrigger>
         <Button
-          className={classNames({
-            "pointer-events-none": cartLoading || disableAddToShoppingCart,
-          },
-          "text-primary")}
+          className={classNames(
+            {
+              "pointer-events-none": cartLoading || disableAddToShoppingCart,
+            },
+            "text-primary"
+          )}
           onPress={() => {
             if (!user) {
               router.push("/sign-in");
@@ -72,8 +80,8 @@ export default function AddToUserList({
               className={classNames(
                 {
                   moveCart: cartLoading,
+                  ...iconWidth
                 },
-                "w-10 md:w-[50px]"
               )}
             />
           ) : (
@@ -81,8 +89,8 @@ export default function AddToUserList({
               className={classNames(
                 {
                   moveCart: cartLoading,
+                  ...iconWidth
                 },
-                "w-10 md:w-[50px]"
               )}
             />
           )}
@@ -106,21 +114,17 @@ export default function AddToUserList({
           {productInWishList ? (
             <HeartIconSolid
               color="hotpink"
-              className={classNames(
-                {
-                  heartbeat: wishListLoading,
-                },
-                "w-10 md:w-[50px]"
-              )}
+              className={classNames({
+                heartbeat: wishListLoading,
+                ...iconWidth,
+              })}
             />
           ) : (
             <HeartIconOutline
-              className={classNames(
-                {
-                  heartbeat: wishListLoading,
-                },
-                "w-10 md:w-[50px]"
-              )}
+              className={classNames({
+                heartbeat: wishListLoading,
+                ...iconWidth,
+              })}
               color="hotpink"
             />
           )}

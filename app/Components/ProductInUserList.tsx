@@ -38,8 +38,8 @@ export default function ProductInUserList({
       className={classNames("relative justify-center flex gap-4")}
     >
       <Product
-        disableAddToShoppingCart={true}
-        disableAddToWishList={true}
+        disableAddToShoppingCart={listType === "shoppingCart"}
+        disableAddToWishList={listType === "wishList"}
         styles="peer w-full border-dark border-2"
         product={product}
       />
@@ -49,7 +49,7 @@ export default function ProductInUserList({
           setShouldAddToUserList(true);
         }}
         className={classNames(
-          "peer-hover:translate-x-2 peer-hover:-translate-y-2 transition-all bg-light p-2 rounded-full absolute -top-2 -right-2 shadow-dark shadow-sm",
+          "peer-hover:translate-x-2 peer-hover:-translate-y-2 transition-all bg-light p-2 rounded-full absolute -top-2 -right-2 shadow-dark shadow-sm z-10",
           { rotate: isFetching }
         )}
       >

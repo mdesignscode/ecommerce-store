@@ -12,7 +12,7 @@ export default function ImageThumbnails({ images }: { images: TImage[] }) {
   const [activeImage, setActiveImage] = useState<string | null>(null);
 
   return (
-    <section className="flex overflow-x-auto">
+    <section className="flex overflow-x-auto w-full">
       {images.map((image, index) => (
         <Button
           onPress={() => setActiveImage(image.url)}
@@ -24,7 +24,7 @@ export default function ImageThumbnails({ images }: { images: TImage[] }) {
             alt={`Thumbnail ${index + 1}`}
             width={150}
             height={150}
-            className="rounded-lg transition-all hover:scale-105"
+            className="rounded-lg transition-all hover:scale-105 flex-none"
           />
         </Button>
       ))}
@@ -33,7 +33,7 @@ export default function ImageThumbnails({ images }: { images: TImage[] }) {
         <>
           <div
             className={classNames(
-              "h-full w-full top-0 left-0 bg-dark opacity-80 absolute"
+              "h-screen w-screen top-0 left-0 bg-dark opacity-80 absolute"
             )}
           />
           <div className="z-10">

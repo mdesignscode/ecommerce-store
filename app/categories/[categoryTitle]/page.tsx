@@ -6,7 +6,8 @@ export default async function Page({
 }: {
   params: { categoryTitle: string };
 }) {
-  const isDiscountedProducts = categoryTitle === "discountedProducts",
+  const decodedTitle = decodeURI(categoryTitle),
+    isDiscountedProducts = decodedTitle === "discountedProducts",
     categoryProducts = await prisma.product.findMany({
       include: { images: true, price: true },
       where: isDiscountedProducts
@@ -15,19 +16,19 @@ export default async function Page({
               not: null,
             },
           }
-        : { category: categoryTitle },
+        : { category: decodedTitle },
     });
 
   return (
-    <main className="flex flex-col py-4 items-center">
-      <h1 className="text-xl font-bold">
+    <main className="flex flex-col items-center p-4 gap-2">
+      <h1 className="text-xl font-bold md:text-2xl">
         All{" "}
         {isDiscountedProducts
           ? "Discounted"
-          : capitalizeAndReplace(categoryTitle)}{" "}
+          : capitalizeAndReplace(decodedTitle)}{" "}
         Products
       </h1>
-      <section>
+      <section className="md:flex md:w-5/6 flex-wrap justify-center">
         {categoryProducts.map((product) =>
           !product ? (
             <></>

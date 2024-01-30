@@ -29,7 +29,7 @@ export default function CheckoutProduct({
   return (
     <section className="flex-none rounded-lg gap-2 w-60 flex flex-col p-4 border-2 border-dark">
       <Image
-        className="w-full h-auto rounded-lg"
+        className="w-full h-auto m-auto rounded-lg"
         src={product.images[0].url}
         width={240}
         height={240}
