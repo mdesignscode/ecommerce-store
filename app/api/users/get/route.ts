@@ -1,4 +1,4 @@
-import { TUser } from "@/app/Components/SetActiveUser";
+import { TUser } from "@/app/hooks/setActiveUser";
 import { GetUserRequest, IGetUser } from "@/models/customRequests";
 import { getUser } from "@/utils";
 import { NextResponse } from "next/server";

@@ -8,7 +8,7 @@ export default async function Header() {
     by: ["category"],
   });
   return (
-    <header className="sticky top-0 z-20 flex flex-col">
+    <header className="flex flex-col">
       <section className="flex justify-between p-2 text-light bg-dark">
         <Link href="/" className="text-xl font-bold">
           Dev Store.

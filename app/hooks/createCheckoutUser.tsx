@@ -33,8 +33,5 @@ export default function useCreateCheckoutUser(enabled: boolean) {
     if (isSuccess) setActiveUser(data);
   }, [data, isSuccess, setActiveUser]);
 
-  useEffect(() => {
-    console.log("user create:: ", { isSuccess, isFetching, enabled, activeUser });
-  }, [isSuccess, isFetching, enabled, activeUser]);
   return { isSuccess, isFetching };
 }

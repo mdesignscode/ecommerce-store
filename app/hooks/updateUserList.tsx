@@ -47,7 +47,7 @@ export default function useUpdateUserList({
 
   // prepare url for updating list
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL + "users/";
-  const url = baseUrl + queryKey;
+  const url = `${baseUrl}${listType}/update`;
 
   // add to user list
   const { isFetched, isSuccess, data, isFetching } = useQuery<TUser>({

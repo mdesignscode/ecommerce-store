@@ -1,4 +1,5 @@
 import { TProduct } from "@/app/Components/ProductsGroup";
+import { TListType } from "@/app/hooks/updateUserList";
 
 export interface IGetUser {
   id: string;
@@ -10,13 +11,23 @@ export class GetUserRequest extends Request {
   }
 }
 
+export interface IGetUserList {
+  listId: number;
+}
+
+export class GetUserListRequest extends Request {
+  constructor(url: string, options?: RequestInit, customData?: IGetUserList) {
+    super(url, mergeOptions(customData, options));
+  }
+}
+
 export interface IUpdateUserList {
   userId: string;
   product: TProduct;
   listId: number | undefined;
 }
 
-export class UpdateListRequest extends Request {
+export class UpdateUserListRequest extends Request {
   constructor(url: string, options?: RequestInit, customData?: IUpdateUserList) {
     super(url, mergeOptions(customData, options));
   }

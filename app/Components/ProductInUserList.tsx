@@ -1,16 +1,15 @@
 "use client";
 
+import { Transition } from "@headlessui/react";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import Product from "./Product";
-import { TProduct } from "./ProductsGroup";
+import classNames from "classnames";
 import { Button } from "react-aria-components";
-import { useState } from "react";
 import useUpdateUserList, {
   TListType,
   TQueryKey,
 } from "../hooks/updateUserList";
-import classNames from "classnames";
-import { Transition } from "@headlessui/react";
+import Product from "./Product";
+import { TProduct } from "./ProductsGroup";
 
 interface IProductInUserListProps {
   product: TProduct;
@@ -23,7 +22,7 @@ export default function ProductInUserList({
   queryKey,
   listType,
 }: IProductInUserListProps) {
-  const { setShouldAddToUserList, isFetching, isSuccess } = useUpdateUserList({
+  const { setShouldAddToUserList, isFetching, productInUserList } = useUpdateUserList({
     queryKey,
     product,
     listType,
@@ -31,7 +30,7 @@ export default function ProductInUserList({
 
   return (
     <Transition
-      show={!isSuccess}
+      show={productInUserList}
       leave="transition-all duration-1000"
       leaveFrom="opacity-100"
       leaveTo="opacity-0 scale-50"

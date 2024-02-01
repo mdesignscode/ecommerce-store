@@ -8,7 +8,7 @@ export default function CheckoutLink() {
 
   return (
     <Link
-      href={user ? `/checkout/${user.id}` : "/sign-in"}
+      href={user ? `/checkout/` : "/sign-in"}
       className="text-xl font-bold"
     >
       Checkout

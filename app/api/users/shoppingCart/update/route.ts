@@ -1,8 +1,8 @@
 import prisma from "@/lib/prisma";
-import { IUpdateUserList, UpdateListRequest } from "@/models/customRequests";
+import { IUpdateUserList, UpdateUserListRequest } from "@/models/customRequests";
 import { updatedUserResponse } from "@/utils";
 
-export async function POST(request: UpdateListRequest) {
+export async function POST(request: UpdateUserListRequest) {
   const body: IUpdateUserList = await request.json();
 
   const { userId, product, listId } = body

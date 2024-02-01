@@ -3,9 +3,10 @@ import classNames from "classnames";
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import Header from "./Components/Header";
-import Navbar from "./Components/Navbar";
 import "./globals.css";
 import QueryProvider from "./queryProvider";
+import Footer from "./Components/Footer";
+import Navbar from "./Components/Navbar";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
 
@@ -26,17 +27,17 @@ export default function RootLayout({
           <body
             className={classNames(
               openSans.className,
-              "bg-white text-dark mb-20 md:mb-26"
+              "bg-white text-dark h-screen overflow-hidden"
             )}
           >
-            <>
+            <div className="flex flex-col h-full">
               <Header />
               <Navbar />
-              <div className="h-full flex overflow-y-auto flex-col relative">
-                {children}
-                <footer>Footer</footer>
+              <div className="flex-1 overflow-y-auto flex flex-col">
+                <div className="flex-1">{children}</div>
+                <Footer />
               </div>
-            </>
+            </div>
           </body>
         </html>
       </QueryProvider>

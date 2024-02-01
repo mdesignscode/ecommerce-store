@@ -61,9 +61,11 @@ export default function AddToUserList({
     <section className="flex justify-between">
       <TooltipTrigger>
         <Button
+          isDisabled={cartLoading || disableAddToShoppingCart}
           className={classNames(
             {
-              "pointer-events-none": cartLoading || disableAddToShoppingCart,
+              "cursor-not-allowed":
+                cartLoading || disableAddToShoppingCart,
             },
             "text-primary"
           )}
@@ -77,21 +79,17 @@ export default function AddToUserList({
         >
           {productInShoppingCart ? (
             <ShoppingCartIconSolid
-              className={classNames(
-                {
-                  moveCart: cartLoading,
-                  ...iconWidth
-                },
-              )}
+              className={classNames({
+                moveCart: cartLoading,
+                ...iconWidth,
+              })}
             />
           ) : (
             <ShoppingCartIconOutline
-              className={classNames(
-                {
-                  moveCart: cartLoading,
-                  ...iconWidth
-                },
-              )}
+              className={classNames({
+                moveCart: cartLoading,
+                ...iconWidth,
+              })}
             />
           )}
         </Button>
@@ -100,8 +98,10 @@ export default function AddToUserList({
 
       <TooltipTrigger>
         <Button
+          isDisabled={wishListLoading || disableAddToWishList}
           className={classNames({
-            "pointer-events-none": wishListLoading || disableAddToWishList,
+            "cursor-not-allowed":
+              wishListLoading || disableAddToWishList,
           })}
           onPress={() => {
             if (!user) {

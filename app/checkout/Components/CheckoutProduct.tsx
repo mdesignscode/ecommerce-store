@@ -1,8 +1,10 @@
 "use client";
 
+import SpinningLoader from "@/app/Components/SpinningLoader";
+import useUpdateUserList from "@/app/hooks/updateUserList";
 import { TProduct } from "@/components/ProductsGroup";
 import { ICheckOutProduct } from "@/models/customRequests";
-import { MinusCircleIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { MinusCircleIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";
@@ -23,8 +25,16 @@ export default function CheckoutProduct({
     [key: string]: ICheckOutProduct;
   };
 }) {
+  const { setShouldAddToUserList, isFetching } = useUpdateUserList({
+    queryKey: "addToShoppingCart",
+    product,
+    listType: "shoppingCart",
+  });
+
   if (!product) return <></>;
   const checkOutProduct = checkoutProducts[product.id];
+
+  if (!checkOutProduct) return <></>;
 
   return (
     <section className="flex-none rounded-lg gap-2 w-60 flex flex-col p-4 border-2 border-dark">
@@ -37,6 +47,7 @@ export default function CheckoutProduct({
       />
 
       <p className="font-bold text-lg">{product.title}</p>
+      <p className="font-bold text-lg">${product.price.amount}</p>
 
       <section className="flex justify-between items-center">
         <Button
@@ -79,6 +90,18 @@ export default function CheckoutProduct({
           <PlusIcon width={30} />
         </Button>
       </section>
+
+      <Button
+        isDisabled={isFetching}
+        onPress={() => setShouldAddToUserList(true)}
+        className={classNames(
+          "bg-red-600 text-white text-sm rounded-lg p-2 flex gap-4 justify-center items-center",
+          { "opacity-50 cursor-not-allowed": isFetching }
+        )}
+      >
+        Remove from Cart
+        {isFetching ? <SpinningLoader /> : <TrashIcon width={20} />}
+      </Button>
     </section>
   );
 }
