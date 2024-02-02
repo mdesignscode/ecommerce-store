@@ -1,5 +1,8 @@
-import Product from "@/components/Product";
+import FadeIn from "@/app/Components/FadeIn";
 import prisma from "@/lib/prisma";
+import dynamic from "next/dynamic";
+
+const Product = dynamic(() => import("@/components/Product"));
 
 export default async function Page({
   params: { categoryTitle },
@@ -28,16 +31,17 @@ export default async function Page({
           : capitalizeAndReplace(decodedTitle)}{" "}
         Products
       </h1>
-      <section className="md:flex md:w-5/6 flex-wrap justify-center">
+      <section className="md:flex md:w-5/6 flex-wrap justify-center items-center">
         {categoryProducts.map((product) =>
           !product ? (
             <></>
           ) : (
-            <Product
-              key={product.id}
-              styles="border-dark border-2"
-              product={product}
-            />
+            <FadeIn key={product.id}>
+              <Product
+                styles="border-dark border-2"
+                product={product}
+              />
+            </FadeIn>
           )
         )}
       </section>

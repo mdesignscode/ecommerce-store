@@ -1,17 +1,13 @@
+import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import classNames from "classnames";
 import Link from "next/link";
 
-type TProductCategories = (Prisma.PickEnumerable<
-  Prisma.ProductGroupByOutputType,
-  "category"[]
-> & {})[];
+export default async function ProductCategories() {
+  const categories = await prisma.product.groupBy({
+    by: ["category"],
+  });
 
-export default function ProductCategories({
-  categories,
-}: {
-  categories: TProductCategories;
-}) {
   return (
     <section
       className={classNames(

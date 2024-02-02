@@ -110,15 +110,21 @@ async function getProductsFromEscuelaJS() {
 
       const { stripeProduct, stripePrice } = await createStripeObjects(product, imagesList)
 
+      const IS_DISCOUNTED_PRODUCT = !(index % 5),
+        DISCOUNTED_PERCENTAGE = randomNumber(15, 40)
+
       return {
         id: stripeProduct.id,
         title: product.title,
-        price: { amount: product.price, id: stripePrice.id },
+        price: {
+          amount: IS_DISCOUNTED_PRODUCT ? DISCOUNTED_PERCENTAGE * product.price : product.price,
+          id: stripePrice.id
+        },
         description: product.description,
         images,
         category: product.category.name,
         rating: randomNumber(3, 5),
-        discountPercentage: !(index % 5) ? randomNumber(15, 40) : null,
+        discountPercentage: IS_DISCOUNTED_PRODUCT ? DISCOUNTED_PERCENTAGE : null,
         stock: randomNumber(10, 100),
       } as IProduct;
     })

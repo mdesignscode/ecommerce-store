@@ -1,12 +1,10 @@
 import Link from "next/link";
 import ProductCategories from "./ProductCategories";
-import prisma from "@/lib/prisma";
 import CheckoutLink from "./CheckoutLink";
+import ProductCategoriesSkeleton from "../Skeletons/ProductCategories";
+import { Suspense } from "react";
 
 export default async function Header() {
-  const categories = await prisma.product.groupBy({
-    by: ["category"],
-  });
   return (
     <header className="flex flex-col">
       <section className="flex justify-between p-2 text-light bg-dark">
@@ -16,7 +14,10 @@ export default async function Header() {
 
         <CheckoutLink />
       </section>
-      <ProductCategories categories={categories} />
+
+      <Suspense fallback={<ProductCategoriesSkeleton />}>
+        <ProductCategories />
+      </Suspense>
     </header>
   );
 }

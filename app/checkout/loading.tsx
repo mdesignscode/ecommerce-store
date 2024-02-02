@@ -1,5 +1,5 @@
-import WaterfallLoader from "@/components/WaterfallLoader";
+import CheckoutPageSkeleton from "../Components/Skeletons/CheckoutPage";
 
 export default function Loading() {
-  return <WaterfallLoader text="Checkout Page" />
+  return <CheckoutPageSkeleton />
 }

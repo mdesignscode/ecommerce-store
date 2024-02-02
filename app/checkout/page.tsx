@@ -6,17 +6,15 @@ import useGetShoppingCart from "../hooks/getShoppingCart";
 import useGlobalStore from "@/lib/store";
 import { useUser } from "@clerk/nextjs";
 import WaterfallLoader from "../Components/WaterfallLoader";
+import CheckoutPageSkeleton from "../Components/Skeletons/CheckoutPage";
 
 export default function Page() {
   const { activeUser } = useGlobalStore(),
-    { isSignedIn, isLoaded } = useUser(),
-    { data, isFetching, isSuccess } = useGetShoppingCart();
+    { isSignedIn } = useUser(),
+    { data, isSuccess } = useGetShoppingCart();
 
-  if (isLoaded && !activeUser) return <WaterfallLoader text="User data" />;
-
-  if (isFetching) return <WaterfallLoader text="Your Shopping Cart" />;
-
-  if ((!data || !data.length) && isSignedIn) return <EmptyList listType="Shopping Cart" />;
+  if ((!data || !data.length) && isSignedIn && activeUser)
+    return <EmptyList listType="Shopping Cart" />;
 
   if (isSuccess && data)
     return (
@@ -25,4 +23,5 @@ export default function Page() {
         <CheckoutPage products={data} />
       </main>
     );
+  else return <CheckoutPageSkeleton />
 }

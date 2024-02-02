@@ -1,58 +1,36 @@
 import prisma from "@/lib/prisma";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+import DiscountedProducts from "./Components/DiscountedProducts";
 import ProductsGroup from "./Components/ProductsGroup";
-import FadeIn from "./Components/FadeIn";
+import ProductsGroupSkeleton from "./Components/Skeletons/ProductsGroup";
+
+const FadeIn = dynamic(() => import("./Components/FadeIn"), { ssr: false });
 
 export default async function Home() {
-  const discountedProducts = await prisma.product.findMany({
-      include: { images: true, price: true },
-      where: {
-        discountPercentage: {
-          not: null,
-        },
-      },
-    }),
-    groupedProducts = await prisma.product.groupBy({
-      by: ["category"],
-      orderBy: {
-        category: "asc",
-      },
-    }),
-    categoryComponents: JSX.Element[] = groupedProducts.map(({ category }) => (
-      <ProductsGroup
-        key={category}
-        groupTitle={capitalizeAndReplace(category)}
-        groupUrl={category}
-      />
-    )),
-    productsList = [
-      <ProductsGroup
-        products={discountedProducts}
-        groupTitle="Discounted Products"
-        groupUrl="discountedProducts"
-        key="discountedProducts"
-      />,
-    ];
-
-  productsList.push(...categoryComponents);
+  const groupedProducts = await prisma.product.groupBy({
+    by: ["category"],
+    orderBy: {
+      category: "asc",
+    },
+  });
 
   return (
     <main className="flex flex-col gap-4">
-        <FadeIn>
-          <ProductsGroup
-            products={discountedProducts}
-            groupTitle="Discounted Products"
-            groupUrl="discountedProducts"
-            key="discountedProducts"
-          />
-        </FadeIn>
-        {groupedProducts.map(({ category }) => (
-          <FadeIn key={category}>
+      <Suspense fallback={<ProductsGroupSkeleton />}>
+        <DiscountedProducts />
+      </Suspense>
+
+      {groupedProducts.map(({ category }) => (
+        <FadeIn key={category}>
+          <Suspense fallback={<ProductsGroupSkeleton />}>
             <ProductsGroup
               groupTitle={capitalizeAndReplace(category)}
               groupUrl={category}
             />
-          </FadeIn>
-        ))}
+          </Suspense>
+        </FadeIn>
+      ))}
     </main>
   );
 }
