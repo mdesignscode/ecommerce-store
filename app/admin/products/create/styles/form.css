@@ -1,0 +1,58 @@
+.react-aria-Form {
+  @apply border-2 w-5/6 md:w-2/3 mx-auto flex flex-col gap-4 border-gray-400 rounded-lg p-4 m-4 bg-gray-300;
+
+  .MuiButton-contained {
+    @apply mt-4 bg-primary hover:bg-primary hover:bg-opacity-85;
+  }
+
+  .react-aria-Group {
+    @apply w-max flex gap-2;
+  }
+
+  .react-aria-NumberField,
+  .react-aria-TextField,
+  #images-section {
+    @apply p-2 rounded-lg bg-gray-100;
+  }
+
+  .react-aria-NumberField,
+  .react-aria-TextField {
+    @apply flex flex-col gap-2;
+  }
+
+  .react-aria-TextField {
+    @apply p-4;
+  }
+
+  .react-aria-Input {
+    @apply outline-gray-400 rounded-lg px-2 py-1 bg-white;
+  }
+
+  #images-section {
+    @apply flex flex-col gap-2;
+
+    .images-label {
+      @apply flex flex-col gap-2 mb-2;
+
+      label {
+        @apply font-bold;
+      }
+
+      span {
+        @apply italic text-gray-600;
+      }
+    }
+
+    .react-aria-TextField {
+      @apply bg-gray-300 border-gray-400 rounded-lg border-2;
+
+      img {
+        @apply rounded-lg;
+      }
+
+      .react-aria-Input {
+        @apply bg-white;
+      }
+    }
+  }
+}
