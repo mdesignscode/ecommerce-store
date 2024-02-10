@@ -1,11 +1,10 @@
 "use client";
 
-import useGlobalStore from "@/lib/store";
+import useGlobalStore, { TUser } from "@/lib/store";
 import { ICreateCheckoutUser } from "@/models/customRequests";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect } from "react";
-import { TUser } from "./setActiveUser";
 
 export default function useCreateCheckoutUser(enabled: boolean) {
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;

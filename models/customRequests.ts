@@ -1,5 +1,4 @@
 import { TProduct } from "@/app/Components/ProductsGroup";
-import { TListType } from "@/app/hooks/updateUserList";
 
 export interface IGetUser {
   id: string;
@@ -17,6 +16,27 @@ export interface IGetUserList {
 
 export class GetUserListRequest extends Request {
   constructor(url: string, options?: RequestInit, customData?: IGetUserList) {
+    super(url, mergeOptions(customData, options));
+  }
+}
+
+export interface IDeleteImage {
+  imageId: number;
+  imagePath: string
+}
+
+export class DeleteImage extends Request {
+  constructor(url: string, options?: RequestInit, customData?: IDeleteImage) {
+    super(url, mergeOptions(customData, options));
+  }
+}
+
+export interface IDeleteProduct {
+  product: TProduct;
+}
+
+export class DeleteProduct extends Request {
+  constructor(url: string, options?: RequestInit, customData?: IDeleteProduct) {
     super(url, mergeOptions(customData, options));
   }
 }

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { TProduct } from "./ProductsGroup";
 
-const AddToUserList = dynamic(() => import("./AddToUserList"));
+const AddToUserList = dynamic(() => import("./AddToUserList"), { ssr: false });
 
 interface IProductProps {
   product: TProduct;
@@ -22,9 +22,10 @@ export default function Product({
   disableAddToShoppingCart,
 }: IProductProps) {
   const router = useRouter();
+
   return (
     <section
-      role="Navigation"
+      role="Secondary navigation"
       aria-label={`Navigate to ${product?.title}`}
       onClick={() => router.push("/products/" + product?.id)}
       className={classNames(
@@ -35,7 +36,7 @@ export default function Product({
       <p className="text-ellipsis overflow-hidden">{product?.title}</p>
 
       <Image
-        className={classNames("m-auto rounded-lg w-full")}
+        className={classNames("m-auto rounded-lg w-full h-auto")}
         src={product?.images[0].url || ""}
         alt="Preview of product"
         width={200}
@@ -48,7 +49,7 @@ export default function Product({
         {product?.discountPercentage ? (
           <>
             <p className="font-bold">
-              ${Math.round(product?.price.amount * (product?.discountPercentage / 100))}
+              ${Math.round(product?.price.amount - (product?.price.amount * (product?.discountPercentage / 100)))}
             </p>
             <p className="line-through font-bold text-red-600">
               ${product?.price.amount}

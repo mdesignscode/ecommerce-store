@@ -1,7 +1,6 @@
 "use client";
 
 import SpinningLoader from "@/app/Components/SpinningLoader";
-import useUpdateUserList from "@/app/hooks/updateUserList";
 import { TProduct } from "@/components/ProductsGroup";
 import { ICheckOutProduct } from "@/models/customRequests";
 import { MinusCircleIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -25,12 +24,6 @@ export default function CheckoutProduct({
     [key: string]: ICheckOutProduct;
   };
 }) {
-  const { setShouldAddToUserList, isFetching } = useUpdateUserList({
-    queryKey: "addToShoppingCart",
-    product,
-    listType: "shoppingCart",
-  });
-
   if (!product) return <></>;
   const checkOutProduct = checkoutProducts[product.id];
 
@@ -91,7 +84,7 @@ export default function CheckoutProduct({
         </Button>
       </section>
 
-      <Button
+      {/* <Button
         isDisabled={isFetching}
         onPress={() => setShouldAddToUserList(true)}
         className={classNames(
@@ -101,7 +94,7 @@ export default function CheckoutProduct({
       >
         Remove from Cart
         {isFetching ? <SpinningLoader /> : <TrashIcon width={20} />}
-      </Button>
+      </Button> */}
     </section>
   );
 }

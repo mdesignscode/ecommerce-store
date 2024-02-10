@@ -10,7 +10,9 @@
 
 a,
 section,
-button {
+button,
+.react-aria-ListBoxItem,
+.react-aria-Input {
   @apply apply-outline-styles;
 }
 

@@ -12,8 +12,8 @@ datasource db {
 
 model Product {
   id                 String  @id
-  title              String
-  price              Price   @relation(fields: [priceId], references: [id])
+  title              String  @unique
+  price              Price   @relation(fields: [priceId], references: [id], onDelete: Cascade)
   description        String
   images             Image[]
   category           String
@@ -26,7 +26,7 @@ model Product {
 model Image {
   id        Int      @id @default(autoincrement())
   url       String
-  Product   Product? @relation(fields: [productId], references: [id])
+  Product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String?
 }
 
@@ -38,9 +38,9 @@ model Price {
 
 model User {
   id                String           @id
-  shoppingCart      ShoppingCart?    @relation(fields: [shoppingCartId], references: [id])
-  wishList          WishList?        @relation(fields: [wishListId], references: [id])
-  purchaseHistory   PurchaseHistory? @relation(fields: [purchaseHistoryId], references: [id])
+  shoppingCart      ShoppingCart?    @relation(fields: [shoppingCartId], references: [id], onDelete: Cascade)
+  wishList          WishList?        @relation(fields: [wishListId], references: [id], onDelete: Cascade)
+  purchaseHistory   PurchaseHistory? @relation(fields: [purchaseHistoryId], references: [id], onDelete: Cascade)
   name              String
   shoppingCartId    Int?
   wishListId        Int?
@@ -69,10 +69,10 @@ model PurchaseHistory {
 model ProductId {
   id                Int              @id @default(autoincrement())
   productId         String
-  ShoppingCart      ShoppingCart?    @relation(fields: [shoppingCartId], references: [id])
+  ShoppingCart      ShoppingCart?    @relation(fields: [shoppingCartId], references: [id], onDelete: Cascade)
   shoppingCartId    Int?
-  WishList          WishList?        @relation(fields: [wishListId], references: [id])
+  WishList          WishList?        @relation(fields: [wishListId], references: [id], onDelete: Cascade)
   wishListId        Int?
-  PurchaseHistory   PurchaseHistory? @relation(fields: [purchaseHistoryId], references: [id])
+  PurchaseHistory   PurchaseHistory? @relation(fields: [purchaseHistoryId], references: [id], onDelete: Cascade)
   purchaseHistoryId Int?
 }

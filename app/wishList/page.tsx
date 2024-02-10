@@ -1,12 +1,27 @@
 "use client";
 
-import UserListSkeleton from "../Components/Skeletons/UserList";
+import { useEffect, useState } from "react";
+import EmptyList from "../Components/EmpyList";
 import UserList from "../Components/UserList";
-import useGetWishList from "../hooks/getWishList";
+import { getWishList } from "../actions/getWishList";
+import { TProduct } from "../Components/ProductsGroup";
 
 export default function Page() {
-  const { data, isSuccess } = useGetWishList();
+  const [wishList, setWishList] = useState<TProduct[] | null>(null);
 
-  if (isSuccess && data) return <UserList list={data} title="Your Wish List" />;
-  else return <UserListSkeleton />;
+  useEffect(() => {
+    const setUserWishList = async () => setWishList(await getWishList());
+
+    setUserWishList();
+  }, []);
+
+  if (!wishList || !wishList.length) return <EmptyList listType="Wish List" />;
+
+  return (
+    <UserList
+      setWishList={setWishList}
+      list={wishList}
+      title="Your Wish List"
+    />
+  );
 }

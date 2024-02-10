@@ -1,7 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import classNames from "classnames";
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { Open_Sans } from "next/font/google";
 import { Suspense } from "react";
 import Footer from "./Components/Footer";
@@ -10,10 +9,7 @@ import Navbar from "./Components/Navbar";
 import "./globals.css";
 import QueryProvider from "./queryProvider";
 import NavbarSkeleton from "./Components/Skeletons/Navbar";
-
-const SetActiveUser = dynamic(() => import("./Components/SetActiveUser"), {
-  ssr: false,
-});
+import SetActiveUser from "./Components/SetActiveUser";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
 

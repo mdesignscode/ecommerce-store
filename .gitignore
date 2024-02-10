@@ -43,3 +43,5 @@ test.ts
 *.sql
 dev.db*
 prisma/dev.db
+
+public/products

@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import DiscountedProducts from "./Components/DiscountedProducts";
 import ProductsGroup from "./Components/ProductsGroup";
 import ProductsGroupSkeleton from "./Components/Skeletons/ProductsGroup";
+import { capitalizeAndReplace } from "@/utils";
 
 const FadeIn = dynamic(() => import("./Components/FadeIn"), { ssr: false });
 
@@ -33,14 +34,4 @@ export default async function Home() {
       ))}
     </main>
   );
-}
-
-function capitalizeAndReplace(str: string) {
-  // Split the string by hyphens, capitalize each word, and join them with spaces
-  const formattedString = str
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-
-  return formattedString;
 }

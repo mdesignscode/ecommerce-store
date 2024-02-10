@@ -1,6 +1,6 @@
 "use client";
 
-import useUpdateUserList from "@/hooks/updateUserList";
+import useGlobalStore from "@/lib/store";
 import "@/styles/heartbeat.css";
 import "@/styles/moveCart.css";
 import "@/styles/wobble.css";
@@ -15,7 +15,10 @@ import {
 } from "@heroicons/react/24/solid";
 import classNames from "classnames";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Button, TooltipTrigger } from "react-aria-components";
+import { updateShoppingCart } from "../actions/updateShoppingCart";
+import { updateWishList } from "../actions/updateWishList";
 import { TProduct } from "./ProductsGroup";
 import TooltipComponent from "./Tooltip";
 
@@ -23,7 +26,7 @@ export default function AddToUserList({
   product,
   disableAddToWishList,
   disableAddToShoppingCart,
-  showingProduct
+  showingProduct,
 }: {
   product: TProduct;
   disableAddToWishList?: boolean;
@@ -31,24 +34,17 @@ export default function AddToUserList({
   showingProduct?: boolean;
 }) {
   // add to wish list
-  const {
-      productInUserList: productInWishList,
-      isFetching: wishListLoading,
-      setShouldAddToUserList: setShouldAddToWishList,
-    } = useUpdateUserList({
-      product,
-      queryKey: "addToWishList",
-      listType: "wishList",
+  const { setActiveUser, setUserShoppingCart, userShoppingCart, activeUser, userWishList } =
+      useGlobalStore(),
+    // add to wish list
+    [wishListStatus, setWishListStatus] = useState({
+      loading: false,
+      hasProduct: false,
     }),
     // add to shopping cart
-    {
-      productInUserList: productInShoppingCart,
-      isFetching: cartLoading,
-      setShouldAddToUserList: setShouldAddToCart,
-    } = useUpdateUserList({
-      product,
-      queryKey: "addToShoppingCart",
-      listType: "shoppingCart",
+    [cartStatus, setCartStatus] = useState({
+      loading: false,
+      hasProduct: false,
     }),
     { user } = useUser(),
     router = useRouter(),
@@ -57,37 +53,78 @@ export default function AddToUserList({
       "w-10 md:w-[50px]": !showingProduct,
     };
 
+  useEffect(() => {
+    const setWishListHasProduct = async () => {
+      setWishListStatus((state) => ({
+        ...state,
+        hasProduct: !!userWishList?.filter((item) => item?.id === product?.id)
+          .length,
+      }));
+    };
+
+    if (activeUser) {
+      setCartStatus((state) => ({
+        ...state,
+        hasProduct: !!userShoppingCart?.filter(
+          (item) => item?.id === product?.id
+        ).length,
+      }));
+      setWishListHasProduct();
+    }
+  }, [activeUser, product?.id, userShoppingCart, userWishList]);
+
   return (
     <section className="flex justify-between">
       <TooltipTrigger>
         <Button
-          isDisabled={cartLoading || disableAddToShoppingCart}
+          isDisabled={cartStatus.loading || disableAddToShoppingCart}
           className={classNames(
             {
               "cursor-not-allowed":
-                cartLoading || disableAddToShoppingCart,
+                cartStatus.loading || disableAddToShoppingCart,
             },
             "text-primary"
           )}
-          onPress={() => {
+          onPress={async () => {
             if (!user) {
               router.push("/sign-in");
               return;
             }
-            setShouldAddToCart(true);
+            setCartStatus((state) => ({ ...state, loading: true }));
+            const updatedCart = await updateShoppingCart(product);
+
+            if (updatedCart) {
+              setCartStatus({
+                loading: false,
+                hasProduct: updatedCart.productInShoppingCart,
+              });
+              setActiveUser(updatedCart.user);
+              if (product) {
+                if (!userShoppingCart || !userShoppingCart.length)
+                  setUserShoppingCart([product]);
+                else
+                  setUserShoppingCart(
+                    !updatedCart.productInShoppingCart
+                      ? userShoppingCart.filter(
+                          (item) => item?.id !== product.id
+                        )
+                      : [...userShoppingCart, product]
+                  );
+              }
+            }
           }}
         >
-          {productInShoppingCart ? (
+          {cartStatus.hasProduct ? (
             <ShoppingCartIconSolid
               className={classNames({
-                moveCart: cartLoading,
+                moveCart: cartStatus.loading,
                 ...iconWidth,
               })}
             />
           ) : (
             <ShoppingCartIconOutline
               className={classNames({
-                moveCart: cartLoading,
+                moveCart: cartStatus.loading,
                 ...iconWidth,
               })}
             />
@@ -98,31 +135,37 @@ export default function AddToUserList({
 
       <TooltipTrigger>
         <Button
-          isDisabled={wishListLoading || disableAddToWishList}
+          isDisabled={wishListStatus.loading || disableAddToWishList}
           className={classNames({
             "cursor-not-allowed":
-              wishListLoading || disableAddToWishList,
+              wishListStatus.loading || disableAddToWishList,
           })}
-          onPress={() => {
+          onPress={async () => {
             if (!user) {
               router.push("/sign-in");
               return;
             }
-            setShouldAddToWishList(true);
+            setWishListStatus((state) => ({ ...state, loading: true }));
+            const updatedList = await updateWishList(product);
+
+            setWishListStatus({
+              loading: false,
+              hasProduct: updatedList?.productInWishList || false,
+            });
           }}
         >
-          {productInWishList ? (
+          {wishListStatus.hasProduct ? (
             <HeartIconSolid
               color="hotpink"
               className={classNames({
-                heartbeat: wishListLoading,
+                heartbeat: wishListStatus.loading,
                 ...iconWidth,
               })}
             />
           ) : (
             <HeartIconOutline
               className={classNames({
-                heartbeat: wishListLoading,
+                heartbeat: wishListStatus.loading,
                 ...iconWidth,
               })}
               color="hotpink"

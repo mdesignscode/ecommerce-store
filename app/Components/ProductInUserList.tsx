@@ -4,52 +4,55 @@ import { Transition } from "@headlessui/react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 import { Button } from "react-aria-components";
-import useUpdateUserList, {
-  TListType,
-  TQueryKey,
-} from "../hooks/updateUserList";
 import Product from "./Product";
 import { TProduct } from "./ProductsGroup";
+import { Dispatch, SetStateAction, useState } from "react";
+import { updateWishList } from "../actions/updateWishList";
 
 interface IProductInUserListProps {
   product: TProduct;
-  queryKey: TQueryKey;
-  listType: TListType;
+  setWishList: Dispatch<SetStateAction<TProduct[] | null>>;
 }
 
-export default function ProductInUserList({
+export default function ProductInWishList({
   product,
-  queryKey,
-  listType,
+  setWishList,
 }: IProductInUserListProps) {
-  const { setShouldAddToUserList, isFetching, productInUserList } = useUpdateUserList({
-    queryKey,
-    product,
-    listType,
+  const [wishListStatus, setWishListStatus] = useState({
+    loading: false,
+    hasProduct: true,
   });
 
   return (
     <Transition
-      show={productInUserList}
+      show={wishListStatus.hasProduct}
       leave="transition-all duration-1000"
       leaveFrom="opacity-100"
       leaveTo="opacity-0 scale-50"
       className={classNames("relative justify-center flex gap-4")}
     >
       <Product
-        disableAddToShoppingCart={listType === "shoppingCart"}
-        disableAddToWishList={listType === "wishList"}
+        disableAddToWishList={true}
         styles="peer w-full border-dark border-2"
         product={product}
       />
 
       <Button
-        onPress={() => {
-          setShouldAddToUserList(true);
+        onPress={async () => {
+          setWishListStatus((state) => ({ ...state, loading: true }));
+          await updateWishList(product);
+
+          setWishListStatus({
+            loading: false,
+            hasProduct: false,
+          });
+          setWishList((state) =>
+            !state ? state : state.filter((item) => item?.id !== product?.id)
+          );
         }}
         className={classNames(
           "peer-hover:translate-x-2 peer-hover:-translate-y-2 transition-all bg-light p-2 rounded-full absolute -top-2 -right-2 shadow-dark shadow-sm z-10",
-          { rotate: isFetching }
+          { rotate: wishListStatus.loading }
         )}
       >
         <TrashIcon color="red" width={40} />

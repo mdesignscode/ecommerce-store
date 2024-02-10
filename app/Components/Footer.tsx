@@ -14,7 +14,7 @@ export default function Footer() {
 
   return (
     <footer className="text-center p-4 bg-secondary-dark pb-28 md:pb-32 flex flex-col gap-4 text-white mt-auto">
-      <div className="flex gap-4 p-2 justify-center">
+      <div className="flex flex-col md:flex-row items-center gap-4 p-2 justify-center">
         {footerLinks.map((link) => (
           <Link className="hover:text-secondary hover:underline-offset-4 underline underline-offset-2 transition-all" key={link} href="#">
             {link}
