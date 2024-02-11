@@ -109,7 +109,7 @@ export default function CheckoutButton({
       className={classNames(
         { "opacity-50": BUTTON_DISABLED },
         "flex gap-2 items-center justify-center",
-        "bg-primary p-4 rounded-lg text-white self-center"
+        "bg-primary p-4 rounded-lg text-white self-center focus:outline-primary"
       )}
     >
       <p className="font-bold">{CTAContent.text}</p>

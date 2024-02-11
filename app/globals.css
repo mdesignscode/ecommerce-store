@@ -17,10 +17,6 @@ button,
   @apply apply-outline-styles;
 }
 
-.foo {
-  @apply outline-dark;
-}
-
 .cl-avatarBox {
   width: 70px;
   height: 70px;

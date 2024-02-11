@@ -5,6 +5,8 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { TProduct } from "./ProductsGroup";
+import { getDiscountPrice } from "@/utils";
+import { TagIcon } from "@heroicons/react/24/outline";
 
 const AddToUserList = dynamic(() => import("./AddToUserList"), { ssr: false });
 
@@ -35,7 +37,6 @@ export default function Product({
       )}
     >
       <p className="text-ellipsis overflow-hidden">{product?.title}</p>
-
       <Image
         className={classNames("m-auto rounded-lg w-full h-auto")}
         src={product?.images[0].url || ""}
@@ -43,6 +44,12 @@ export default function Product({
         width={200}
         height={200}
       />
+      {product?.discountPercentage && (
+        <em className="text-pink-600 flex gap-2 items-center">
+          <span>{product?.discountPercentage}%</span>
+          <TagIcon width={20} />
+        </em>
+      )}
 
       <div className="flex gap-4 text-lg">
         <p>Price:</p>
@@ -50,7 +57,11 @@ export default function Product({
         {product?.discountPercentage ? (
           <>
             <p className="font-bold">
-              ${Math.round(product?.price.amount - (product?.price.amount * (product?.discountPercentage / 100)))}
+              $
+              {getDiscountPrice(
+                product?.price.amount,
+                product?.discountPercentage
+              )}
             </p>
             <p className="line-through font-bold text-red-600">
               ${product?.price.amount}
@@ -60,7 +71,6 @@ export default function Product({
           <p className="font-bold">${product?.price.amount}</p>
         )}
       </div>
-
       <AddToUserList
         disableAddToShoppingCart={disableAddToShoppingCart}
         disableAddToWishList={disableAddToWishList}

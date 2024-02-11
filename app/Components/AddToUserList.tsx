@@ -20,7 +20,7 @@ import { Button, TooltipTrigger } from "react-aria-components";
 import { updateShoppingCart } from "../actions/updateShoppingCart";
 import { updateWishList } from "../actions/updateWishList";
 import { TProduct } from "./ProductsGroup";
-import TooltipComponent from "./Tooltip";
+import TooltipWrapper from "./TooltipWrapper";
 
 export default function AddToUserList({
   product,
@@ -34,8 +34,13 @@ export default function AddToUserList({
   showingProduct?: boolean;
 }) {
   // add to wish list
-  const { setActiveUser, setUserShoppingCart, userShoppingCart, activeUser, userWishList } =
-      useGlobalStore(),
+  const {
+      setActiveUser,
+      setUserShoppingCart,
+      userShoppingCart,
+      activeUser,
+      userWishList,
+    } = useGlobalStore(),
     // add to wish list
     [wishListStatus, setWishListStatus] = useState({
       loading: false,
@@ -130,7 +135,7 @@ export default function AddToUserList({
             />
           )}
         </Button>
-        <TooltipComponent text="Add or remove from Shopping Cart" />
+        <TooltipWrapper>Add or remove from Shopping Cart</TooltipWrapper>
       </TooltipTrigger>
 
       <TooltipTrigger>
@@ -172,7 +177,7 @@ export default function AddToUserList({
             />
           )}
         </Button>
-        <TooltipComponent text="Add or remove from Wish List" />
+        <TooltipWrapper>Add or remove from Wish List</TooltipWrapper>
       </TooltipTrigger>
     </section>
   );

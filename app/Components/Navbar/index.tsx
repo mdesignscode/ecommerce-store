@@ -5,9 +5,10 @@ import { HeartIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useState } from "react";
-import { Button } from "react-aria-components";
+import { Button, TooltipTrigger } from "react-aria-components";
 import Sidebar from "./Sidebar";
 import { Badge } from "@mui/material";
+import TooltipWrapper from "../TooltipWrapper";
 
 const UserBtn = dynamic(() => import("../UserBtn"), { ssr: false });
 
@@ -22,25 +23,28 @@ export default function Navbar() {
         id="root-navbar"
         className="flex fixed z-20 left-0 right-0 bottom-6 shadow-lg border-secondary border-2 shadow-dark text-dark bg-light justify-around items-center rounded-lg w-2/3 md:w-96 h-14 md:h-20 md:text-secondary-dark m-auto"
       >
-        <Button onPress={() => setShowSideBar(true)} className="outline-dark">
-          <Badge
-            badgeContent={userWishList?.length || 0}
-            color="primary"
-            className="flex flex-col items-center"
-          >
-            <ShoppingCartIcon className="fill-primary" width={50} />
-            <p className="hidden md:block">My Cart</p>
-          </Badge>
-        </Button>
+        <TooltipTrigger>
+          <Button onPress={() => setShowSideBar(true)} className="outline-dark">
+            <Badge
+              badgeContent={userShoppingCart?.length || 0}
+              color="primary"
+              className="flex flex-col items-center"
+            >
+              <ShoppingCartIcon className="fill-primary" width={50} />
+              <p className="hidden md:block">My Cart</p>
+            </Badge>
+          </Button>
+          <TooltipWrapper>Show Shopping Cart</TooltipWrapper>
+        </TooltipTrigger>
 
         <UserBtn isSignedIn={!!activeUser} />
 
         <Link
           href={!!activeUser ? "/wishList" : "/sign-in"}
-          className="text-center flex flex-col items-center"
+          className="text-center focus:outline-dark flex flex-col items-center"
         >
           <Badge
-            badgeContent={userShoppingCart?.length || 0}
+            badgeContent={userWishList?.length || 0}
             color="primary"
             className="flex flex-col items-center"
           >

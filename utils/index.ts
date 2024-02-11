@@ -31,3 +31,5 @@ export function isTextAttribute(attr: string): attr is TTextAttributes {
 export function isNumberAttribute(attr: string): attr is TNumberAttributes {
   return ["rating", "discountPercentage", "stock", "price"].includes(attr);
 }
+
+export const getDiscountPrice = (price: number, discountPercentage: number) => Math.round(price - (price * (discountPercentage / 100)))

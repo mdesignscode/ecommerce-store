@@ -99,7 +99,8 @@ export default function CheckoutProduct({
           }}
           className={classNames(
             "bg-red-600 text-white text-sm rounded-lg p-2 flex gap-4 justify-center items-center",
-            { "opacity-50 cursor-not-allowed": cartStatus !== "default" }
+            { "opacity-50 cursor-not-allowed": cartStatus !== "default" },
+          "focus:outline-red-600"
           )}
         >
           Remove from Cart

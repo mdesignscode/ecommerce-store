@@ -9,13 +9,17 @@ import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Button } from "react-aria-components";
+import { Button, TooltipTrigger } from "react-aria-components";
 import ShoppingCartUnavailable from "./ShoppingCartUnavailable";
+import { getDiscountPrice } from "@/utils";
+import TooltipWrapper from "../TooltipWrapper";
 
 export default function ShoppingCart() {
   const { activeUser, userShoppingCart, setUserShoppingCart } =
       useGlobalStore(),
-    [removingCartItem, setRemovingCartItem] = useState(userShoppingCart?.map(() => false) || []);
+    [removingCartItem, setRemovingCartItem] = useState(
+      userShoppingCart?.map(() => false) || []
+    );
 
   if (!activeUser) return <ShoppingCartUnavailable reason="no user" />;
 
@@ -23,7 +27,7 @@ export default function ShoppingCart() {
     return <ShoppingCartUnavailable reason="cart empty" />;
 
   return (
-    <section className="flex flex-col gap-2 p-2 h-full">
+    <section className="flex flex-col gap-2 p-2 flex-1 overflow-y-auto">
       {userShoppingCart.map((item, i) =>
         !item ? (
           <></>
@@ -41,36 +45,48 @@ export default function ShoppingCart() {
                 height={56}
               />
 
-              <strong>
-                $
-                {Math.round(
-                  item.price.amount -
-                    (item.discountPercentage
-                      ? item.price.amount * (item.discountPercentage / 100)
-                      : item.price.amount)
-                )}
+              <strong
+                className={
+                  item?.discountPercentage
+                    ? "text-pink-400"
+                    : "text-secondary-dark"
+                }
+              >
+                ${""}
+                {item?.discountPercentage
+                  ? getDiscountPrice(
+                      item?.price.amount,
+                      item?.discountPercentage
+                    )
+                  : item?.price.amount}
               </strong>
             </div>
 
             <p>{item?.title}</p>
 
-            <Button
-              isDisabled={removingCartItem[i]}
-              className={classNames("absolute -top-2 -right-2", {
-                "animate-spin": removingCartItem[i],
-              })}
-              onPress={async () => {
-                setRemovingCartItem(state => state.map((_, j) => i === j ? true : false))
-                await updateShoppingCart(item);
-                setUserShoppingCart(
-                  userShoppingCart?.filter(
-                    (product) => item?.id !== product?.id
-                  )
-                );
-              }}
-            >
-              <XCircleIcon width={30} />
-            </Button>
+            <TooltipTrigger>
+              <Button
+                isDisabled={removingCartItem[i]}
+                className={classNames("absolute -top-2 -right-2", {
+                  "animate-spin": removingCartItem[i],
+                })}
+                onPress={async () => {
+                  setRemovingCartItem((state) =>
+                    state.map((_, j) => (i === j ? true : false))
+                  );
+                  await updateShoppingCart(item);
+                  setUserShoppingCart(
+                    userShoppingCart?.filter(
+                      (product) => item?.id !== product?.id
+                    )
+                  );
+                }}
+              >
+                <XCircleIcon width={30} />
+              </Button>
+
+              <TooltipWrapper>Remove from Shopping Cart</TooltipWrapper>
+            </TooltipTrigger>
           </div>
         )
       )}
