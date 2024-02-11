@@ -25,7 +25,8 @@ export default function Product({
 
   return (
     <section
-      role="Secondary navigation"
+      tabIndex={0}
+      role="complementary"
       aria-label={`Navigate to ${product?.title}`}
       onClick={() => router.push("/products/" + product?.id)}
       className={classNames(

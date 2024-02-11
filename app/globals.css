@@ -12,8 +12,13 @@ a,
 section,
 button,
 .react-aria-ListBoxItem,
-.react-aria-Input {
+.react-aria-Input,
+.MuiPaper-root {
   @apply apply-outline-styles;
+}
+
+.foo {
+  @apply outline-dark;
 }
 
 .cl-avatarBox {
