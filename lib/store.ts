@@ -63,6 +63,8 @@ interface StoreState {
   setUserShoppingCart: (cart: TUserList) => void
   userWishList: TUserList
   setUserWishList: (wishlist: TUserList) => void
+  userPurchaseHistory: TUserList
+  setUserPurchaseHistory: (historylist: TUserList) => void
 }
 
 const useGlobalStore = create<StoreState>()(
@@ -73,6 +75,8 @@ const useGlobalStore = create<StoreState>()(
     setUserShoppingCart: (cart) => set(() => ({ userShoppingCart: cart })),
     userWishList: null,
     setUserWishList: (wishlist) => set(() => ({ userWishList: wishlist })),
+    userPurchaseHistory: null,
+    setUserPurchaseHistory: (historylist) => set(() => ({ userPurchaseHistory: historylist })),
   }),
 )
 export default useGlobalStore

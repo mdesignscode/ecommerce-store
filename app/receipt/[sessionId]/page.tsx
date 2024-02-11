@@ -1,6 +1,15 @@
 import dynamic from "next/dynamic";
+import { handleProductsPurchase } from "./Components/actions/handleProductsPurchase";
 
 const ReceiptPage = dynamic(() => import("./Components/ReceiptPage"));
+
+export interface IReceiptObject {
+  name: string;
+  total: number;
+  unitAmount: number;
+  subtotal: number;
+  quantity: number;
+}
 
 export default async function Page({
   params: { sessionId },
@@ -9,11 +18,27 @@ export default async function Page({
 }) {
   const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
+  // get checkout info
   const session = await stripe.checkout.sessions.retrieve(sessionId);
+  const lineItems = await stripe.checkout.sessions.listLineItems(sessionId);
+
+  // create receipt objects list
+  const receiptObjects: IReceiptObject[] = lineItems.data.map((item: any) => ({
+    name: item.description,
+    total: item.amount_total,
+    unitAmount: item.price.unit_amount,
+    subtotal: item.amount_subtotal,
+    quantity: item.quantity,
+  }));
+
+  await handleProductsPurchase(receiptObjects);
 
   return (
     <main className="flex flex-col py-4 items-center mb-14">
-      <ReceiptPage sessionStr={JSON.stringify(session)} />
+      <ReceiptPage
+        receiptObjects={receiptObjects}
+        sessionStr={JSON.stringify(session)}
+      />
     </main>
   );
 }

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { writeFileSync } from 'fs';
 import { createStripeObjects } from './createStripeObjects';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { getDiscountPrice } from './utils';
 
 const prisma = new PrismaClient()
 
@@ -61,18 +62,23 @@ async function getProductsFromDummyJSON() {
       );
 
       try {
-        const { stripeProduct, stripePrice } = await createStripeObjects(product, product.images.map((image: string) => image))
+        const IS_DISCOUNTED_PRODUCT = !(index % 5),
+          DISCOUNTED_PERCENTAGE = randomNumber(15, 30),
+          DISCOUNTED_VALUE = getDiscountPrice(product.price, DISCOUNTED_PERCENTAGE)
 
+        const { stripeProduct, stripePrice } = await createStripeObjects({
+          description: product.description, title: product.title, price: IS_DISCOUNTED_PRODUCT ? DISCOUNTED_VALUE : product.price
+        }, product.images.map((image: string) => image))
 
         return {
           id: stripeProduct.id,
           title: product.title,
-          price: { amount: product.price, id: stripePrice.id },
+          price: { amount: IS_DISCOUNTED_PRODUCT ? DISCOUNTED_VALUE : product.price, id: stripePrice.id },
           description: product.description,
           images,
           category: product.category,
           rating: randomNumber(3, 5),
-          discountPercentage: !(index % 5) ? randomNumber(15, 40) : null,
+          discountPercentage: IS_DISCOUNTED_PRODUCT ? DISCOUNTED_PERCENTAGE : null,
           stock: randomNumber(10, 100),
         } as IProduct;
       } catch (error: any) {
@@ -115,16 +121,19 @@ async function getProductsFromEscuelaJS() {
       );
 
       try {
-        const { stripeProduct, stripePrice } = await createStripeObjects(product, imagesList)
-
         const IS_DISCOUNTED_PRODUCT = !(index % 5),
-          DISCOUNTED_PERCENTAGE = randomNumber(15, 30)
+          DISCOUNTED_PERCENTAGE = randomNumber(15, 30),
+          DISCOUNTED_VALUE = getDiscountPrice(product.price, DISCOUNTED_PERCENTAGE)
+
+        const { stripeProduct, stripePrice } = await createStripeObjects({
+          description: product.description, title: product.title, price: IS_DISCOUNTED_PRODUCT ? DISCOUNTED_VALUE : product.price
+        }, imagesList)
 
         return {
           id: stripeProduct.id,
           title: product.title,
           price: {
-            amount: IS_DISCOUNTED_PRODUCT ? DISCOUNTED_PERCENTAGE * product.price : product.price,
+            amount: IS_DISCOUNTED_PRODUCT ? DISCOUNTED_VALUE : product.price,
             id: stripePrice.id
           },
           description: product.description,
