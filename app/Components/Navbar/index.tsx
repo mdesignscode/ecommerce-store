@@ -1,55 +1,90 @@
 "use client";
 
 import useGlobalStore from "@/lib/store";
-import { HeartIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
+import {
+  BookOpenIcon, HeartIcon,
+  ShoppingBagIcon,
+  ShoppingCartIcon
+} from "@heroicons/react/24/outline";
+import { Badge } from "@mui/material";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useState } from "react";
 import { Button, TooltipTrigger } from "react-aria-components";
-import Sidebar from "./Sidebar";
-import { Badge } from "@mui/material";
 import TooltipWrapper from "../TooltipWrapper";
+import Sidebar from "./Sidebar";
 
 const UserBtn = dynamic(() => import("../UserBtn"), { ssr: false });
 
 export default function Navbar() {
   const [showSideBar, setShowSideBar] = useState(false),
-    { activeUser, userWishList, userShoppingCart } = useGlobalStore();
+    { activeUser, userWishList, userShoppingCart, userPurchaseHistory } = useGlobalStore();
 
   return (
     <>
       <Sidebar showSideBar={showSideBar} setShowSideBar={setShowSideBar} />
       <nav
         id="root-navbar"
-        className="flex fixed z-20 left-0 right-0 bottom-6 shadow-lg border-secondary border-2 shadow-dark text-dark bg-light justify-around items-center rounded-lg w-2/3 md:w-96 h-14 md:h-20 md:text-secondary-dark m-auto"
+        className="flex fixed z-20 left-0 bottom-0 w-full bg-white items-center p-1 border-t-2 border-secondary shadow-lg shadow-dark"
       >
+        <Link
+          href={!!activeUser ? "/checkout" : "/sign-in"}
+          className="flex-1 text-center focus:outline-dark flex flex-col items-center text-xs font-semibold md:text-sm"
+        >
+          <Badge
+            badgeContent={userShoppingCart?.length || 0}
+            color="primary"
+            className="flex flex-col items-center"
+          >
+            <ShoppingBagIcon className="fill-pink-600 w-7 md:w-8" />
+            <p>Checkout</p>
+          </Badge>
+        </Link>
+
+        <Link
+          href={!!activeUser ? "/purchaseHistory" : "/sign-in"}
+          className="flex-1 text-center focus:outline-dark flex flex-col items-center text-xs font-semibold md:text-sm"
+        >
+          <Badge
+            badgeContent={userPurchaseHistory?.length || 0}
+            color="primary"
+            className="flex flex-col items-center"
+          >
+            <BookOpenIcon className="fill-primary w-7 md:w-8" />
+            <p>History</p>
+          </Badge>
+        </Link>
+
+        <UserBtn isSignedIn={!!activeUser} />
+
         <TooltipTrigger>
-          <Button onPress={() => setShowSideBar(true)} className="outline-dark">
+          <Button
+            onPress={() => setShowSideBar(true)}
+            className="outline-dark flex-1 text-xs font-semibold md:text-sm"
+          >
             <Badge
               badgeContent={userShoppingCart?.length || 0}
               color="primary"
               className="flex flex-col items-center"
             >
-              <ShoppingCartIcon className="fill-primary" width={50} />
-              <p className="hidden md:block">My Cart</p>
+              <ShoppingCartIcon className="fill-primary w-7 md:w-8" />
+              <p>My Cart</p>
             </Badge>
           </Button>
           <TooltipWrapper>Show Shopping Cart</TooltipWrapper>
         </TooltipTrigger>
 
-        <UserBtn isSignedIn={!!activeUser} />
-
         <Link
           href={!!activeUser ? "/wishList" : "/sign-in"}
-          className="text-center focus:outline-dark flex flex-col items-center"
+          className="flex-1 text-center focus:outline-dark flex flex-col items-center text-xs font-semibold md:text-sm"
         >
           <Badge
             badgeContent={userWishList?.length || 0}
             color="primary"
             className="flex flex-col items-center"
           >
-            <HeartIcon width={50} fill="hotpink" />
-            <p className="hidden md:block">My Wish List</p>
+            <HeartIcon fill="hotpink" className="w-7 md:w-8" />
+            <p>Wish List</p>
           </Badge>
         </Link>
       </nav>

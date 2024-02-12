@@ -5,6 +5,18 @@ import { currentUser } from "@clerk/nextjs";
 import { IReceiptObject } from "../../page";
 
 export async function handleProductsPurchase(purchasedItems: IReceiptObject[]): Promise<void> {
+  // there must be a user associated with request
+  const user = await currentUser()
+  if (!user) return;
+
+  const customer = await prisma.user.findUnique({
+    where: { id: user.id },
+    include: { shoppingCart: { include: { products: true } } }
+  })
+
+  // if shopping cart empty, request was made through reload
+  if (!customer || !customer.shoppingCart?.products.length) return;
+
   const productIds: { productId: string }[] = []
 
   for (const item of purchasedItems) {
@@ -25,15 +37,6 @@ export async function handleProductsPurchase(purchasedItems: IReceiptObject[]): 
 
     productIds.push({ productId: updateProduct.id })
   }
-
-  const user = await currentUser()
-  if (!user) return;
-
-  const customer = await prisma.user.findUnique({
-    where: { id: user.id }
-  })
-
-  if (!customer) return;
 
   // create new purchase history record for first time purchase
   if (!customer.purchaseHistoryId) {

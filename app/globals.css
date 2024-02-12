@@ -18,7 +18,13 @@ button,
 }
 
 .cl-avatarBox {
-  width: 70px;
-  height: 70px;
-  @apply md:h-24 md:w-24;
+  @apply w-14 h-14 md:w-16 md:h-16;
+}
+
+.cl-userButtonTrigger {
+  @apply absolute border-2 border-secondary border-solid bottom-[1px] -translate-x-1/2;
+}
+
+.cl-rootBox {
+  @apply mx-auto;
 }
