@@ -1,4 +1,5 @@
 import { TProduct } from '@/app/Components/ProductsGroup';
+import { IPurchasedItem } from '@/app/actions/getPurchaseHistory';
 import { create } from 'zustand';
 
 export type TUser =
@@ -10,12 +11,10 @@ export type TUser =
         productId: string;
         shoppingCartId: number | null;
         wishListId: number | null;
-        purchaseHistoryId: number | null;
       }[];
     } & {
       id: number;
-    })
-    | null;
+    }) | null;
 
     shoppingCart:
     | ({
@@ -24,26 +23,23 @@ export type TUser =
         productId: string;
         shoppingCartId: number | null;
         wishListId: number | null;
-        purchaseHistoryId: number | null;
       }[];
     } & {
       id: number;
-    })
-    | null;
+    }) | null;
 
     purchaseHistory:
     | ({
       products: {
         id: number;
+        createdAt: Date;
+        quantity: number;
         productId: string;
-        shoppingCartId: number | null;
-        wishListId: number | null;
         purchaseHistoryId: number | null;
       }[];
     } & {
       id: number;
-    })
-    | null;
+    }) | null;
   } & {
     id: string;
     name: string;
@@ -63,8 +59,8 @@ interface StoreState {
   setUserShoppingCart: (cart: TUserList) => void
   userWishList: TUserList
   setUserWishList: (wishlist: TUserList) => void
-  userPurchaseHistory: TUserList
-  setUserPurchaseHistory: (historylist: TUserList) => void
+  userPurchaseHistory: Record<string, IPurchasedItem[]> | null
+  setUserPurchaseHistory: (historylist: Record<string, IPurchasedItem[]> | null) => void
 }
 
 const useGlobalStore = create<StoreState>()(

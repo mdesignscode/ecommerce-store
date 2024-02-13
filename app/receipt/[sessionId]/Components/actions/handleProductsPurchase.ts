@@ -17,7 +17,7 @@ export async function handleProductsPurchase(purchasedItems: IReceiptObject[]): 
   // if shopping cart empty, request was made through reload
   if (!customer || !customer.shoppingCart?.products.length) return;
 
-  const productIds: { productId: string }[] = []
+  const productIds: { productId: string, quantity: number }[] = []
 
   for (const item of purchasedItems) {
     // get product by title
@@ -35,7 +35,7 @@ export async function handleProductsPurchase(purchasedItems: IReceiptObject[]): 
       }
     })
 
-    productIds.push({ productId: updateProduct.id })
+    productIds.push({ productId: updateProduct.id, quantity: item.quantity })
   }
 
   // create new purchase history record for first time purchase
@@ -69,7 +69,7 @@ export async function handleProductsPurchase(purchasedItems: IReceiptObject[]): 
     },
     data: {
       products: {
-        deleteMany: productIds
+        deleteMany: productIds.map(i => ({ productId: i.productId }))
       }
     }
   })

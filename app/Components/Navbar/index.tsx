@@ -20,6 +20,13 @@ export default function Navbar() {
   const [showSideBar, setShowSideBar] = useState(false),
     { activeUser, userWishList, userShoppingCart, userPurchaseHistory } = useGlobalStore();
 
+  // get objects in history
+  let historyCount = 0
+  if (userPurchaseHistory)
+    Object.keys(userPurchaseHistory).forEach(date => {
+      historyCount += userPurchaseHistory[date].length
+    })
+
   return (
     <>
       <Sidebar showSideBar={showSideBar} setShowSideBar={setShowSideBar} />
@@ -46,7 +53,7 @@ export default function Navbar() {
           className="flex-1 text-center focus:outline-dark flex flex-col items-center text-xs font-semibold md:text-sm"
         >
           <Badge
-            badgeContent={userPurchaseHistory?.length || 0}
+            badgeContent={historyCount}
             color="primary"
             className="flex flex-col items-center"
           >

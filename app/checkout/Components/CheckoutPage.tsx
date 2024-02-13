@@ -39,7 +39,7 @@ export default function CheckoutPage({ products }: { products: TProduct[] }) {
   return (
     <section className="py-4 md:flex w-full">
       <section className="flex flex-col gap-6 md:w-2/3">
-        <section className="flex overflow-x-auto gap-4 justify-center">
+        <section className="flex overflow-x-auto gap-4">
           {products?.map((product) => (
             <CheckoutProduct
               setCheckoutProducts={setCheckoutProducts}

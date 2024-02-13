@@ -61,18 +61,25 @@ model WishList {
 }
 
 model PurchaseHistory {
-  id       Int         @id @default(autoincrement())
-  products ProductId[]
+  id       Int             @id @default(autoincrement())
+  products PurchasedItem[]
   User     User[]
 }
 
-model ProductId {
+model PurchasedItem {
   id                Int              @id @default(autoincrement())
+  createdAt         DateTime         @default(now())
+  quantity          Int
   productId         String
-  ShoppingCart      ShoppingCart?    @relation(fields: [shoppingCartId], references: [id], onDelete: Cascade)
-  shoppingCartId    Int?
-  WishList          WishList?        @relation(fields: [wishListId], references: [id], onDelete: Cascade)
-  wishListId        Int?
   PurchaseHistory   PurchaseHistory? @relation(fields: [purchaseHistoryId], references: [id], onDelete: Cascade)
   purchaseHistoryId Int?
+}
+
+model ProductId {
+  id             Int           @id @default(autoincrement())
+  productId      String
+  ShoppingCart   ShoppingCart? @relation(fields: [shoppingCartId], references: [id], onDelete: Cascade)
+  shoppingCartId Int?
+  WishList       WishList?     @relation(fields: [wishListId], references: [id], onDelete: Cascade)
+  wishListId     Int?
 }
