@@ -1,12 +1,12 @@
 "use client";
 
-import WaterfallLoader from "@/components/WaterfallLoader";
+import WaterfallLoader from "@/Components/WaterfallLoader";
 import useGlobalStore from "@/lib/store";
 import { CheckIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { IReceiptObject } from "../page";
 import { useEffect } from "react";
-import { getPurchaseHistory } from "@/app/actions/getPurchaseHistory";
+import { getPurchaseHistory } from "@/actions/getPurchaseHistory";
 
 export default function ReceiptPage({
   sessionStr,
@@ -15,17 +15,17 @@ export default function ReceiptPage({
   sessionStr: string;
   receiptObjects: IReceiptObject[];
 }) {
-  const { activeUser, setUserPurchaseHistory } = useGlobalStore(),
+  const { setCurrentUser, currentUser } = useGlobalStore(),
     session = JSON.parse(sessionStr);
 
   useEffect(() => {
-    const setPurchaseHistory = async () => setUserPurchaseHistory(await getPurchaseHistory())
+    const setPurchaseHistory = async () =>
+      setCurrentUser(currentUser, {purchaseHistory: await getPurchaseHistory()});
 
-    if (activeUser)
-      setPurchaseHistory()
-  }, [activeUser, setUserPurchaseHistory])
+    if (currentUser.user) setPurchaseHistory();
+  }, [currentUser, setCurrentUser])
 
-  if (!activeUser) return <WaterfallLoader text="User" />;
+  if (!currentUser.user) return <WaterfallLoader text="User" />;
 
   if (session.payment_status === "open") {
     return (
@@ -38,7 +38,7 @@ export default function ReceiptPage({
         </div>
         <Link
           className="text-red-400 italic"
-          href={activeUser?.id ? `/checkout/${activeUser?.id}` : "/sign-in"}
+          href={currentUser.user?.id ? `/checkout/${currentUser.user?.id}` : "/sign-in"}
         >
           Try again
         </Link>

@@ -3,14 +3,14 @@
 import useGlobalStore from "@/lib/store";
 import { Disclosure, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { Fragment, useEffect, useState } from "react";
-import EmptyList from "../Components/EmpyList";
+import { Fragment } from "react";
+import EmptyList from "@/Components/EmpyList";
 import PurchasedItem from "./Components/PurchasedItem";
 
 export default function Page() {
-  const { userPurchaseHistory } = useGlobalStore();
+  const { currentUser: { purchaseHistory } } = useGlobalStore();
 
-  if (!userPurchaseHistory || !Object.keys(userPurchaseHistory).length)
+  if (!purchaseHistory || !Object.keys(purchaseHistory).length)
     return <EmptyList listType="Purchase History" />;
 
   return (
@@ -35,7 +35,7 @@ export default function Page() {
             className="stroke-gray-400"
           />
         </svg>
-        {Object.keys(userPurchaseHistory).map((date, i) => {
+        {Object.keys(purchaseHistory).map((date, i) => {
           const [_, month, day, year] = date.split(" ");
 
           return (
@@ -85,7 +85,7 @@ export default function Page() {
                         aria-label={`${date}'s items`}
                         className="flex flex-col gap-2 p-2 text-sm md:text-base text-gray-800"
                       >
-                        {userPurchaseHistory[date].map((item) => (
+                        {purchaseHistory[date].map((item) => (
                           <PurchasedItem item={item} key={item.id} />
                         ))}
                       </Disclosure.Panel>

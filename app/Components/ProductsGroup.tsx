@@ -4,29 +4,6 @@ import Link from "next/link";
 
 const Product = dynamic(() => import("./Product"));
 
-export type TProduct =
-  | ({
-      price: {
-        id: string;
-        amount: number;
-      };
-      images: {
-        id: number;
-        url: string;
-        productId: string | null;
-      }[];
-    } & {
-      id: string;
-      title: string;
-      description: string;
-      category: string;
-      rating: number;
-      discountPercentage: number | null;
-      stock: number;
-      priceId: string;
-    })
-  | null;
-
 interface IProductsGroupProps {
   products?: TProduct[];
   groupTitle: string;

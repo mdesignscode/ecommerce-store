@@ -4,7 +4,6 @@ import classNames from "classnames";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { TProduct } from "./ProductsGroup";
 import { getDiscountPrice } from "@/utils";
 import { TagIcon } from "@heroicons/react/24/outline";
 

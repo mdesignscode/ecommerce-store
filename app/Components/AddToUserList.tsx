@@ -17,10 +17,10 @@ import classNames from "classnames";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button, TooltipTrigger } from "react-aria-components";
-import { updateShoppingCart } from "../actions/updateShoppingCart";
-import { updateWishList } from "../actions/updateWishList";
-import { TProduct } from "./ProductsGroup";
+import { updateShoppingCart } from "@/actions/updateShoppingCart";
+import { updateWishList } from "@/actions/updateWishList";
 import TooltipWrapper from "./TooltipWrapper";
+import AddToUserListSkeleton from "./Skeletons/AddToUserList";
 
 export default function AddToUserList({
   product,
@@ -34,13 +34,8 @@ export default function AddToUserList({
   showingProduct?: boolean;
 }) {
   // add to wish list
-  const {
-      setActiveUser,
-      setUserShoppingCart,
-      userShoppingCart,
-      activeUser,
-      userWishList,
-    } = useGlobalStore(),
+  const { setCurrentUser, currentUser } = useGlobalStore(),
+    { wishList, user: activeUser, shoppingCart, loaded } = currentUser,
     // add to wish list
     [wishListStatus, setWishListStatus] = useState({
       loading: false,
@@ -62,7 +57,7 @@ export default function AddToUserList({
     const setWishListHasProduct = async () => {
       setWishListStatus((state) => ({
         ...state,
-        hasProduct: !!userWishList?.filter((item) => item?.id === product?.id)
+        hasProduct: !!wishList?.filter((item) => item?.id === product?.id)
           .length,
       }));
     };
@@ -70,13 +65,14 @@ export default function AddToUserList({
     if (activeUser) {
       setCartStatus((state) => ({
         ...state,
-        hasProduct: !!userShoppingCart?.filter(
-          (item) => item?.id === product?.id
-        ).length,
+        hasProduct: !!shoppingCart?.filter((item) => item?.id === product?.id)
+          .length,
       }));
       setWishListHasProduct();
     }
-  }, [activeUser, product?.id, userShoppingCart, userWishList]);
+  }, [activeUser, product?.id, shoppingCart, wishList]);
+
+  if (user && !loaded) return <AddToUserListSkeleton />
 
   return (
     <section className="flex justify-between">
@@ -103,19 +99,21 @@ export default function AddToUserList({
                 loading: false,
                 hasProduct: updatedCart.productInShoppingCart,
               });
-              setActiveUser(updatedCart.user);
+              let updatedShoppingCart: typeof shoppingCart;
+
               if (product) {
-                if (!userShoppingCart || !userShoppingCart.length)
-                  setUserShoppingCart([product]);
+                if (!shoppingCart || !shoppingCart.length)
+                  updatedShoppingCart = [product];
                 else
-                  setUserShoppingCart(
-                    !updatedCart.productInShoppingCart
-                      ? userShoppingCart.filter(
-                          (item) => item?.id !== product.id
-                        )
-                      : [...userShoppingCart, product]
-                  );
+                  updatedShoppingCart = !updatedCart.productInShoppingCart
+                    ? shoppingCart.filter((item) => item?.id !== product.id)
+                    : [...shoppingCart, product];
               }
+
+              setCurrentUser(currentUser, {
+                user: updatedCart.user,
+                shoppingCart: updatedShoppingCart,
+              });
             }
           }}
         >
@@ -153,10 +151,27 @@ export default function AddToUserList({
             setWishListStatus((state) => ({ ...state, loading: true }));
             const updatedList = await updateWishList(product);
 
-            setWishListStatus({
-              loading: false,
-              hasProduct: updatedList?.productInWishList || false,
-            });
+            if (updatedList) {
+              setWishListStatus({
+                loading: false,
+                hasProduct: updatedList.productInWishList,
+              });
+
+              let updatedWishList: typeof wishList;
+
+              if (product) {
+                if (!wishList || !wishList.length) updatedWishList = [product];
+                else
+                  updatedWishList = !updatedList.productInWishList
+                    ? wishList.filter((item) => item?.id !== product.id)
+                    : [...wishList, product];
+              }
+
+              setCurrentUser(currentUser, {
+                user: updatedList.user,
+                wishList: updatedWishList,
+              });
+            }
           }}
         >
           {wishListStatus.hasProduct ? (

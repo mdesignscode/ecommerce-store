@@ -1,7 +1,7 @@
 "use client";
 
-import { TProduct } from "@/components/ProductsGroup";
-import useCreateCheckoutSession from "@/hooks/createCheckoutSession";
+import { createCheckoutSession } from "@/actions/createCheckoutSession";
+import useGlobalStore from "@/lib/store";
 import { ICheckOutProduct } from "@/models/customRequests";
 import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import {
@@ -9,17 +9,20 @@ import {
   EmbeddedCheckoutProvider,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CheckoutButton from "./CheckoutButton";
 import CheckoutProduct from "./CheckoutProduct";
-import CheckoutPageSkeleton from "@/app/Components/Skeletons/CheckoutPage";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC || "");
 
+export interface IClientSecret {
+  status: "default" | "loading" | "success" | "error";
+  secret: string;
+  error?: string;
+}
+
 export default function CheckoutPage({ products }: { products: TProduct[] }) {
-  const [shouldCreateCheckoutSession, setShouldCreateCheckoutSession] =
-      useState(false),
-    [checkoutProducts, setCheckoutProducts] = useState<{
+  const [checkoutProducts, setCheckoutProducts] = useState<{
       [key: string]: ICheckOutProduct;
     }>(
       Object.fromEntries(
@@ -29,12 +32,48 @@ export default function CheckoutPage({ products }: { products: TProduct[] }) {
         ])
       )
     ),
-    { isSuccess, isFetching, clientSecret } = useCreateCheckoutSession({
-      shouldCreateSession: shouldCreateCheckoutSession,
-      checkOutProducts: Object.values(checkoutProducts),
-    });
+    [clientSecretStatus, setClientSecretStatus] = useState<IClientSecret>({
+      status: "default",
+      secret: "",
+    }),
+    { currentUser } = useGlobalStore(),
+    [shouldCreateCheckoutSession, setShouldCreateCheckoutSession] =
+      useState(false);
 
-  const options = { clientSecret };
+  useEffect(() => {
+    const getClientSecret = async () => {
+      setClientSecretStatus({
+        secret: "",
+        status: "loading",
+      });
+
+      const clientSecret = await createCheckoutSession({
+        checkoutProducts: Object.values(checkoutProducts),
+        userCheckoutId: currentUser.user?.checkoutId,
+      });
+
+      if (typeof clientSecret === "string") {
+        setClientSecretStatus({
+          secret: clientSecret,
+          status: "success",
+        });
+      } else {
+        setClientSecretStatus({
+          secret: "",
+          status: "error",
+          error: clientSecret.error,
+        });
+      }
+    };
+
+    if (shouldCreateCheckoutSession) getClientSecret();
+  }, [
+    checkoutProducts,
+    currentUser.user?.checkoutId,
+    shouldCreateCheckoutSession,
+  ]);
+
+  const options = { clientSecret: clientSecretStatus.secret };
 
   return (
     <section className="py-4 md:flex w-full">
@@ -51,16 +90,14 @@ export default function CheckoutPage({ products }: { products: TProduct[] }) {
         </section>
 
         <CheckoutButton
-          clientSecret={clientSecret}
-          checkoutSessionCreated={isSuccess}
+          clientSecretStatus={clientSecretStatus}
           setShouldCreateCheckoutSession={setShouldCreateCheckoutSession}
-          creatingCheckoutSession={isFetching}
         />
       </section>
 
-      {clientSecret ? (
+      {clientSecretStatus.secret ? (
         <div id="checkout" className="mx-auto">
-          {clientSecret && (
+          {clientSecretStatus.secret && (
             <EmbeddedCheckoutProvider stripe={stripePromise} options={options}>
               <EmbeddedCheckout />
             </EmbeddedCheckoutProvider>

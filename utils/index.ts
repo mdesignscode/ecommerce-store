@@ -1,6 +1,4 @@
-import { TNumberAttributes, TTextAttributes } from "@/app/admin/products/[productId]/Components/ProductPage";
 import prisma from "@/lib/prisma"
-import { TUser } from "@/lib/store";
 
 export const getUser = async (userId: string | undefined): Promise<TUser> => await prisma.user.findUnique({
   where: { id: userId }, include: {

@@ -1,9 +1,8 @@
 "use client";
 
-import ScaleOut from "@/app/Components/ScaleOut";
-import SpinningLoader from "@/app/Components/SpinningLoader";
-import { updateShoppingCart } from "@/app/actions/updateShoppingCart";
-import { TProduct } from "@/components/ProductsGroup";
+import ScaleOut from "@/Components/ScaleOut";
+import SpinningLoader from "@/Components/SpinningLoader";
+import { updateShoppingCart } from "@/actions/updateShoppingCart";
 import { ICheckOutProduct } from "@/models/customRequests";
 import {
   MinusCircleIcon,

@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import EmptyList from "../Components/EmpyList";
-import UserList from "../Components/UserList";
-import { getWishList } from "../actions/getWishList";
-import { TProduct } from "../Components/ProductsGroup";
+import EmptyList from "@/Components/EmpyList";
+import UserList from "@/Components/UserList";
+import { getWishList } from "@/actions/getWishList";
 
 export default function Page() {
   const [wishList, setWishList] = useState<TProduct[] | null>(null);

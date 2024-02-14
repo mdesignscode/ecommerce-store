@@ -1,45 +1,39 @@
 "use client";
 
-import SpinningLoader from "@/components/SpinningLoader";
-import useCreateCheckoutUser from "@/hooks/createCheckoutUser";
+import SpinningLoader from "@/Components/SpinningLoader";
+import { createCheckoutUser } from "@/actions/createCheckoutUser";
 import useGlobalStore from "@/lib/store";
-import {
-  CheckIcon, ShoppingBagIcon
-} from "@heroicons/react/24/outline";
+import { CheckIcon, ShoppingBagIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
-import {
-  Dispatch,
-  SetStateAction, useEffect,
-  useState
-} from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button } from "react-aria-components";
+import { IClientSecret } from "./CheckoutPage";
 
 interface ICheckoutButtonProps {
-  creatingCheckoutSession: boolean;
+  clientSecretStatus: IClientSecret;
   setShouldCreateCheckoutSession: Dispatch<SetStateAction<boolean>>;
-  checkoutSessionCreated: boolean;
-  clientSecret: string;
 }
 
 export default function CheckoutButton({
-  clientSecret,
-  creatingCheckoutSession,
-  checkoutSessionCreated,
+  clientSecretStatus,
   setShouldCreateCheckoutSession,
 }: ICheckoutButtonProps) {
-  const [createCheckoutUser, setCreateCheckoutUser] = useState(false),
-    { isSuccess: checkoutUserCreated, isFetching: creatingCheckoutUser } =
-      useCreateCheckoutUser(createCheckoutUser),
-    { activeUser } = useGlobalStore(),
+  const { currentUser, setCurrentUser } = useGlobalStore(),
     [CTAContent, setCTAContent] = useState({
       text: "Ready for Checkout",
       icon: <ShoppingBagIcon width={25} />,
     }),
-    BUTTON_DISABLED = CTAContent.text !== "Ready for Checkout";
+    BUTTON_DISABLED = CTAContent.text !== "Ready for Checkout",
+    [checkoutUserStatus, setCheckoutUserStatus] = useState<{
+      status: "default" | "loading" | "success";
+      error?: string;
+    }>({
+      status: "default",
+    });
 
   useEffect(() => {
     // creating checkout user
-    if (creatingCheckoutUser) {
+    if (checkoutUserStatus.status === "loading") {
       setCTAContent({
         text: "Creating Stripe User",
         icon: <SpinningLoader />,
@@ -47,17 +41,16 @@ export default function CheckoutButton({
       return;
     }
 
-    // checkout user created
-    if (checkoutUserCreated) {
+    if (checkoutUserStatus.status === "success") {
       setCTAContent({
-        text: "Stripe User Created",
+        text: "Stripe user created",
         icon: <CheckIcon width={25} />,
       });
       return;
     }
 
-    // creating checkout session
-    if (checkoutUserCreated && !clientSecret) {
+    // checkout user created
+    if (clientSecretStatus.status === "loading") {
       setCTAContent({
         text: "Creating checkout session",
         icon: <SpinningLoader />,
@@ -66,7 +59,7 @@ export default function CheckoutButton({
     }
 
     // stripe component ready
-    if (clientSecret) {
+    if (clientSecretStatus.status ===  "success") {
       setCTAContent({
         text: "Proceed with checkout",
         icon: <ShoppingBagIcon width={25} />,
@@ -74,17 +67,27 @@ export default function CheckoutButton({
       return;
     }
   }, [
-    checkoutSessionCreated,
-    checkoutUserCreated,
-    clientSecret,
-    creatingCheckoutSession,
-    creatingCheckoutUser,
+    checkoutUserStatus.status,
+    clientSecretStatus.secret,
+    clientSecretStatus.status,
   ]);
 
-  function handleCheckout() {
-    if (!activeUser?.checkoutId) {
+  useEffect(() => console.log({clientSecretStatus}), [clientSecretStatus])
+
+  async function handleCheckout() {
+    if (!currentUser?.user?.checkoutId) {
       // create stripe user first
-      setCreateCheckoutUser(true);
+      setCheckoutUserStatus({
+        status: "loading",
+      });
+
+      const updatedUser = await createCheckoutUser();
+
+      setCurrentUser(currentUser, { user: updatedUser });
+
+      setCheckoutUserStatus({
+        status: "success",
+      });
     } else {
       // else just proceed with checkout session
       setShouldCreateCheckoutSession(true);
@@ -93,21 +96,22 @@ export default function CheckoutButton({
 
   // create checkout session after creating stripe user
   useEffect(() => {
-    if (!activeUser?.checkoutId && checkoutUserCreated) {
+    if (checkoutUserStatus.status === "success") {
       setShouldCreateCheckoutSession(true);
     }
   }, [
-    activeUser?.checkoutId,
-    checkoutUserCreated,
+    checkoutUserStatus.status,
+    currentUser?.user?.checkoutId,
     setShouldCreateCheckoutSession,
   ]);
 
   return (
     <Button
+      key={clientSecretStatus.secret}
       isDisabled={BUTTON_DISABLED}
       onPress={handleCheckout}
       className={classNames(
-        { "opacity-50": BUTTON_DISABLED },
+        { "opacity-50 cursor-not-allowed": BUTTON_DISABLED },
         "flex gap-2 items-center justify-center",
         "bg-primary p-4 rounded-lg text-white self-center focus:outline-primary"
       )}

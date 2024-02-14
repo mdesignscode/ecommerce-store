@@ -6,7 +6,7 @@ export default function CheckoutPageSkeleton() {
       <Skeleton width={200} className="mx-auto" variant="text" sx={{ fontSize: "2rem" }} />
       <div className="py-4 md:flex w-full">
         <section className="flex flex-col gap-6 md:w-2/3">
-          <section className="flex overflow-x-auto gap-4 justify-center">
+          <section className="flex overflow-x-auto gap-4">
             {Array.from({ length: 2 }).map((i, j) => (
               <div
                 className="flex-none rounded-lg gap-2 w-60 flex flex-col p-4 border-2 border-dark"

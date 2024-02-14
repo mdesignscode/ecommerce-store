@@ -2,7 +2,6 @@
 
 import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs";
-import { TProduct } from "../Components/ProductsGroup";
 
 export interface IPurchasedItem {
   id: number;

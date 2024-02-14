@@ -1,6 +1,6 @@
 "use client";
 
-import { updateShoppingCart } from "@/app/actions/updateShoppingCart";
+import { updateShoppingCart } from "@/actions/updateShoppingCart";
 import useGlobalStore from "@/lib/store";
 import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import { XCircleIcon } from "@heroicons/react/24/solid";
@@ -15,20 +15,20 @@ import { getDiscountPrice } from "@/utils";
 import TooltipWrapper from "../TooltipWrapper";
 
 export default function ShoppingCart() {
-  const { activeUser, userShoppingCart, setUserShoppingCart } =
-      useGlobalStore(),
+  const { setCurrentUser, currentUser } = useGlobalStore(),
+    { user, shoppingCart } = currentUser,
     [removingCartItem, setRemovingCartItem] = useState(
-      userShoppingCart?.map(() => false) || []
+      Object.fromEntries(shoppingCart?.map(item => [item?.id || "", false]) || [])
     );
 
-  if (!activeUser) return <ShoppingCartUnavailable reason="no user" />;
+  if (!user) return <ShoppingCartUnavailable reason="no user" />;
 
-  if (!userShoppingCart || !userShoppingCart.length)
+  if (!shoppingCart || !shoppingCart.length)
     return <ShoppingCartUnavailable reason="cart empty" />;
 
   return (
     <section className="flex flex-col gap-2 p-2 flex-1 overflow-y-auto">
-      {userShoppingCart.map((item, i) =>
+      {shoppingCart.map((item, i) =>
         !item ? (
           <></>
         ) : (
@@ -66,20 +66,22 @@ export default function ShoppingCart() {
 
             <TooltipTrigger>
               <Button
-                isDisabled={removingCartItem[i]}
-                className={classNames("absolute -top-2 -right-2", {
-                  "animate-spin": removingCartItem[i],
+                isDisabled={removingCartItem[item.id]}
+                className={classNames("absolute -top-2 -right-2 rounded-full", {
+                  "animate-spin": removingCartItem[item.id],
                 })}
                 onPress={async () => {
-                  setRemovingCartItem((state) =>
-                    state.map((_, j) => (i === j ? true : false))
-                  );
+                  setRemovingCartItem((state) => ({
+                    ...state,
+                    [item.id]: true
+                  }));
                   await updateShoppingCart(item);
-                  setUserShoppingCart(
-                    userShoppingCart?.filter(
+
+                  setCurrentUser(currentUser, {
+                    shoppingCart: shoppingCart?.filter(
                       (product) => item?.id !== product?.id
-                    )
-                  );
+                    ),
+                  });
                 }}
               >
                 <XCircleIcon width={30} />

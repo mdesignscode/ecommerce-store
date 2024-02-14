@@ -1,4 +1,5 @@
 import { Skeleton } from "@mui/material";
+import AddToUserListSkeleton from "./AddToUserList";
 
 export default function ProductSkeleton({ bgColor }: { bgColor?: string }) {
   return (
@@ -19,21 +20,7 @@ export default function ProductSkeleton({ bgColor }: { bgColor?: string }) {
         <Skeleton width={60} variant="text" sx={{ fontSize: "1.25rem" }} />
       </div>
 
-      <div className="flex justify-between">
-        <Skeleton
-          width={50}
-          height={50}
-          variant="rectangular"
-          className="rounded-lg w-full"
-        />
-
-        <Skeleton
-          width={50}
-          height={50}
-          variant="rectangular"
-          className="rounded-lg w-full"
-        />
-      </div>
+      <AddToUserListSkeleton />
     </div>
   );
 }

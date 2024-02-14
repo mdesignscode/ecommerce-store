@@ -1,24 +1,9 @@
 "use client";
 
-import { TProduct } from "@/app/Components/ProductsGroup";
 import { useState } from "react";
 import "../styles/form.css";
 import EditProduct from "./EditProduct";
 import { EditProductProvider } from "./context";
-
-export type TTextAttributes = "title" | "description" | "category"
-export type TNumberAttributes = "rating" | "discountPercentage" | "stock" | "price"
-
-export type TProductEdit = {
-  title: { text: string; editing: boolean };
-  description: { text: string; editing: boolean };
-  category: { text: string; editing: boolean };
-  rating: { text: number; editing: boolean };
-  discountPercentage: { text: null; editing: boolean };
-  stock: { text: number; editing: boolean };
-  images: Record<string, { text: string; editing: boolean }>;
-  price: { text: number; editing: boolean };
-};
 
 export default function ProductPage({
   product,

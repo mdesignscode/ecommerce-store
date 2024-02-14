@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import ProductCategoriesSkeleton from "../Skeletons/ProductCategories";
+import ProductCategoriesSkeleton from "@/Skeletons/ProductCategories";
 import ProductCategories from "./ProductCategories";
 
 export default async function Header() {

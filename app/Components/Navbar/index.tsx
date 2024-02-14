@@ -18,13 +18,13 @@ const UserBtn = dynamic(() => import("../UserBtn"), { ssr: false });
 
 export default function Navbar() {
   const [showSideBar, setShowSideBar] = useState(false),
-    { activeUser, userWishList, userShoppingCart, userPurchaseHistory } = useGlobalStore();
+    { currentUser: { purchaseHistory, shoppingCart, user, wishList } } = useGlobalStore();
 
   // get objects in history
   let historyCount = 0
-  if (userPurchaseHistory)
-    Object.keys(userPurchaseHistory).forEach(date => {
-      historyCount += userPurchaseHistory[date].length
+  if (purchaseHistory)
+    Object.keys(purchaseHistory).forEach(date => {
+      historyCount += purchaseHistory[date].length
     })
 
   return (
@@ -35,11 +35,11 @@ export default function Navbar() {
         className="flex fixed z-20 left-0 bottom-0 w-full bg-white items-center p-1 border-t-2 border-secondary shadow-lg shadow-dark"
       >
         <Link
-          href={!!activeUser ? "/checkout" : "/sign-in"}
+          href="/checkout"
           className="flex-1 text-center focus:outline-dark flex flex-col items-center text-xs font-semibold md:text-sm"
         >
           <Badge
-            badgeContent={userShoppingCart?.length || 0}
+            badgeContent={shoppingCart?.length || 0}
             color="primary"
             className="flex flex-col items-center"
           >
@@ -49,7 +49,7 @@ export default function Navbar() {
         </Link>
 
         <Link
-          href={!!activeUser ? "/purchaseHistory" : "/sign-in"}
+          href="/purchaseHistory"
           className="flex-1 text-center focus:outline-dark flex flex-col items-center text-xs font-semibold md:text-sm"
         >
           <Badge
@@ -62,7 +62,7 @@ export default function Navbar() {
           </Badge>
         </Link>
 
-        <UserBtn isSignedIn={!!activeUser} />
+        <UserBtn isSignedIn={!!user} />
 
         <TooltipTrigger>
           <Button
@@ -70,7 +70,7 @@ export default function Navbar() {
             className="outline-dark flex-1 text-xs font-semibold md:text-sm"
           >
             <Badge
-              badgeContent={userShoppingCart?.length || 0}
+              badgeContent={shoppingCart?.length || 0}
               color="primary"
               className="flex flex-col items-center"
             >
@@ -82,11 +82,11 @@ export default function Navbar() {
         </TooltipTrigger>
 
         <Link
-          href={!!activeUser ? "/wishList" : "/sign-in"}
+          href="/wishList"
           className="flex-1 text-center focus:outline-dark flex flex-col items-center text-xs font-semibold md:text-sm"
         >
           <Badge
-            badgeContent={userWishList?.length || 0}
+            badgeContent={wishList?.length || 0}
             color="primary"
             className="flex flex-col items-center"
           >

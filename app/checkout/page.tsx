@@ -1,29 +1,19 @@
-"use client"
+"use client";
 
-import EmptyList from "@/components/EmpyList";
+import EmptyList from "@/Components/EmpyList";
 import CheckoutPage from "./Components/CheckoutPage";
 import useGlobalStore from "@/lib/store";
 import { useUser } from "@clerk/nextjs";
-import WaterfallLoader from "../Components/WaterfallLoader";
-import CheckoutPageSkeleton from "../Components/Skeletons/CheckoutPage";
+import CheckoutPageSkeleton from "@/Skeletons/CheckoutPage";
 import { useEffect, useState } from "react";
-import { TProduct } from "../Components/ProductsGroup";
-import { getShopingCart } from "../actions/getShoppingCart";
+import { getShopingCart } from "@/actions/getShoppingCart";
 
 export default function Page() {
-  const { activeUser } = useGlobalStore(),
-    { isSignedIn } = useUser(),
-    [shoppingCart, setShoppingCart] = useState<TProduct[] | null>(null)
+  const {
+      currentUser: { shoppingCart, user },
+    } = useGlobalStore()
 
-  useEffect(() => {
-    const setCart = async () => {
-      const cart = await getShopingCart()
-      setShoppingCart(cart)
-    }
-    setCart();
-  }, [])
-
-  if ((!shoppingCart || !shoppingCart.length) && isSignedIn && activeUser)
+  if ((!shoppingCart || !shoppingCart.length) && user)
     return <EmptyList listType="Shopping Cart" />;
 
   if (shoppingCart)

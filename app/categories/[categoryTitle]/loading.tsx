@@ -1,4 +1,4 @@
-import ProductSkeleton from "@/app/Components/Skeletons/Product";
+import ProductSkeleton from "@/Skeletons/Product";
 import { Skeleton } from "@mui/material";
 
 export default function Loading() {

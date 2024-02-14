@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client'
 import axios from 'axios';
 import { writeFileSync } from 'fs';
 import { createStripeObjects } from './createStripeObjects';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { getDiscountPrice } from './utils';
+import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -42,6 +41,8 @@ async function downloadImage(url: string, destinationPath: string) {
   }
 }
 
+const getDiscountPrice = (price: number, discountPercentage: number) => Math.round(price - (price * (discountPercentage / 100)))
+
 const randomNumber = (start: number, end: number) => Math.floor(Math.random() * (end - start + 1)) + start
 
 async function getProductsFromDummyJSON() {
@@ -67,7 +68,7 @@ async function getProductsFromDummyJSON() {
           DISCOUNTED_VALUE = getDiscountPrice(product.price, DISCOUNTED_PERCENTAGE)
 
         const { stripeProduct, stripePrice } = await createStripeObjects({
-          description: product.description, title: product.title, price: IS_DISCOUNTED_PRODUCT ? DISCOUNTED_VALUE : product.price
+          description: product.description, title: product.title, price: IS_DISCOUNTED_PRODUCT ? DISCOUNTED_VALUE * 100 : product.price * 100
         }, product.images.map((image: string) => image))
 
         return {
@@ -126,7 +127,7 @@ async function getProductsFromEscuelaJS() {
           DISCOUNTED_VALUE = getDiscountPrice(product.price, DISCOUNTED_PERCENTAGE)
 
         const { stripeProduct, stripePrice } = await createStripeObjects({
-          description: product.description, title: product.title, price: IS_DISCOUNTED_PRODUCT ? DISCOUNTED_VALUE : product.price
+          description: product.description, title: product.title, price: IS_DISCOUNTED_PRODUCT ? DISCOUNTED_VALUE * 100 : product.price * 100
         }, imagesList)
 
         return {

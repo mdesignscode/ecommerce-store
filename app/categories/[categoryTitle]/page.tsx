@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import dynamic from "next/dynamic";
 
-const Product = dynamic(() => import("@/components/Product"));
+const Product = dynamic(() => import("@/Components/Product"));
 
 export default async function Page({
   params: { categoryTitle },

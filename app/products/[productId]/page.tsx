@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import ImageThumbnails from "./Components/ImageThumbnails";
-import AddToUserList from "@/app/Components/AddToUserList";
+import AddToUserList from "@/Components/AddToUserList";
 import { getDiscountPrice } from "@/utils";
 
 export default async function Page({

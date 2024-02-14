@@ -5,9 +5,8 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Button, TooltipTrigger } from "react-aria-components";
-import { updateWishList } from "../actions/updateWishList";
+import { updateWishList } from "@/actions/updateWishList";
 import Product from "./Product";
-import { TProduct } from "./ProductsGroup";
 import TooltipWrapper from "./TooltipWrapper";
 
 interface IProductInUserListProps {
