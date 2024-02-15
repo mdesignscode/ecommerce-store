@@ -8,20 +8,21 @@ import { Button, TooltipTrigger } from "react-aria-components";
 import { updateWishList } from "@/actions/updateWishList";
 import Product from "./Product";
 import TooltipWrapper from "./TooltipWrapper";
+import useGlobalStore from "@/lib/store";
 
 interface IProductInUserListProps {
   product: TProduct;
-  setWishList: Dispatch<SetStateAction<TProduct[] | null>>;
 }
 
 export default function ProductInWishList({
   product,
-  setWishList,
 }: IProductInUserListProps) {
   const [wishListStatus, setWishListStatus] = useState({
     loading: false,
     hasProduct: true,
-  });
+  }),
+    { currentUser, setCurrentUser } = useGlobalStore(),
+    { wishList } = currentUser
 
   return (
     <Transition
@@ -47,9 +48,12 @@ export default function ProductInWishList({
               loading: false,
               hasProduct: false,
             });
-            setWishList((state) =>
-              !state ? state : state.filter((item) => item?.id !== product?.id)
-            );
+
+            setCurrentUser(currentUser, {
+              wishList: !wishList
+                ? wishList
+                : wishList.filter((item) => item?.id !== product?.id),
+            });
           }}
           className={classNames(
             "peer-hover:translate-x-2 peer-hover:-translate-y-2 transition-all bg-light p-2 rounded-full absolute -top-2 -right-2 shadow-dark shadow-sm z-10",

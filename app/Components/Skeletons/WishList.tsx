@@ -1,7 +1,7 @@
-import ProductSkeleton from "@/app/Components/Skeletons/Product";
+import ProductSkeleton from "@/Skeletons/Product";
 import { Skeleton } from "@mui/material";
 
-export default function UserListSkeleton() {
+export default function WishListSkeleton() {
   return (
     <div className="flex flex-col items-center p-4 gap-2">
       <Skeleton width={200} variant="text" sx={{ fontSize: "1.5rem" }} />

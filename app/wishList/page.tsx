@@ -1,26 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import EmptyList from "@/Components/EmpyList";
-import UserList from "@/Components/UserList";
-import { getWishList } from "@/actions/getWishList";
+import useGlobalStore from "@/lib/store";
+import ProductInWishList from "@/Components/ProductInUserList";
+import WishListSkeleton from "../Components/Skeletons/WishList";
 
 export default function Page() {
-  const [wishList, setWishList] = useState<TProduct[] | null>(null);
+  const { currentUser: { wishList, loaded } } = useGlobalStore()
 
-  useEffect(() => {
-    const setUserWishList = async () => setWishList(await getWishList());
-
-    setUserWishList();
-  }, []);
+  if (!loaded) return <WishListSkeleton />
 
   if (!wishList || !wishList.length) return <EmptyList listType="Wish List" />;
 
   return (
-    <UserList
-      setWishList={setWishList}
-      list={wishList}
-      title="Your Wish List"
-    />
+    <main className="flex flex-col py-4 items-center mb-14">
+      <h1 className="text-2l md:text-2xl font-bold">Your Wish List</h1>
+
+      <section className="w-3/5 md:items-stretch md:w-5/6 gap-4 flex flex-col md:flex-row items-center flex-wrap md:justify-center mt-4">
+        {wishList.map((item) => (
+          <ProductInWishList
+            product={item}
+            key={item?.id}
+          />
+        ))}
+      </section>
+    </main>
   );
 }

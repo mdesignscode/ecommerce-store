@@ -25,9 +25,9 @@ export default async function Page({
   // create receipt objects list
   const receiptObjects: IReceiptObject[] = lineItems.data.map((item: any) => ({
     name: item.description,
-    total: item.amount_total,
-    unitAmount: item.price.unit_amount,
-    subtotal: item.amount_subtotal,
+    total: item.amount_total / 100,
+    unitAmount: item.price.unit_amount / 100,
+    subtotal: item.amount_subtotal / 100,
     quantity: item.quantity,
   }));
 

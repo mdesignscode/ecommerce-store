@@ -1,12 +1,12 @@
 "use client";
 
-import WaterfallLoader from "@/Components/WaterfallLoader";
+import ReceiptPageSkeleton from "@/Skeletons/ReceiptPage";
+import { getPurchaseHistory } from "@/actions/getPurchaseHistory";
 import useGlobalStore from "@/lib/store";
 import { CheckIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { IReceiptObject } from "../page";
 import { useEffect } from "react";
-import { getPurchaseHistory } from "@/actions/getPurchaseHistory";
+import { IReceiptObject } from "../page";
 
 export default function ReceiptPage({
   sessionStr,
@@ -20,12 +20,14 @@ export default function ReceiptPage({
 
   useEffect(() => {
     const setPurchaseHistory = async () =>
-      setCurrentUser(currentUser, {purchaseHistory: await getPurchaseHistory()});
+      setCurrentUser(currentUser, {
+        purchaseHistory: await getPurchaseHistory(),
+      });
 
     if (currentUser.user) setPurchaseHistory();
-  }, [currentUser, setCurrentUser])
+  }, [currentUser, setCurrentUser]);
 
-  if (!currentUser.user) return <WaterfallLoader text="User" />;
+  if (!currentUser.user) return <ReceiptPageSkeleton />;
 
   if (session.payment_status === "open") {
     return (
@@ -38,7 +40,11 @@ export default function ReceiptPage({
         </div>
         <Link
           className="text-red-400 italic"
-          href={currentUser.user?.id ? `/checkout/${currentUser.user?.id}` : "/sign-in"}
+          href={
+            currentUser.user?.id
+              ? `/checkout/${currentUser.user?.id}`
+              : "/sign-in"
+          }
         >
           Try again
         </Link>
@@ -57,7 +63,6 @@ export default function ReceiptPage({
           <CheckIcon width={20} /> success
         </span>
       </div>
-
       <section
         className="bg-white border-2 border-dark p-2 md:text-lg md:min-w-80 min-w-60 flex flex-col gap-4"
         id="receipt"
@@ -94,12 +99,12 @@ export default function ReceiptPage({
         <section aria-label="Total">
           <div className="flex justify-between border-y-2 border-gray-600">
             <p>Subtotal</p>
-            <p>${session.amount_subtotal}</p>
+            <p>${session.amount_subtotal / 100}</p>
           </div>
 
           <div className="flex justify-between">
             <p>Total</p>
-            <strong>${session.amount_total}</strong>
+            <strong>${session.amount_total / 100}</strong>
           </div>
         </section>
       </section>

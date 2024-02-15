@@ -6,9 +6,14 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Fragment } from "react";
 import EmptyList from "@/Components/EmpyList";
 import PurchasedItem from "./Components/PurchasedItem";
+import PurchaseHistorySkeleton from "@/Skeletons/PurchaseHistory";
 
 export default function Page() {
-  const { currentUser: { purchaseHistory } } = useGlobalStore();
+  const {
+    currentUser: { purchaseHistory, loaded },
+  } = useGlobalStore();
+
+  if (!loaded) return <PurchaseHistorySkeleton />;
 
   if (!purchaseHistory || !Object.keys(purchaseHistory).length)
     return <EmptyList listType="Purchase History" />;

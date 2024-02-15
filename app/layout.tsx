@@ -2,14 +2,12 @@ import { ClerkProvider } from "@clerk/nextjs";
 import classNames from "classnames";
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
-import { Suspense } from "react";
 import Footer from "./Components/Footer";
 import Header from "./Components/Header";
 import Navbar from "./Components/Navbar";
+import SetActiveUser from "./Components/SetActiveUser";
 import "./globals.css";
 import QueryProvider from "./queryProvider";
-import NavbarSkeleton from "./Components/Skeletons/Navbar";
-import SetActiveUser from "./Components/SetActiveUser";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
 
@@ -36,11 +34,7 @@ export default function RootLayout({
             <SetActiveUser />
             <div className="flex flex-col h-full">
               <Header />
-              <Suspense fallback={<h1>Navbar loading...</h1>}>
-                <Suspense fallback={<NavbarSkeleton />}>
-                  <Navbar />
-                </Suspense>
-              </Suspense>
+              <Navbar />
               <div className="flex-1 overflow-y-auto flex flex-col">
                 <div className="flex-1">{children}</div>
                 <Footer />

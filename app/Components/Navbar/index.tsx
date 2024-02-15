@@ -1,16 +1,19 @@
 "use client";
 
 import useGlobalStore from "@/lib/store";
+import { useUser } from "@clerk/nextjs";
 import {
-  BookOpenIcon, HeartIcon,
+  BookOpenIcon,
+  HeartIcon,
   ShoppingBagIcon,
-  ShoppingCartIcon
+  ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
 import { Badge } from "@mui/material";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useState } from "react";
 import { Button, TooltipTrigger } from "react-aria-components";
+import NavbarSkeleton from "../Skeletons/Navbar";
 import TooltipWrapper from "../TooltipWrapper";
 import Sidebar from "./Sidebar";
 
@@ -18,14 +21,19 @@ const UserBtn = dynamic(() => import("../UserBtn"), { ssr: false });
 
 export default function Navbar() {
   const [showSideBar, setShowSideBar] = useState(false),
-    { currentUser: { purchaseHistory, shoppingCart, user, wishList } } = useGlobalStore();
+    {
+      currentUser: { purchaseHistory, shoppingCart, user, wishList, loaded },
+    } = useGlobalStore(),
+    { isSignedIn, isLoaded } = useUser();
+
+  if (isSignedIn && isLoaded && !loaded) return <NavbarSkeleton />;
 
   // get objects in history
-  let historyCount = 0
+  let historyCount = 0;
   if (purchaseHistory)
-    Object.keys(purchaseHistory).forEach(date => {
-      historyCount += purchaseHistory[date].length
-    })
+    Object.keys(purchaseHistory).forEach((date) => {
+      historyCount += purchaseHistory[date].length;
+    });
 
   return (
     <>
