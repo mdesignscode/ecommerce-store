@@ -23,7 +23,6 @@ import {
 } from "react-aria-components";
 import { useFormState } from "react-dom";
 import AddImage from "../[productId]/Components/AddImage";
-import { TNumberAttributes } from "../[productId]/Components/ProductPage";
 import { findAndCopyFile } from "../[productId]/actions/findAndCopyImage";
 import { createProduct } from "./actions/createProduct";
 import "./styles/form.css";

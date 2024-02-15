@@ -1,4 +1,8 @@
 "use client";
+import SpinningLoader from "@/app/Components/SpinningLoader";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
+import { Dispatch, SetStateAction } from "react";
 import {
   Button,
   Dialog,
@@ -8,23 +12,18 @@ import {
   OverlayArrow,
   Popover,
 } from "react-aria-components";
-import ThreeDotsIcon from "./ThreeDots";
 import "../styles/modal.css";
 import "../styles/optionsPopover.css";
-import Link from "next/link";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { TProduct } from "@/app/Components/ProductsGroup";
-import SpinningLoader from "@/app/Components/SpinningLoader";
-import { Dispatch, SetStateAction } from "react";
+import ThreeDotsIcon from "./ThreeDots";
 
 export default function OptionsPopover({
   product,
   isFetching,
-  setshouldDeleteProduct,
+  deleteProduct,
 }: {
   product: TProduct;
   isFetching: boolean;
-  setshouldDeleteProduct: Dispatch<SetStateAction<boolean>>;
+  deleteProduct: () => Promise<void>
 }) {
   return isFetching ? (
     <SpinningLoader />
@@ -66,8 +65,8 @@ export default function OptionsPopover({
                       </Heading>
 
                       <Button
-                        onPress={() => {
-                          setshouldDeleteProduct(true);
+                        onPress={async () => {
+                          await deleteProduct()
                           close();
                         }}
                         className="border-2 text-red-600 border-red-600 p-2 md;text-lg rounded-lg"

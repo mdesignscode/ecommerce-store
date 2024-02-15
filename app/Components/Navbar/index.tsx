@@ -35,6 +35,7 @@ export default function Navbar() {
         className="flex fixed z-20 left-0 bottom-0 w-full bg-white items-center p-1 border-t-2 border-secondary shadow-lg shadow-dark"
       >
         <Link
+          data-testid="checkout-link"
           href="/checkout"
           className="flex-1 text-center focus:outline-dark flex flex-col items-center text-xs font-semibold md:text-sm"
         >
@@ -49,6 +50,7 @@ export default function Navbar() {
         </Link>
 
         <Link
+          data-testid="purchaseHistory-link"
           href="/purchaseHistory"
           className="flex-1 text-center focus:outline-dark flex flex-col items-center text-xs font-semibold md:text-sm"
         >
@@ -66,6 +68,7 @@ export default function Navbar() {
 
         <TooltipTrigger>
           <Button
+            data-testid="sidebar-trigger"
             onPress={() => setShowSideBar(true)}
             className="outline-dark flex-1 text-xs font-semibold md:text-sm"
           >
@@ -82,6 +85,7 @@ export default function Navbar() {
         </TooltipTrigger>
 
         <Link
+          data-testid="wishList-link"
           href="/wishList"
           className="flex-1 text-center focus:outline-dark flex flex-col items-center text-xs font-semibold md:text-sm"
         >

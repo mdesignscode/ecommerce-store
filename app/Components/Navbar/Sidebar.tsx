@@ -1,10 +1,8 @@
 "use client";
 
-import "@/styles/sidebar.css"
-import { XMarkIcon } from "@heroicons/react/24/solid";
+import "@/styles/sidebar.css";
 import { Drawer } from "@mui/material";
 import { Dispatch, SetStateAction } from "react";
-import { Button } from "react-aria-components";
 import ShoppingCart from "./ShoppingCart";
 
 interface ISidebarProps {

@@ -8,7 +8,6 @@ import AddImage from "./AddImage";
 import ImageInput from "./ImageInput";
 import InputField from "./InputField";
 import NumberInput from "./NumberInput";
-import { TTextAttributes } from "./ProductPage";
 import { EditProductContext } from "./context";
 
 export default function EditProduct() {

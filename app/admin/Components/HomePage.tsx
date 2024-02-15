@@ -1,6 +1,5 @@
 "use client";
 
-import { TProduct } from "@/app/Components/ProductsGroup";
 import Product from "./Product";
 
 export default function HomePage({ products }: { products: TProduct[] }) {

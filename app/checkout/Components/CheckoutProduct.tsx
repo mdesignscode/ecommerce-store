@@ -3,7 +3,6 @@
 import ScaleOut from "@/Components/ScaleOut";
 import SpinningLoader from "@/Components/SpinningLoader";
 import { updateShoppingCart } from "@/actions/updateShoppingCart";
-import { ICheckOutProduct } from "@/models/customRequests";
 import {
   MinusCircleIcon,
   PlusIcon,
@@ -22,11 +21,11 @@ export default function CheckoutProduct({
   product: TProduct;
   setCheckoutProducts: Dispatch<
     SetStateAction<{
-      [key: string]: ICheckOutProduct;
+      [key: string]: TCheckoutProduct;
     }>
   >;
   checkoutProducts: {
-    [key: string]: ICheckOutProduct;
+    [key: string]: TCheckoutProduct;
   };
 }) {
   const [cartStatus, setCartStatus] = useState<

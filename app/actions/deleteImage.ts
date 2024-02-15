@@ -1,12 +1,11 @@
 import prisma from "@/lib/prisma";
-import { DeleteImage, IDeleteImage } from "@/models/customRequests";
 import { promises as fsPromises } from 'fs';
 
-export async function POST(request: DeleteImage) {
-  const body: IDeleteImage = await request.json(),
-    { imageId, imagePath } = body
-
-  const scriptPath = ".next/server/app/api/products/images/delete",
+export async function deleteImage({ imagePath, imageId }: {
+  imageId: number;
+  imagePath: string
+}) {
+  const scriptPath = ".next/server/app/app/actions",
     imageFullPath = "public" + imagePath,
     filePath = __dirname.replace(scriptPath, imageFullPath);
 

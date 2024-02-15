@@ -1,6 +1,5 @@
 "use client";
 
-import { TProduct } from "@/app/Components/ProductsGroup";
 import {
   Dispatch,
   SetStateAction,
@@ -8,7 +7,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { TProductEdit } from "./ProductPage";
 
 export interface IEditProductContext {
   setEditState: Dispatch<SetStateAction<TProductEdit>>;

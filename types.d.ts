@@ -84,3 +84,8 @@ type TUser =
     checkoutId: string | null;
   })
   | null;
+
+type TCheckoutProduct = {
+  price: string;
+  quantity: number;
+}

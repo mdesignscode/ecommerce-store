@@ -3,8 +3,6 @@
 import prisma from "@/lib/prisma";
 import { getUser } from "@/utils";
 import { currentUser } from "@clerk/nextjs";
-import { TProduct } from "../Components/ProductsGroup";
-import { TUser } from "@/lib/store";
 
 export async function updateShoppingCart(product: TProduct): Promise<{ user: TUser; productInShoppingCart: boolean } | null> {
   if (!product) return null;

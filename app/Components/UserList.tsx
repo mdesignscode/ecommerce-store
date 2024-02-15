@@ -2,7 +2,6 @@
 
 import { Dispatch, SetStateAction } from "react";
 import ProductInWishList from "./ProductInUserList";
-import { TProduct } from "./ProductsGroup";
 
 export default function UserList({
   list,

@@ -1,17 +1,17 @@
 "use client";
 
-import { TProduct } from "@/app/Components/ProductsGroup";
-import Image from "next/image";
-import OptionsPopover from "./OptionsPopover";
-import useDeleteProduct from "@/app/hooks/deleteProduct";
+import { deleteProduct } from "@/app/actions/deleteProduct";
 import { Transition } from "@headlessui/react";
+import Image from "next/image";
+import { useState } from "react";
+import OptionsPopover from "./OptionsPopover";
 
 export default function Product({ product }: { product: TProduct }) {
-  const { setshouldDeleteProduct, isFetching, isSuccess } = useDeleteProduct({ product });
+  const [deleteStatus, setDeleteStatus] = useState<"default" | "deleting" | "removed">("default");
 
   return (
     <Transition
-      show={!isSuccess}
+      show={deleteStatus !== "removed"}
       leave="transition-all duration-1000"
       leaveFrom="opacity-100"
       leaveTo="opacity-0 scale-50"
@@ -32,8 +32,12 @@ export default function Product({ product }: { product: TProduct }) {
         <p>${product?.price.amount}</p>
       </div>
       <OptionsPopover
-        isFetching={isFetching}
-        setshouldDeleteProduct={setshouldDeleteProduct}
+        isFetching={deleteStatus !== "removed"}
+        deleteProduct={async () => {
+          setDeleteStatus("deleting")
+          await deleteProduct(product);
+          setDeleteStatus("removed")
+        }}
         product={product}
       />
     </Transition>

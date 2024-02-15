@@ -2,7 +2,6 @@
 
 import { createCheckoutSession } from "@/actions/createCheckoutSession";
 import useGlobalStore from "@/lib/store";
-import { ICheckOutProduct } from "@/models/customRequests";
 import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import {
   EmbeddedCheckout,
@@ -23,12 +22,12 @@ export interface IClientSecret {
 
 export default function CheckoutPage({ products }: { products: TProduct[] }) {
   const [checkoutProducts, setCheckoutProducts] = useState<{
-      [key: string]: ICheckOutProduct;
+      [key: string]: TCheckoutProduct;
     }>(
       Object.fromEntries(
         products.map((product) => [
           product?.id,
-          { quantity: 1, price: product?.price.id } as ICheckOutProduct,
+          { quantity: 1, price: product?.price.id } as TCheckoutProduct,
         ])
       )
     ),

@@ -1,13 +1,11 @@
 "use client";
 
-import useDeleteImage from "@/app/hooks/deleteImage";
 import { Transition } from "@headlessui/react";
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { FieldError, Label, TextField } from "react-aria-components";
-import InputField from "./InputField";
-import { EditProductContext } from "./context";
 import { deleteProductImage } from "../actions/deleteProductImage";
+import InputField from "./InputField";
 
 interface IImageInputProps {
   textValue: string;

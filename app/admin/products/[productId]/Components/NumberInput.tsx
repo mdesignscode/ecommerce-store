@@ -22,7 +22,6 @@ import { EditProductContext } from "./context";
 import { Button as MUIButton } from "@mui/material";
 import classNames from "classnames";
 import { editAttribute } from "./EditAttribute.action";
-import { TNumberAttributes } from "./ProductPage";
 
 interface INumberInputProps {
   defaultValue?: number;
