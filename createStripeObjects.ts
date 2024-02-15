@@ -1,3 +1,5 @@
+require("dotenv").config()
+
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 
 async function createStripeProduct(title: string, description: string, images: (string | undefined)[]) {
@@ -12,7 +14,7 @@ async function createStripeProduct(title: string, description: string, images: (
     return product
   } catch (error: any) {
     console.log(error)
-    while (error.statusCode !== 429) {
+    if (error.statusCode === 429) {
       try {
         return new Promise(resolve => setTimeout(async () => {
           resolve(await createProduct())
@@ -37,7 +39,7 @@ async function createStripePrice(amount: number, productId: string) {
     return price
   } catch (error: any) {
     console.log(error)
-    while (error.statusCode !== 429) {
+    if (error.statusCode === 429) {
       try {
         return new Promise(resolve => setTimeout(async () => {
           resolve(await createPrice())
@@ -57,8 +59,6 @@ export async function createStripeObjects(product: {
 
   // create stripe price
   const stripePrice = await createStripePrice(product.price, stripeProduct.id)
-
-  console.log({ stripeProduct, stripePrice })
 
   return { stripeProduct, stripePrice }
 }

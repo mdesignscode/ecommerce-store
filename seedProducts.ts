@@ -52,6 +52,9 @@ async function getProductsFromDummyJSON() {
 
   const products: IProduct[] = await Promise.all(
     response.products.map(async (product: any, index: number) => {
+      if (product.price > 10000)
+        product.price = randomNumber(20, 200)
+      return
       // get product images
       const images = await Promise.all(
         product.images.map(async (url: string, index: number) => {
@@ -99,6 +102,9 @@ async function getProductsFromEscuelaJS() {
 
   const products: IProduct[] = await Promise.all(
     response.map(async (product: any, index: number) => {
+      if (product.price > 10000)
+        product.price = randomNumber(20, 200)
+      return
       // get product images
       const imagesList: string[] = []
       const images = await Promise.all(
