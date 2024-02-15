@@ -39,8 +39,3 @@ next-env.d.ts
 *.js
 test.ts
 
-# database
-*.sql
-dev.db*
-prisma/dev.db
-
