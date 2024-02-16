@@ -2,7 +2,7 @@ import axios from 'axios';
 import { writeFileSync } from 'fs';
 import { createStripeObjects } from './createStripeObjects';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from './prisma/generated/client'
 
 const prisma = new PrismaClient()
 
@@ -54,7 +54,6 @@ async function getProductsFromDummyJSON() {
     response.products.map(async (product: any, index: number) => {
       if (product.price > 10000)
         product.price = randomNumber(20, 200)
-      return
       // get product images
       const images = await Promise.all(
         product.images.map(async (url: string, index: number) => {
@@ -104,7 +103,6 @@ async function getProductsFromEscuelaJS() {
     response.map(async (product: any, index: number) => {
       if (product.price > 10000)
         product.price = randomNumber(20, 200)
-      return
       // get product images
       const imagesList: string[] = []
       const images = await Promise.all(
@@ -167,7 +165,8 @@ async function main() {
 
   allProducts.filter(Boolean).forEach(async product => {
     try {
-      console.log(await prisma.product.create({
+      console.log("Creating product")
+      const newProduct = await prisma.product.create({
         data: {
           ...product,
           images: {
@@ -177,7 +176,8 @@ async function main() {
             create: product.price
           }
         }
-      }))
+      })
+      console.log("New product: ", newProduct)
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {

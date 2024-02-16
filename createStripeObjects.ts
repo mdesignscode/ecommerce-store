@@ -13,15 +13,10 @@ async function createStripeProduct(title: string, description: string, images: (
     const product = await createProduct();
     return product
   } catch (error: any) {
-    console.log(error)
     if (error.statusCode === 429) {
-      try {
-        return new Promise(resolve => setTimeout(async () => {
-          resolve(await createProduct())
-        }, 1500))
-      } catch (error) {
-        ;
-      }
+      return new Promise(resolve => setTimeout(async () => {
+        resolve(await createProduct())
+      }, 1500))
     }
   }
 }
@@ -38,15 +33,10 @@ async function createStripePrice(amount: number, productId: string) {
     const price = await createPrice()
     return price
   } catch (error: any) {
-    console.log(error)
     if (error.statusCode === 429) {
-      try {
-        return new Promise(resolve => setTimeout(async () => {
-          resolve(await createPrice())
-        }, 1500))
-      } catch (error) {
-        ;
-      }
+      return new Promise(resolve => setTimeout(async () => {
+        resolve(await createPrice())
+      }, 1500))
     }
   }
 }
