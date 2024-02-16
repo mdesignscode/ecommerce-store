@@ -2,7 +2,6 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
-import { PurchaseHistory, ShoppingCart, WishList } from "@prisma/client";
 
 export function OPTIONS() {
   const headers = new Headers();
