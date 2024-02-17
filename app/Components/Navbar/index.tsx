@@ -76,6 +76,8 @@ export default function Navbar() {
 
         <TooltipTrigger>
           <Button
+            aria-controls="sidebar"
+            aria-label="Show shopping cart items"
             data-testid="sidebar-trigger"
             onPress={() => setShowSideBar(true)}
             className="outline-dark flex-1 text-xs font-semibold md:text-sm"
