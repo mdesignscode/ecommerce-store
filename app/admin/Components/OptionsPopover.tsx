@@ -29,7 +29,7 @@ export default function OptionsPopover({
     <SpinningLoader />
   ) : (
     <DialogTrigger>
-      <Button>
+      <Button className="hover:text-secondary-dark">
         <ThreeDotsIcon />
       </Button>
 

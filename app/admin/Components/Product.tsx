@@ -32,7 +32,7 @@ export default function Product({ product }: { product: TProduct }) {
         <p>${product?.price.amount}</p>
       </div>
       <OptionsPopover
-        isFetching={deleteStatus !== "removed"}
+        isFetching={deleteStatus !== "default"}
         deleteProduct={async () => {
           setDeleteStatus("deleting")
           await deleteProduct(product);

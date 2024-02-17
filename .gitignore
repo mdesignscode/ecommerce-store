@@ -42,3 +42,5 @@ test.ts
 # prisma client
 prisma/generated
 prisma/migrations/migration_lock.toml
+
+.vercel
