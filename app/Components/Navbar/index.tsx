@@ -46,6 +46,7 @@ export default function Navbar() {
           data-testid="checkout-link"
           href="/checkout"
           className="flex-1 text-center focus:outline-dark flex flex-col items-center text-xs font-semibold md:text-sm"
+          prefetch={!!user}
         >
           <Badge
             badgeContent={shoppingCart?.length || 0}
@@ -61,6 +62,7 @@ export default function Navbar() {
           data-testid="purchaseHistory-link"
           href="/purchaseHistory"
           className="flex-1 text-center focus:outline-dark flex flex-col items-center text-xs font-semibold md:text-sm"
+          prefetch={!!user}
         >
           <Badge
             badgeContent={historyCount}
@@ -98,6 +100,7 @@ export default function Navbar() {
           data-testid="wishList-link"
           href="/wishList"
           className="flex-1 text-center focus:outline-dark flex flex-col items-center text-xs font-semibold md:text-sm"
+          prefetch={!!user}
         >
           <Badge
             badgeContent={wishList?.length || 0}
