@@ -1,12 +1,12 @@
 "use client";
 
-import useGlobalStore from "@/lib/store";
-import { useUser } from "@clerk/nextjs";
-import { useEffect } from "react";
 import { getPurchaseHistory } from "@/actions/getPurchaseHistory";
 import { getShopingCart } from "@/actions/getShoppingCart";
 import { getUser } from "@/actions/getUser";
 import { getWishList } from "@/actions/getWishList";
+import useGlobalStore from "@/lib/store";
+import { useUser } from "@clerk/nextjs";
+import { useEffect } from "react";
 
 export default function SetActiveUser() {
   const { setCurrentUser } = useGlobalStore(),

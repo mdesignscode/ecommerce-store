@@ -9,7 +9,7 @@ import { capitalizeAndReplace } from "@/utils";
 const FadeIn = dynamic(() => import("./Components/FadeIn"), { ssr: false });
 
 export default async function Home() {
-  const groupedProducts = await prisma.product.groupBy({
+  const groupedProducts = prisma.product.groupBy({
     by: ["category"],
     orderBy: {
       category: "asc",
@@ -18,11 +18,9 @@ export default async function Home() {
 
   return (
     <main className="flex flex-col gap-4">
-      <Suspense fallback={<ProductsGroupSkeleton />}>
-        <DiscountedProducts />
-      </Suspense>
+      <DiscountedProducts />
 
-      {groupedProducts.map(({ category }) => (
+      {(await groupedProducts).map(({ category }) => (
         <FadeIn key={category}>
           <Suspense fallback={<ProductsGroupSkeleton />}>
             <ProductsGroup
