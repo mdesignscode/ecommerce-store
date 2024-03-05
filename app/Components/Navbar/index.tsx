@@ -15,9 +15,9 @@ import { useState } from "react";
 import { Button, TooltipTrigger } from "react-aria-components";
 import NavbarSkeleton from "../Skeletons/Navbar";
 import TooltipWrapper from "../TooltipWrapper";
-import Sidebar from "./Sidebar";
 
 const UserBtn = dynamic(() => import("../UserBtn"), { ssr: false });
+const Sidebar = dynamic(() => import("./Sidebar"), { ssr: false });
 
 export default function Navbar() {
   const [showSideBar, setShowSideBar] = useState(false),
@@ -54,7 +54,7 @@ export default function Navbar() {
             className="flex flex-col items-center"
           >
             <ShoppingBagIcon className="fill-pink-600 w-7 md:w-8" />
-            <p>Checkout</p>
+            Checkout
           </Badge>
         </Link>
 
@@ -70,7 +70,7 @@ export default function Navbar() {
             className="flex flex-col items-center"
           >
             <BookOpenIcon className="fill-primary w-7 md:w-8" />
-            <p>History</p>
+            History
           </Badge>
         </Link>
 
@@ -78,6 +78,8 @@ export default function Navbar() {
 
         <TooltipTrigger>
           <Button
+            id="sidebarButton"
+            aria-expanded={showSideBar}
             aria-controls="sidebar"
             aria-label="Show shopping cart items"
             data-testid="sidebar-trigger"
@@ -90,7 +92,7 @@ export default function Navbar() {
               className="flex flex-col items-center"
             >
               <ShoppingCartIcon className="fill-primary w-7 md:w-8" />
-              <p>My Cart</p>
+              My Cart
             </Badge>
           </Button>
           <TooltipWrapper>Show Shopping Cart</TooltipWrapper>
@@ -108,7 +110,7 @@ export default function Navbar() {
             className="flex flex-col items-center"
           >
             <HeartIcon fill="hotpink" className="w-7 md:w-8" />
-            <p>Wish List</p>
+            Wish List
           </Badge>
         </Link>
       </nav>

@@ -39,14 +39,15 @@ export default function Sidebar({
         show={showSideBar}
         id="sidebar"
         aria-label="Items in shopping cart"
-        aria-expanded={showSideBar}
+        aria-labelledby="sidebarButton"
+        aria-hidden={showSideBar}
         className="left-0 top-0 fixed z-50 bg-white flex flex-col h-screen w-72 md:w-96"
       >
         <div className="flex justify-between border-b-2 p-2 bg-secondary border-secondary-dark">
           <strong>Shopping Cart</strong>
 
           <Button
-            aria-controls="sidebar"
+            aria-expanded="false"
             aria-label="Hide shopping cart items"
             className="flex gap-2 items-center transition-colors text-white hover:text-secondary-dark"
             onPress={() => setShowSideBar(false)}

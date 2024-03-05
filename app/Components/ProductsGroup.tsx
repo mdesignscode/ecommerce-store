@@ -1,57 +1,38 @@
-import prisma from "@/lib/prisma";
-import dynamic from "next/dynamic";
+"use client";
+
 import Link from "next/link";
-import { Suspense } from "react";
+import Product from "./Product";
 import ProductSkeleton from "./Skeletons/Product";
 
-const Product = dynamic(() => import("./Product"));
-
 interface IProductsGroupProps {
-  products?: Promise<TProduct[]>;
+  products: TProduct[] | null;
   groupTitle: string;
   groupUrl: string;
 }
 
-export default async function ProductsGroup({
+export default function ProductsGroup({
   products,
   groupUrl,
   groupTitle,
 }: IProductsGroupProps) {
-  const productsGroup = products
-    ? products
-    : prisma.product.findMany({
-        where: {
-          category: groupUrl,
-        },
-        include: {
-          images: true,
-          price: true,
-        },
-        take: 5,
-      });
-
   return (
     <section className="w-full gap-2 flex flex-col bg-secondary p-2 items-start">
       <h2 className="font-bold md:text-xl">{groupTitle}</h2>
 
       <section className="flex overflow-x-auto w-full whitespace-nowrap snap-x">
-        <Suspense
-          fallback={
-            <section className="flex overflow-x-auto w-full whitespace-nowrap snap-x">
-              {Array.from({ length: 5 }).map((_, j) => (
-                <ProductSkeleton key={j} />
-              ))}
-            </section>
-          }
-        >
-          {(async () => (
-            <>
-              {(await productsGroup).map((product) => (
-                <Product key={product?.id} product={product} />
-              ))}
-            </>
-          ))()}
-        </Suspense>
+        {products ? (
+          <>
+            {products.map((product) => (
+              <Product key={product?.id} product={product} />
+            ))}
+          </>
+        ) : (
+          <>
+            {Array.from({ length: 5 }).map((_, j) => (
+              <ProductSkeleton key={j} />
+            ))}
+          </>
+        )}
       </section>
 
       <Link

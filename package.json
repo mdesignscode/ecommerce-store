@@ -20,6 +20,7 @@
     "@react-aria/example-theme": "^1.0.0",
     "@stripe/react-stripe-js": "^2.4.0",
     "@stripe/stripe-js": "^2.4.0",
+    "axios": "^1.6.7",
     "classnames": "^2.5.1",
     "dotenv": "^16.4.4",
     "framer-motion": "^11.0.3",

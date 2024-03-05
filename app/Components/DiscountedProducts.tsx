@@ -1,17 +1,12 @@
-import prisma from "@/lib/prisma";
+"use client";
+
 import ProductsGroup from "./ProductsGroup";
 
-export default async function DiscountedProducts() {
-  const discountedProducts = prisma.product.findMany({
-    include: { images: true, price: true },
-    where: {
-      discountPercentage: {
-        not: null,
-      },
-    },
-    take: 5
-  });
-
+export default function DiscountedProducts({
+  discountedProducts,
+}: {
+  discountedProducts: TProduct[] | null;
+}) {
   return (
     <ProductsGroup
       products={discountedProducts}

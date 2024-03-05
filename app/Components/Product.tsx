@@ -44,7 +44,7 @@ export default function Product({
         height={200}
       />
       {product?.discountPercentage && (
-        <em className="text-pink-600 flex gap-2 items-center">
+        <em className="text-pink-800 flex gap-2 items-center">
           <span>{product?.discountPercentage}%</span>
           <TagIcon width={20} />
         </em>
