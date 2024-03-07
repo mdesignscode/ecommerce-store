@@ -1,5 +1,7 @@
 "use client";
 
+import { updateShoppingCart } from "@/actions/updateShoppingCart";
+import { updateWishList } from "@/actions/updateWishList";
 import useGlobalStore from "@/lib/store";
 import "@/styles/heartbeat.css";
 import "@/styles/moveCart.css";
@@ -17,10 +19,8 @@ import classNames from "classnames";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button, TooltipTrigger } from "react-aria-components";
-import { updateShoppingCart } from "@/actions/updateShoppingCart";
-import { updateWishList } from "@/actions/updateWishList";
-import TooltipWrapper from "./TooltipWrapper";
 import AddToUserListSkeleton from "./Skeletons/AddToUserList";
+import TooltipWrapper from "./TooltipWrapper";
 
 export default function AddToUserList({
   product,
@@ -72,12 +72,13 @@ export default function AddToUserList({
     }
   }, [activeUser, product?.id, shoppingCart, wishList]);
 
-  if (user && !loaded) return <AddToUserListSkeleton />
+  if (user && !loaded) return <AddToUserListSkeleton />;
 
   return (
     <section className="flex justify-between">
       <TooltipTrigger>
         <Button
+          aria-label="Add to shopping cart"
           isDisabled={cartStatus.loading || disableAddToShoppingCart}
           className={classNames(
             {
@@ -143,6 +144,7 @@ export default function AddToUserList({
             "cursor-not-allowed":
               wishListStatus.loading || disableAddToWishList,
           })}
+          aria-label="Add to wish list"
           onPress={async () => {
             if (!user) {
               router.push("/sign-in");
