@@ -15,9 +15,8 @@ import { useState } from "react";
 import { Button, TooltipTrigger } from "react-aria-components";
 import NavbarSkeleton from "../Skeletons/Navbar";
 import TooltipWrapper from "../TooltipWrapper";
-
-const UserBtn = dynamic(() => import("../UserBtn"), { ssr: false });
-const Sidebar = dynamic(() => import("./Sidebar"), { ssr: false });
+import Sidebar from "./Sidebar";
+import UserBtn from "../UserBtn";
 
 export default function Navbar() {
   const [showSideBar, setShowSideBar] = useState(false),

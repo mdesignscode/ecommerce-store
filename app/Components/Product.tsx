@@ -36,13 +36,14 @@ export default function Product({
       )}
     >
       <p className="text-ellipsis overflow-hidden">{product?.title}</p>
-      <Image
-        className={classNames("m-auto rounded-lg w-full h-auto")}
-        src={product?.images[0].url || ""}
-        alt="Preview of product"
-        width={200}
-        height={200}
-      />
+      <div className="mb-auto relative aspect-video w-full h-auto">
+        <Image
+          className={classNames("rounded-lg")}
+          src={product?.images[0].url || ""}
+          alt="Preview of product"
+          fill
+        />
+      </div>
       {product?.discountPercentage && (
         <em className="text-pink-800 flex gap-2 items-center">
           <span>{product?.discountPercentage}%</span>

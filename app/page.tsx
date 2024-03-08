@@ -1,71 +1,33 @@
-"use client";
-
-import { capitalizeAndReplace } from "@/utils";
-import { useEffect, useState } from "react";
-import FadeIn from "./Components/FadeIn";
+import prisma from "@/lib/prisma";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+import DiscountedProducts from "./Components/DiscountedProducts";
 import ProductsGroup from "./Components/ProductsGroup";
-import { getDiscountedProductsAndCategories } from "./actions/getDiscountedProductsAndCategories";
-import { getProductsByCategories } from "./actions/getProductsByCategories";
+import ProductsGroupSkeleton from "./Components/Skeletons/ProductsGroup";
+import { capitalizeAndReplace } from "@/utils";
 
-interface IAllProducts {
-  byCategories: Record<string, TProduct[] | null>;
-  discounted: TProduct[] | null;
-}
+const FadeIn = dynamic(() => import("./Components/FadeIn"));
 
-export default function Home() {
-  const [allProducts, setAllProducts] = useState<IAllProducts>({
-    discounted: null,
-    byCategories: {},
+export default async function Home() {
+  const groupedProducts = prisma.product.groupBy({
+    by: ["category"],
+    orderBy: {
+      category: "asc",
+    },
   });
-
-  useEffect(() => {
-    const setDiscountedProductsAndCategories = async () => {
-      const { discountedProducts, groupedProducts } =
-        await getDiscountedProductsAndCategories();
-
-      setAllProducts({
-        discounted: discountedProducts,
-        byCategories: Object.fromEntries(
-          groupedProducts.map(({ category }) => [category, null])
-        ),
-      });
-
-      const productByCategories = await getProductsByCategories(
-        groupedProducts
-      );
-
-      Object.keys(productByCategories).forEach((category) => {
-        productByCategories[category].then((products) =>
-          setAllProducts((state) => ({
-            ...state,
-            byCategories: {
-              ...state.byCategories,
-              [category]: products,
-            },
-          }))
-        );
-      });
-    };
-
-    setDiscountedProductsAndCategories();
-  }, []);
 
   return (
     <main className="flex flex-col gap-4">
-      <ProductsGroup
-        products={allProducts.discounted}
-        groupTitle="Discounted Products"
-        groupUrl="discountedProducts"
-        key="discountedProducts"
-      />
+      <DiscountedProducts />
 
-      {Object.keys(allProducts.byCategories).map((category) => (
+      {(await groupedProducts).map(({ category }) => (
         <FadeIn key={category}>
-          <ProductsGroup
-            products={allProducts.byCategories[category]}
-            groupTitle={capitalizeAndReplace(category)}
-            groupUrl={category}
-          />
+          <Suspense fallback={<ProductsGroupSkeleton />}>
+            <ProductsGroup
+              groupTitle={capitalizeAndReplace(category)}
+              groupUrl={category}
+            />
+          </Suspense>
         </FadeIn>
       ))}
     </main>

@@ -11,7 +11,7 @@ export default function ProductSkeleton({ bgColor }: { bgColor?: string }) {
       <Skeleton
         variant="rectangular"
         className="rounded-lg w-full"
-        height={200}
+        height={150}
       />
 
       <div className="flex gap-4">
