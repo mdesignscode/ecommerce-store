@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# E-commerce store
 
-First, run the development server:
+A basic implementation of an e-commerce web app implementing features such as payment gateway, user authentication, add to cart and product listing.
+
+
+## Demo
+
+https://mdesigns-estore.vercel.app/
+
+
+## Dependancies
+
+[Bun](https://bun.sh/)
+
+[Clerk.js](https://clerk.com/) - Create an account and a new app
+
+[PostgreSQL](https://www.postgresql.org/)
+
+[Stripe.js](https://stripe.com/) - Create an account
+## Installation
+
+1. Clone this project:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+  git clone https://github.com/mdesignscode/ecommerce-store
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependancies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+  cd ecommerce-store
+  bun install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+3. Run the project locally
 
-## Learn More
+```bash
+  bun start
+```
+## Environment Variables
 
-To learn more about Next.js, take a look at the following resources:
+To run this project, you will need to add the following environment variables to your .env file
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`DATABASE_URL="url to connect to your databse"`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+`DIRECT_URL="url used for database migrations"`
 
-## Deploy on Vercel
+`NEXT_PUBLIC_HOST_URL="url for your site"`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="get public key from Clerk`
+`CLERK_SECRET_KEY="get secretkey from Clerk"`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+`NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in`
+`NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up`
+`NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/`
+`NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/`
+
+`WEBHOOK_SECRET="get webhook secret from Clerk"`
+
+`STRIPE_SECRET="get secret key from Stripe"`
+`NEXT_PUBLIC_STRIPE_PUBLIC="get public key from Stripe`
+
+## Dependancies
+
+[Bun](https://bun.sh/)
+
+[Clerk.js](https://clerk.com/) - Create an account and a new app
+
+[PostgreSQL](https://www.postgresql.org/)
+
+[Stripe.js](https://stripe.com/) - Create an account
+## Acknowledgements
+
+ - [Dummy JSON](https://dummyjson.com)
+ - [EscuelaJS](https://api.escuelajs.co)
+ - [Picsum Photos](https://picsum.photost)
+
