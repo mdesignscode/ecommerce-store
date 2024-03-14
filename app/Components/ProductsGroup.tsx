@@ -7,7 +7,7 @@
   const Product = dynamic(() => import("./Product"));
 
   interface IProductsGroupProps {
-    products?: Promise<TProduct[]>;
+    products?: TProduct[];
     groupTitle: string;
     groupUrl: string;
   }
