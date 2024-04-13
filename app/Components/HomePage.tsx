@@ -5,6 +5,7 @@ import { Prisma } from "@/prisma/generated/client";
 import ProductsGroup from "./ProductsGroup";
 import { ReactNode, useEffect, useState } from "react";
 import { getCategoryProducts } from "../actions/getCategoryProducts";
+import SpinningLoader from "./SpinningLoader";
 
 export default function HomePage({
   groupedProducts,
@@ -52,6 +53,11 @@ export default function HomePage({
             )
         )}
       </div>
+      {categories.length < groupedProducts.length && (
+        <div className="size-12 mx-auto my-6">
+          <SpinningLoader size="10" color="black" />
+        </div>
+      )}
     </div>
   );
 }
