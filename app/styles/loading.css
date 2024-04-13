@@ -49,6 +49,10 @@
   --primary: #eb5e28;
 }
 
+.waterfall {
+  height: 100vh;
+}
+
 .waterfall div {
   -webkit-animation: waterfall 1.5s infinite;
   animation: waterfall 1.5s infinite;

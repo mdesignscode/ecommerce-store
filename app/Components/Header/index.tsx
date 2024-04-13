@@ -1,7 +1,4 @@
 import Link from "next/link";
-import { Suspense } from "react";
-import ProductCategoriesSkeleton from "@/Skeletons/ProductCategories";
-import ProductCategories from "./ProductCategories";
 
 export default async function Header() {
   return (
@@ -11,10 +8,6 @@ export default async function Header() {
           Dev Store.
         </Link>
       </section>
-
-      <Suspense fallback={<ProductCategoriesSkeleton />}>
-        <ProductCategories />
-      </Suspense>
     </header>
   );
 }

@@ -13,10 +13,9 @@ const config: Config = {
         dark: "#252422",
         primary: "#eb5e28",
         secondary: "#ccc5b9",
-        "secondary-dark": "#403d39"
-      }
+        "secondary-dark": "#403d39",
+      },
     },
   },
-  plugins: [],
 };
 export default config;
