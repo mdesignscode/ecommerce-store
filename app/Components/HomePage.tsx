@@ -34,24 +34,26 @@ export default function HomePage({
         <SlideIn>
           <ProductsGroup
             groupTitle="Browse our discounted products"
-            groupUrl="/products/discounted"
+            groupUrl="discountedProducts"
             products={discountedProducts}
             category="discounted products"
           />
         </SlideIn>
-        {categories.map(
-          (products, i) =>
+        {categories.map((products, i) => {
+          const category = groupedProducts[i].category;
+          return (
             !!groupedProducts[i] && (
-              <SlideIn key={groupedProducts[i].category}>
+              <SlideIn key={category}>
                 <ProductsGroup
-                  groupTitle={`Browse products in ${groupedProducts[i].category}`}
-                  groupUrl="/products/discounted"
+                  groupTitle={`Browse products in ${category}`}
+                  groupUrl={`${category}`}
                   products={products}
-                  category={`products in ${groupedProducts[i].category}`}
+                  category={`products in ${category}`}
                 />
               </SlideIn>
             )
-        )}
+          );
+        })}
       </div>
       {categories.length < groupedProducts.length && (
         <div className="size-12 mx-auto my-6">
