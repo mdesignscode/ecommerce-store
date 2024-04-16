@@ -40,7 +40,7 @@ export default function HomePage({
           />
         </SlideIn>
         {categories.map((products, i) => {
-          const category = groupedProducts[i].category;
+          const category = groupedProducts[i]?.category;
           return (
             !!groupedProducts[i] && (
               <SlideIn key={category}>
