@@ -38,7 +38,7 @@ export default async function Home() {
       <div className="h-full -mt-[6%]">
         <div className="flex flex-col md:flex-row-reverse relative md:-mb-[8%]">
           <div className="grid place-content-center relative w-full aspect-square md:mx-[6%] md:flex-none md:w-[50%]">
-            <Image src="/Ecommerce web page-pana.svg" alt="" fill />
+            <Image src="/Ecommerce web page-pana.svg" alt="" fill priority />
           </div>
 
           <div className="px-[8%] md:px-[4%] md:my-auto -mt-[16%] text-sm md:text-base md:absolute md:w-[50%] left-0 top-1/2 md:-translate-y-1/2">
