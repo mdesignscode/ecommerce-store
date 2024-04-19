@@ -26,7 +26,7 @@ export default function ProductsGroup({
 }: IProductsGroupProps) {
   return (
     <section className="w-full space-y-2 p-2 md:flex justify-center gap-8 items-center">
-      <h2 className="font-bold md:text-xl md:[writing-mode:vertical-lr] rotate-180">
+      <h2 className="font-bold md:text-xl md:[writing-mode:vertical-lr] md:rotate-180">
         {groupTitle}
       </h2>
 
