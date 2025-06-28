@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "bun run ./seedProducts.ts && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate"
@@ -49,3 +49,4 @@
     "typescript": "^5"
   }
 }
+
