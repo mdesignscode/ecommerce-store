@@ -1,7 +1,7 @@
 "use server"
 
 import prisma from "@/lib/prisma";
-import { Prisma, PrismaPromise } from "@/prisma/generated/client";
+import { Prisma, PrismaPromise } from "@prisma/client";
 
 export async function getProductsByCategories(groupedProducts: (Prisma.PickEnumerable<Prisma.ProductGroupByOutputType, "category"[]> & {})[]) {
   const productsByCategories: Record<string, PrismaPromise<TProduct[]>> = {}
@@ -21,3 +21,4 @@ export async function getProductsByCategories(groupedProducts: (Prisma.PickEnume
 
   return productsByCategories
 }
+

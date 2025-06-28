@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Prisma } from "@/prisma/generated/client";
+import { Prisma } from "@prisma/client";
 import ProductsGroup from "./ProductsGroup";
 import { ReactNode, useEffect, useState } from "react";
 import { getCategoryProducts } from "../actions/getCategoryProducts";
@@ -75,3 +75,4 @@ function SlideIn({ children }: { children: ReactNode }) {
     </motion.div>
   );
 }
+
