@@ -2,7 +2,7 @@ import axios from 'axios';
 import { writeFileSync } from 'fs';
 import { createStripeObjects } from './createStripeObjects';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { PrismaClient } from './prisma/generated/client'
+import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -197,3 +197,4 @@ main()
     await prisma.$disconnect()
     process.exit(1)
   })
+
