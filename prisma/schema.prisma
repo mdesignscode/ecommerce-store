@@ -3,13 +3,12 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "./generated/client"
+  binaryTargets = ["native"]
 }
 
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
 model Product {
@@ -85,3 +84,4 @@ model ProductId {
   WishList       WishList?     @relation(fields: [wishListId], references: [id], onDelete: Cascade)
   wishListId     Int?
 }
+
