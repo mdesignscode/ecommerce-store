@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+
+    <title>Pravatar - CC0 Avatar Placeholder</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="/asset/images/favicon.ico" />
+    <meta name="generator" content="Windwalker Framework" />
+    <meta name="description" content="Generate fake avatars to fill your sample application." />
+    <meta property="og:image" content="https://i.imgur.com/6xlqP1Yg.jpg" />
+    
+    <link href="/asset/phoenix/css/bootstrap/bootstrap.min.css?d12ac40990de9b4db067b232578a3fd3" rel="stylesheet" />
+    
+    <script src="/asset/phoenix/js/jquery/jquery.min.js?d12ac40990de9b4db067b232578a3fd3"></script>
+    <script src="/asset/phoenix/js/bootstrap/bootstrap.min.js?d12ac40990de9b4db067b232578a3fd3"></script>
+        
+</head>
+<body class="package-luna view- layout-" style="padding-top: 50px">
+        <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Pravatar <small>CC0 Avatar placeholders</small></a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                                                                                  </ul>
+                <ul class="nav navbar-nav navbar-right">
+                                    </ul>
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </div>
+    
+            <div class="message-wrap">
+</div>
+    
+        <style>
+        #usage pre code {
+            font-size: 150%;
+            line-height: 175%;
+        }
+
+        .twitter-tweet-button {
+            position: relative !important;
+            top: 5px !important;
+        }
+
+        #patreon-button {
+            margin-bottom: -6px;
+        }
+    </style>
+<div class="container home-item">
+    <div id="image-banner" class="text-center" style="margin-top: 50px">
+                    <div class="img-box" style="margin-right: 15px; margin-bottom: 15px; display: inline-block;">
+                <img height="150" width="150" src="https://i.pravatar.cc/150?img=39" alt="Avatar">
+            </div>
+                    <div class="img-box" style="margin-right: 15px; margin-bottom: 15px; display: inline-block;">
+                <img height="150" width="150" src="https://i.pravatar.cc/150?img=50" alt="Avatar">
+            </div>
+                    <div class="img-box" style="margin-right: 15px; margin-bottom: 15px; display: inline-block;">
+                <img height="150" width="150" src="https://i.pravatar.cc/150?img=37" alt="Avatar">
+            </div>
+                    <div class="img-box" style="margin-right: 15px; margin-bottom: 15px; display: inline-block;">
+                <img height="150" width="150" src="https://i.pravatar.cc/150?img=61" alt="Avatar">
+            </div>
+                    <div class="img-box" style="margin-right: 15px; margin-bottom: 15px; display: inline-block;">
+                <img height="150" width="150" src="https://i.pravatar.cc/150?img=31" alt="Avatar">
+            </div>
+                    <div class="img-box" style="margin-right: 15px; margin-bottom: 15px; display: inline-block;">
+                <img height="150" width="150" src="https://i.pravatar.cc/150?img=21" alt="Avatar">
+            </div>
+                    <div class="img-box" style="margin-right: 15px; margin-bottom: 15px; display: inline-block;">
+                <img height="150" width="150" src="https://i.pravatar.cc/150?img=7" alt="Avatar">
+            </div>
+                    <div class="img-box" style="margin-right: 15px; margin-bottom: 15px; display: inline-block;">
+                <img height="150" width="150" src="https://i.pravatar.cc/150?img=51" alt="Avatar">
+            </div>
+                    <div class="img-box" style="margin-right: 15px; margin-bottom: 15px; display: inline-block;">
+                <img height="150" width="150" src="https://i.pravatar.cc/150?img=17" alt="Avatar">
+            </div>
+                    <div class="img-box" style="margin-right: 15px; margin-bottom: 15px; display: inline-block;">
+                <img height="150" width="150" src="https://i.pravatar.cc/150?img=29" alt="Avatar">
+            </div>
+                    <div class="img-box" style="margin-right: 15px; margin-bottom: 15px; display: inline-block;">
+                <img height="150" width="150" src="https://i.pravatar.cc/150?img=55" alt="Avatar">
+            </div>
+                    <div class="img-box" style="margin-right: 15px; margin-bottom: 15px; display: inline-block;">
+                <img height="150" width="150" src="https://i.pravatar.cc/150?img=63" alt="Avatar">
+            </div>
+        
+        <div style="clear: both;"></div>
+    </div>
+
+    <div id="share" class="text-center" style="margin-top: 45px">
+        <div class="fb-share-button" data-href="https://pravatar.cc" data-layout="button_count" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fpravatar.cc%2F&amp;src=sdkpreparse">Share</a></div>
+        <a href="https://twitter.com/share" class="twitter-share-button" data-size="large" data-show-count="false">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <iframe id="patreon-button" src="https://carlo.github.io/patreon-buttons/patreon-btn.html?creator=asika32764&amp;size=large"
+            allowtransparency="true"
+            frameborder="0"
+            scrolling="0"
+            width="110"
+            height="30">
+        </iframe>
+    </div>
+
+    <hr />
+
+    <section id="usage">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <h2 class="text-center">Random Avatar</h2>
+                <pre><code>https://i.pravatar.cc/<strong>{size}</strong></code></pre>
+                <h4 class="text-center">Example <a href="https://i.pravatar.cc/300" target="_blank">See</a></h4>
+                <pre><code>https://i.pravatar.cc/300</code></pre>
+                <blockquote>
+                    Max size is <code>1000</code>
+                </blockquote>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <h2 class="text-center">Direct Image ID</h2>
+                <pre><code>https://i.pravatar.cc/150<strong>?img=3</strong></code></pre>
+                <p>
+                    See all <a href="/images">Images</a>
+                </p>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <h2 class="text-center">Unique ID</h2>
+                <pre><code>https://i.pravatar.cc/150<strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a39cd69ec5c2c8c6e3d3d1c2d5c2d7c2d18dc0ccce">[email&#160;protected]</a></strong><br>https://i.pravatar.cc/150<strong>?u=a042581f4e29026704d</strong></code></pre>
+                <blockquote>
+                    Add an identify then always get same image
+                </blockquote>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <h2 class="text-center">Sponsored By</h2>
+                <div class="text-center">
+                    <a href="https://www.datavideo.com" target="_blank">
+                        <img src="https://i.imgur.com/DfezZCX.png" height="125" >
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </div>
+
+        <div id="copyright" style="margin-bottom: 10px">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <hr />
+
+                    <footer>
+                        &copy; Pravatar - made with <span class="glyphicon glyphicon-heart text-danger"></span> 
+                        by <a href="https://simular.co" target="_blank">Simular</a> 2025
+                        - Sponsored by <a href="https://datavideo.com/" target="_blank">Datavideo</a>
+                        - CDN by <a href="https://www.cloudflare.com/" target="_blank">Cloudflare</a>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="asika32764" data-description="Support me on Buy me a coffee!" data-message="" data-color="#FF813F" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v2.7&appId=124682044279485";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+</script>
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-48372917-7', 'auto');
+    ga('send', 'pageview');
+
+</script>
+</body>
+</html>
