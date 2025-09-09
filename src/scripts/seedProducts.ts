@@ -187,6 +187,13 @@ async function getProductsFromEscuelaJS(): Promise<IProduct[]> {
 }
 
 export async function seedProducts() {
+        // check if db already filled with products
+        const count = await Product.count();
+        if (count > 0) {
+                console.log('✅ Database seeded already!');
+                return;
+        }
+
         const escuelaProducts = await getProductsFromEscuelaJS();
         const dummyProducts = await getProductsFromDummyJSON();
         const allProducts = escuelaProducts.concat(dummyProducts);

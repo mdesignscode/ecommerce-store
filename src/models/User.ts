@@ -18,7 +18,8 @@ const avatar = '/images/icons8-user-64.png';
 User.init(
         {
                 id: {
-                        type: DataTypes.STRING,
+                        type: DataTypes.UUID,
+                        defaultValue: DataTypes.UUIDV4,
                         primaryKey: true,
                 },
                 name: {
