@@ -1,14 +1,24 @@
 import type { TImageAttributes, TPriceAttributes, TProductAttributes, TProductStateAttributes, TUserAttributes } from "models"
 
-type TProduct = TProductAttributes & { Images: TImageAttributes[] } & { Price: TPriceAttributes };
+export type TProductState = TProductStateAttributes
+        & {
+                Product: TProductAttributes
+                & { Images: TImageAttributes[] }
+                & { Price: TPriceAttributes }
+        };
+type TProductStateList = TProductState[];
 
 type TGlobalStore = {
-        user: TUserAttributes | null;
-        products: Record<TProductAttributes['id'], TProductStateAttributes & TProduct>;
+        user: Omit<TUserAttributes, 'password'> | null;
+        wishList: TProductStateList;
+        history: TProductStateList;
+        shoppingCart: TProductStateList;
 }
 
 export let globalStore: TGlobalStore = $state({
         user: null,
-        products: {},
+        wishList: [],
+        shoppingCart: [],
+        history: [],
 })
 

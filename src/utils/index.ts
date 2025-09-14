@@ -1,4 +1,59 @@
+import { fail, type SubmitFunction } from "@sveltejs/kit";
+import { globalStore, type TProductState } from "store";
+import type z from "zod";
+
+export const updateUserLists = (products: TProductState[]) => {
+        globalStore.history = products.filter(({ isPurchased }) => isPurchased);
+        globalStore.wishList = products.filter(({ isWishlisted }) => isWishlisted);
+        globalStore.shoppingCart = products.filter(({ isInCart }) => isInCart);
+}
+
 export const getUser = async () => { };
+
+export function customEnhanceHandler<TActionData, TSuccessBody>(
+        onSuccess: (result: TSuccessBody) => void,
+        formState: { loading: boolean; error: string }
+): SubmitFunction<
+        Extract<TActionData, { error?: undefined }>,
+        Extract<TActionData, { error: string }>
+> {
+        return () => {
+                formState.loading = true;
+
+                return async ({ result, update }) => {
+                        if (result.type === 'failure') {
+                                if (result.data?.error) {
+                                        formState.error = result.data.error;
+                                        formState.loading = false;
+                                }
+                        } else if (result.type === 'success') {
+                                if (result.data) {
+                                        update();
+                                        onSuccess(result.data as TSuccessBody);
+                                }
+                        }
+                };
+        };
+}
+
+
+export const validateFormSubmission = async (Schema: z.ZodObject, request: Request, error: string) => {
+        const form = await request.formData();
+        const data = Object.fromEntries(form.entries())
+
+        const formParseResult = Schema.safeParse(data);
+        if (!formParseResult.success) {
+                return fail(400, {
+                        error,
+                        issues: formParseResult.error.issues,
+                });
+        }
+        return formParseResult.data;
+}
+
+export type ExtractSuccess<T extends (...args: any[]) => any> =
+        Extract<Awaited<ReturnType<T>>, { message: string }>;
+
 /*export const getUser = async (userId: string | undefined): Promise<TUser> => await prisma.user.findUnique({
   where: { id: userId }, include: {
     wishList: { include: { products: true } },

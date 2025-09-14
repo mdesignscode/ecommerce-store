@@ -12,13 +12,6 @@
 
 	let showSidebar = $state({ active: false });
 
-	// get objects in history
-	let shoppingCart = $derived(
-		Object.values(globalStore.products).filter(({ isInCart }) => isInCart)
-	);
-	let history = $derived(
-		Object.values(globalStore.products).filter(({ isPurchased }) => isPurchased)
-	);
 	const navItemStyles =
 		'flex-1 text-center focus:outline-dark text-xs font-semibold md:text-sm text-dark';
 </script>
@@ -53,42 +46,43 @@
 >
 	{@render navlink({
 		to: '/checkout',
-		indicator: shoppingCart.length,
+		indicator: globalStore.shoppingCart.length,
 		label: 'Checkout',
 		Icon: ShoppingBagOutline
 	})}
 
 	{@render navlink({
 		to: '/purchaseHistory',
-		indicator: history.length,
+		indicator: globalStore.history.length,
 		label: 'History',
 		Icon: BookOpenOutline,
 		fill: 'primary'
 	})}
 
 	<!-- <UserBtn isSignedIn={!!user} /> -->
-	Foo
+        <a href="/foo">Foo</a>
 
 	<Badge
+                tooltipLabel="Show Shopping Cart"
 		class={['text-dark w-full', navItemStyles]}
 		onclick={() => (showSidebar.active = true)}
 		id="sidebarButton"
 		aria-expanded={showSidebar.active}
 		aria-controls="sidebar"
 		aria-label="Show shopping cart items"
-		indicator={shoppingCart.length}
+		indicator={globalStore.shoppingCart.length}
 	>
 		<span class="flex flex-col items-center">
 			<CartOutline class="fill-primary w-7 md:w-8" />
 			My Cart
 		</span>
 	</Badge>
-	<Tooltip>Show Shopping Cart</Tooltip>
 
 	{@render navlink({
 		to: '/wishList',
-		indicator: history.length,
+		indicator: globalStore.wishList.length,
 		label: 'Wish List',
 		Icon: HeartOutline
 	})}
 </nav>
+

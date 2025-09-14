@@ -1,13 +1,14 @@
 <script lang="ts">
-	import { Button, type ButtonProps } from 'flowbite-svelte';
+	import { Button, Tooltip, type ButtonProps } from 'flowbite-svelte';
 	import { globalStore } from 'store';
 	import type { Snippet } from 'svelte';
 
 	type Props = {
 		indicator: string | number;
 		children: Snippet<[]> | undefined;
+		tooltipLabel?: string;
 	} & ButtonProps;
-	let { children, indicator, ...rest }: Props = $props();
+	let { children, indicator, tooltipLabel, ...rest }: Props = $props();
 </script>
 
 <Button {...rest} class={['relative', rest.class]}>
@@ -20,3 +21,6 @@
 	{/if}
 	{@render children?.()}
 </Button>
+{#if tooltipLabel}
+	<Tooltip>{tooltipLabel}</Tooltip>
+{/if}

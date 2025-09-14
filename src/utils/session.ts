@@ -5,7 +5,7 @@ import { Session, User } from 'models';
 export function generateSessionToken(): string {
         const bytes = new Uint8Array(20);
         crypto.getRandomValues(bytes);
-        const token =  encodeBase32LowerCaseNoPadding(bytes);
+        const token = encodeBase32LowerCaseNoPadding(bytes);
         return token;
 }
 
@@ -13,7 +13,7 @@ export async function createSession(token: string, userId: string) {
         const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
         const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30); // 30 days
 
-        await Session.create({ id: sessionId, UserId: userId, expiresAt: Math.floor(expiresAt.getTime() / 1000) });
+        await Session.create({ id: sessionId, userId: userId, expiresAt: Math.floor(expiresAt.getTime() / 1000) });
 }
 
 export async function validateSessionToken(token: string | undefined) {
@@ -27,7 +27,7 @@ export async function validateSessionToken(token: string | undefined) {
 
         if (!row) return;
 
-        const userId = row.get('UserId');
+        const userId = row.get('userId');
 
         const session = {
                 id: sessionId,
@@ -36,7 +36,7 @@ export async function validateSessionToken(token: string | undefined) {
         };
         const user = await User.findOne({
                 where: {
-                        id: userId
+                        id: userId,
                 },
                 attributes: {
                         exclude: ['password'],

@@ -1,7 +1,7 @@
 import sequelize from './sequelize';
 
 import User from './User';
-import type { TUserAttributes } from './User';
+import type { TUserAttributes, TUser } from './User';
 
 import Product from './Product';
 import type { TProductAttributes } from './Product';
@@ -14,6 +14,9 @@ import type { TPriceAttributes } from './Price';
 
 import ProductState from './ProductState';
 import type { TProductStateAttributes } from './ProductState';
+
+import Session from './Session';
+import EmailVerification from './EmailVerification';
 
 // Associations
 User.hasMany(ProductState, { foreignKey: 'userId' });
@@ -28,6 +31,9 @@ Price.hasMany(Product, { foreignKey: 'priceId' });
 Product.hasMany(ProductState, { foreignKey: 'productId' });
 ProductState.belongsTo(Product, { foreignKey: 'productId' });
 
+Session.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(Session, { foreignKey: 'userId' });
+
 export {
         sequelize,
         User,
@@ -35,6 +41,8 @@ export {
         Image,
         Price,
         ProductState,
+        Session,
+        EmailVerification,
 };
 
 export type {
@@ -43,5 +51,6 @@ export type {
         TImageAttributes,
         TPriceAttributes,
         TProductStateAttributes,
+        TUser,
 };
 

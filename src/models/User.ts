@@ -3,7 +3,7 @@ import sequelize from './sequelize';
 
 export default class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
         declare id: CreationOptional<string>;
-        declare name: string;
+        declare username: string;
         declare checkoutId: CreationOptional<string | null>;
         declare isVerified: CreationOptional<boolean>;
         declare avatar: CreationOptional<string>;
@@ -12,6 +12,7 @@ export default class User extends Model<InferAttributes<User>, InferCreationAttr
 }
 
 export type TUserAttributes = InferAttributes<User>;
+export type TUser = User;
 
 const avatar = '/images/icons8-user-64.png';
 
@@ -22,7 +23,7 @@ User.init(
                         defaultValue: DataTypes.UUIDV4,
                         primaryKey: true,
                 },
-                name: {
+                username: {
                         type: DataTypes.STRING,
                         allowNull: false,
                         unique: true,

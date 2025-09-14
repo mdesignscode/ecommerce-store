@@ -1,5 +1,5 @@
 import { DataTypes, Model, type CreationOptional, type InferAttributes, type InferCreationAttributes } from 'sequelize';
-import sequelize from 'utils/sequelize';
+import sequelize from './sequelize';
 
 export default class EmailVerification extends Model<InferAttributes<EmailVerification>, InferCreationAttributes<EmailVerification>> {
         declare id: CreationOptional<string>;

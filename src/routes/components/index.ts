@@ -1,3 +1,4 @@
+import UserButton from './UserButton.svelte';
 import Badge from './Badge.svelte';
 import Navbar from './navbar/index.svelte';
 import AddToUserListSkeleton from "./skeletons/AddToUserList.svelte";
@@ -9,6 +10,10 @@ import PurchaseHistorySkeleton from "./skeletons/PurchaseHistory.svelte";
 import ReceiptItemSkeleton from "./skeletons/ReceiptItem.svelte";
 import ReceiptPageSkeleton from "./skeletons/ReceiptPage.svelte";
 import WishListSkeleton from "./skeletons/WishList.svelte";
+import SpinningLoader from './spinningLoader.svelte';
+import PasswordInput from './passwordInput.svelte';
+import AuthForm from './authForm.svelte';
+import VerificationCodeInput from './verificationCodeInput.svelte';
 
 export {
         AddToUserListSkeleton,
@@ -22,5 +27,10 @@ export {
         WishListSkeleton,
         Badge,
         Navbar,
+        SpinningLoader,
+        PasswordInput,
+        AuthForm,
+        VerificationCodeInput,
+        UserButton,
 };
 

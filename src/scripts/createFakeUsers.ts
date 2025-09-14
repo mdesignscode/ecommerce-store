@@ -3,19 +3,19 @@ import { User } from "models";
 
 const avatar = '/images/icons8-user-64.png';
 
-const createFakeUser = async (name: string) => {
+const createFakeUser = async (username: string) => {
         // generate password
         const saltRounds = 10;
         const salt = bcrypt.genSaltSync(saltRounds);
-        const hash = bcrypt.hashSync(name, salt);
+        const hash = bcrypt.hashSync(username, salt);
         // generate email
-        const joinedUsername = name.split(' ').join('')
+        const joinedUsername = username.split(' ').join('')
         const email = `${joinedUsername}@seed.email`;
 
         await User.create({
                 password: hash,
                 avatar,
-                name,
+                username,
                 email,
                 isVerified: true,
         });

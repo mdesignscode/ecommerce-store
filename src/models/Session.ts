@@ -1,9 +1,11 @@
-import { DataTypes, Model, type CreationOptional, type InferAttributes, type InferCreationAttributes } from 'sequelize';
-import sequelize from 'utils/sequelize';
+import { DataTypes, Model, type CreationOptional, type ForeignKey, type InferAttributes, type InferCreationAttributes } from 'sequelize';
+import sequelize from './sequelize';
+import type User from './User';
 
 export default class Session extends Model<InferAttributes<Session>, InferCreationAttributes<Session>> {
         declare id: CreationOptional<string>;
-        declare expiresAt: Date;
+        declare expiresAt: number;
+        declare userId: ForeignKey<User['id']>;
 };
 
 Session.init(
