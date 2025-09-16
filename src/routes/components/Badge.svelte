@@ -15,7 +15,7 @@
 	{#if globalStore.user}
 		<span
 			role="presentation"
-			class="absolute -top-2 right-0 bg-blue-400 text-light rounded-full px-2 py-1 text-sm"
+			class="absolute -top-4 right-0 bg-blue-400 text-light rounded-full px-2 py-1 text-xs"
 			>{indicator}</span
 		>
 	{/if}
@@ -24,3 +24,4 @@
 {#if tooltipLabel}
 	<Tooltip>{tooltipLabel}</Tooltip>
 {/if}
+

@@ -36,7 +36,7 @@
 
 	const handleUserAction = <K extends keyof RequestSuccessMap>(
 		type: K,
-		requestState: typeof updatingEmail
+		requestState: TRequestState,
 	) =>
 		customEnhanceHandler<ActionData, RequestSuccessMap[K]>((data) => {
 			globalStore.user = data.user;

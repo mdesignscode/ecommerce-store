@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ShoppingBagOutline, XSolid } from 'flowbite-svelte-icons';
+	import { ShoppingBagOutline, CloseCircleSolid } from 'flowbite-svelte-icons';
 	import { Button, Tooltip } from 'flowbite-svelte';
 	import ShoppingCartUnavailable from './ShoppingCartUnavailable.svelte';
 	import { globalStore } from 'store';
@@ -59,7 +59,7 @@
 					]}
 					onclick={handleRemoveCartItem}
 				>
-					<XSolid width={30} />
+					<CloseCircleSolid width={30} />
 				</Button>
 
 				<Tooltip>Remove from Shopping Cart</Tooltip>

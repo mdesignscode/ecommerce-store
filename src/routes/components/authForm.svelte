@@ -1,12 +1,12 @@
-<script lang="ts" generics="TSuccess extends any, TFailure extends any">
+<script lang="ts">
 	import { SpinningLoader } from 'components';
 	import { enhance } from '$app/forms';
 	import type { Snippet } from 'svelte';
-	import type { SubmitFunction } from '@sveltejs/kit';
+	import type { customEnhanceHandler } from 'utils';
 
 	interface Props {
 		formState: { error: string; loading: boolean };
-		handler: SubmitFunction<TSuccess, TFailure>;
+                handler: ReturnType<typeof customEnhanceHandler>;
 		children: Snippet<[]>;
 		route: '/signup' | '/login';
 	}

@@ -2,7 +2,22 @@
 	import { SpinningLoader } from 'components';
 	import { enhance } from '$app/forms';
 	import { globalStore } from 'store';
-	import { Button } from 'flowbite-svelte';
+	import { Button, Spinner } from 'flowbite-svelte';
+	import type { Snippet } from 'svelte';
+	import type { createDisclosure } from 'svelte-headlessui';
+	import type { customEnhanceHandler } from 'utils';
+
+	interface Props {
+		children?: Snippet<[]>;
+		heading: string;
+		disclosure: ReturnType<typeof createDisclosure>;
+		action: string;
+		handler: ReturnType<typeof customEnhanceHandler>;
+		feedback?: string;
+		cta?: string;
+		updating: boolean;
+		sessionDestroyed?: boolean;
+	}
 
 	let {
 		children,
@@ -14,7 +29,7 @@
 		cta = 'Change',
 		updating,
 		sessionDestroyed = false
-	} = $props();
+	}: Props = $props();
 	const buttonStyles =
 		'md:no-underline md:border-transparent md:border transition-colors rounded-md md:p-2';
 </script>
@@ -34,7 +49,9 @@
 
 	{#if $disclosure.expanded}
 		<form
-			enctype={action === '?/changeAvatar' ? 'multipart/form-data' : ''}
+			enctype={action === '?/changeAvatar'
+				? 'multipart/form-data'
+				: 'application/x-www-form-urlencoded'}
 			use:disclosure.panel
 			class="col gap-2 p-2"
 			use:enhance={handler}
@@ -45,16 +62,17 @@
 				{@render children?.()}
 			</div>
 			<!-- find user by username on server -->
-                        <input type="hidden" bind:value={globalStore.user!.username} name="username" />
+			<input type="hidden" bind:value={globalStore.user!.username} name="username" />
 			<Button
-				color={['?/logout', '?/deleteAccount'].includes(action) ? "red" : "alternative"}
-				class="self-start"
+				color={['?/logout', '?/deleteAccount'].includes(action) ? 'red' : 'alternative'}
+				class="self-start py-1 px-2 disabled:opacity-50"
 				disabled={updating || sessionDestroyed}
+				type="submit"
 			>
-				{cta}
 				{#if updating}
 					<SpinningLoader size="8" />
 				{/if}
+				{cta}
 			</Button>
 			{#if feedback}
 				<p class="text-sm italic">{feedback}</p>

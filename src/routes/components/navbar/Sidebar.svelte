@@ -11,14 +11,12 @@
 </script>
 
 {#if showSidebar.active}
+	<div
+         transition:fade={{ duration: 200 }}
+		class="absolute h-dvh w-dvw z-40 top-0 left-0 bg-black bg-opacity-90"
+		aria-hidden="true"
+	></div>
 	<div class="size-full z-50 relative">
-		<div
-			in:fade
-			out:fade={{ delay: 250 }}
-			class="absolute h-dvh w-dvw z-40 top-0 left-0 bg-dark bg-opacity-90"
-			aria-hidden="true"
-		></div>
-
 		<div
 			in:fly={{ x: -100, duration: 300, delay: 200 }}
 			out:fly={{ x: -100, duration: 300, delay: 0 }}

@@ -8,16 +8,31 @@ import { encodeHexLowerCase } from '@oslojs/encoding';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { randomUUID } from 'crypto';
 import { unlink } from 'fs/promises';
+import z from 'zod';
+import { validateFormSubmission, type ExtractSuccess } from 'utils';
 
 export const load: PageServerLoad = ({ locals }) => {
         const user = locals.user;
-        if (!user) throw redirect(302, '/login');
+        if (!user) throw redirect(302, '/sign-in');
 }
 
-export const actions: Actions = {
+const ChangeAvatarSchema = z.object({
+        avatar: z.file(),
+})
+
+const ChangeUsernameSchema = z.object({
+        newUsername: z.string().min(2, "New username required (min 2 characters)"),
+});
+
+const ChangePasswordSchema = z.object({
+        currentPassword: z.string(),
+        newPassword: z.string(),
+});
+
+export const actions = {
         setDefaultAvatar: async ({ locals }) => {
                 const user = locals.user;
-                if (!user) throw redirect(302, '/login')
+                if (!user) throw redirect(302, '/sign-in')
 
                 const defaultPath = '/images/icons8-user-64.png';
 
@@ -36,10 +51,14 @@ export const actions: Actions = {
         },
         changeAvatar: async ({ request, locals }) => {
                 const user = locals.user;
-                if (!user) throw redirect(302, '/login');
+                if (!user) throw redirect(302, '/sign-in');
 
-                const formData = await request.formData();
-                const avatar = formData.get('avatar')
+                const formParser = await validateFormSubmission<z.infer<typeof ChangeAvatarSchema>>(
+                        ChangeAvatarSchema, request, 'Provide a valid image type'
+                );
+                if ('isInvalid' in formParser) return formParser.failure();
+                const { avatar } = formParser;
+
                 const defaultPath = '/images/icons8-user-64.png';
 
                 if (!avatar) return fail(400, { error: 'Missing avatar' });
@@ -71,12 +90,13 @@ export const actions: Actions = {
         },
         changeUsername: async ({ request, locals }) => {
                 const user = locals.user;
-                if (!user) throw redirect(302, '/login');
+                if (!user) throw redirect(302, '/sign-in');
 
-                const formData = await request.formData();
-                const newUsername = formData.get('newUsername')?.toString();
-
-                if (!newUsername) return fail(400, { error: 'Missing new display name' });
+                const formParser = await validateFormSubmission<z.infer<typeof ChangeUsernameSchema>>(
+                        ChangeAvatarSchema, request, 'New and old password required'
+                );
+                if ('isInvalid' in formParser) return formParser.failure();
+                const { newUsername } = formParser;
 
                 user.setDataValue('username', newUsername);
                 await user.save();
@@ -87,13 +107,13 @@ export const actions: Actions = {
         },
         changePassword: async ({ request, locals }) => {
                 const user = locals.user;
-                if (!user) throw redirect(302, '/login');
+                if (!user) throw redirect(302, '/sign-in');
 
-                const formData = await request.formData();
-                const newPassword = formData.get('newPassword')?.toString();
-                const currentPassword = formData.get('currentPassword')?.toString();
-
-                if (!newPassword || !currentPassword) return fail(400, { error: 'Missing password' });
+                const formParser = await validateFormSubmission<z.infer<typeof ChangePasswordSchema>>(
+                        ChangeAvatarSchema, request, 'New and old password required'
+                );
+                if ('isInvalid' in formParser) return formParser.failure();
+                const { newPassword, currentPassword } = formParser;
 
                 const validPassword = await bcrypt.compare(currentPassword, user.get('password'));
                 if (!validPassword) {
@@ -111,22 +131,29 @@ export const actions: Actions = {
         },
         logout: async ({ cookies }) => {
                 const token = cookies.get('session');
-                if (!token) throw redirect(302, "/login");
+                if (!token) throw redirect(302, "/sign-in");
                 const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
                 await Session.destroy({ where: { id: sessionId } })
                 cookies.delete('session', { path: '/' });
-                return { user: null, redirectTo: '/login', message: 'Logged out' };
+                return { user: null, redirectTo: '/sign-in', message: 'Logged out' };
         },
         deleteAccount: async ({ locals }) => {
                 const user = locals.user;
-                if (!user) throw redirect(302, '/login');
+                if (!user) throw redirect(302, '/sign-in');
 
                 await User.destroy({
                         where: { username: user.get('username') },
                 });
                 return { user: null, redirectTo: '/signup', message: 'Account deleted' };
         },
-};
+} satisfies Actions;
+
+export type TSetDefaultAvatarSuccess = ExtractSuccess<typeof actions.setDefaultAvatar>;
+export type TChangeAvatarSuccess = ExtractSuccess<typeof actions.changeAvatar>;
+export type TChangeUsernameSuccess = ExtractSuccess<typeof actions.changeUsername>;
+export type TChangePasswordSuccess = ExtractSuccess<typeof actions.changePassword>;
+export type TLogoutSuccess = ExtractSuccess<typeof actions.logout>;
+export type TDeleteAccountSuccess = ExtractSuccess<typeof actions.deleteAccount>;
 
 function isImageBuffer(buffer: Buffer): boolean {
         const magicNumbers = [

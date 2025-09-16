@@ -1,3 +1,5 @@
+import LogoutButton from './logoutButton.svelte';
+import SettingForm from './settingForm.svelte';
 import UserButton from './UserButton.svelte';
 import Badge from './Badge.svelte';
 import Navbar from './navbar/index.svelte';
@@ -32,5 +34,7 @@ export {
         AuthForm,
         VerificationCodeInput,
         UserButton,
+        SettingForm,
+        LogoutButton,
 };
 

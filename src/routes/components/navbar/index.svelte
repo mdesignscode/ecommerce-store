@@ -5,15 +5,14 @@
 		ShoppingBagOutline,
 		CartOutline
 	} from 'flowbite-svelte-icons';
-	import { Tooltip } from 'flowbite-svelte';
 	import Sidebar from './Sidebar.svelte';
 	import { globalStore } from 'store';
-	import { Badge } from 'components';
+	import { Badge, UserButton } from 'components';
 
 	let showSidebar = $state({ active: false });
 
 	const navItemStyles =
-		'flex-1 text-center focus:outline-dark text-xs font-semibold md:text-sm text-dark';
+		'text-center focus:outline-dark text-xs font-semibold md:text-sm text-dark flex-1';
 </script>
 
 {#snippet navlink({
@@ -30,7 +29,7 @@
 	fill?: string;
 })}
 	<a href={to} class={navItemStyles}>
-		<Badge {indicator} class="text-dark w-full">
+		<Badge {indicator} class="text-dark w-fit">
 			<span class="flex flex-col items-center">
 				<Icon {fill} class={['w-7 md:w-8', `fill-${fill}`]} />
 				{label}
@@ -42,7 +41,7 @@
 <Sidebar {showSidebar} />
 <nav
 	id="root-navbar"
-	class="flex fixed z-20 left-0 bottom-0 w-full bg-white text-dark items-center p-1 border-t-2 border-secondary shadow-lg shadow-dark"
+	class="flex md:gap-2 w-full text-dark items-center border-t-2 border-secondary shadow-lg shadow-dark bg-light"
 >
 	{@render navlink({
 		to: '/checkout',
@@ -59,24 +58,29 @@
 		fill: 'primary'
 	})}
 
-	<!-- <UserBtn isSignedIn={!!user} /> -->
-        <a href="/foo">Foo</a>
+	<div class={[navItemStyles, 'relative']}>
+		<div class="-translate-y-4">
+			<UserButton />
+		</div>
+	</div>
 
-	<Badge
-                tooltipLabel="Show Shopping Cart"
-		class={['text-dark w-full', navItemStyles]}
-		onclick={() => (showSidebar.active = true)}
-		id="sidebarButton"
-		aria-expanded={showSidebar.active}
-		aria-controls="sidebar"
-		aria-label="Show shopping cart items"
-		indicator={globalStore.shoppingCart.length}
-	>
-		<span class="flex flex-col items-center">
-			<CartOutline class="fill-primary w-7 md:w-8" />
-			My Cart
-		</span>
-	</Badge>
+	<div class={[navItemStyles, 'grid place-content-center']}>
+		<Badge
+			tooltipLabel="Show Shopping Cart"
+			class={['text-dark w-fit']}
+			onclick={() => (showSidebar.active = true)}
+			id="sidebarButton"
+			aria-expanded={showSidebar.active}
+			aria-controls="sidebar"
+			aria-label="Show shopping cart items"
+			indicator={globalStore.shoppingCart.length}
+		>
+			<span class="col items-center">
+				<CartOutline class="fill-primary w-7 md:w-8" />
+				My Cart
+			</span>
+		</Badge>
+	</div>
 
 	{@render navlink({
 		to: '/wishList',

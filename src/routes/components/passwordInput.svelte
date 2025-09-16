@@ -7,7 +7,7 @@
 <div class="relative w-full">
 	<input
 		required
-		class="w-full rounded-sm"
+		class="w-full rounded-sm px-2"
 		style="padding-right: 40px !important;"
 		type={show ? 'text' : 'password'}
 		bind:value
@@ -27,4 +27,3 @@
 		{/if}
 	</button>
 </div>
-

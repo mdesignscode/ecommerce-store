@@ -30,6 +30,7 @@ export function customEnhanceHandler<TActionData, TSuccessBody>(
                                 if (result.data) {
                                         update();
                                         onSuccess(result.data as TSuccessBody);
+                                        formState.loading = false;
                                 }
                         }
                 };
@@ -37,18 +38,21 @@ export function customEnhanceHandler<TActionData, TSuccessBody>(
 }
 
 
-export const validateFormSubmission = async (Schema: z.ZodObject, request: Request, error: string) => {
+export async function validateFormSubmission<TFormData>(Schema: z.ZodObject, request: Request, error: string) {
         const form = await request.formData();
         const data = Object.fromEntries(form.entries())
 
         const formParseResult = Schema.safeParse(data);
         if (!formParseResult.success) {
-                return fail(400, {
-                        error,
-                        issues: formParseResult.error.issues,
-                });
+                return {
+                        failure: () => fail(400, {
+                                error,
+                                issues: formParseResult.error.issues,
+                        }),
+                        isInvalid: true,
+                };
         }
-        return formParseResult.data;
+        return formParseResult.data as TFormData;
 }
 
 export type ExtractSuccess<T extends (...args: any[]) => any> =
