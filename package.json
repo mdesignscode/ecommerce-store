@@ -7,13 +7,14 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
-		"start": "node build",
+		"start": "bun src/scripts/prepareDb.ts && node build",
 		"prepare": "svelte-kit sync || echo \"\"",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
-		"db:seed": "bun src/scripts/sync.ts"
+		"db:seed": "bun src/scripts/sync.ts",
+		"db:export": "bun src/scripts/exportCatalog.ts"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.1",
@@ -45,6 +46,8 @@
 		"@oslojs/encoding": "^1.1.0",
 		"bcryptjs": "^3.0.3",
 		"nodemailer": "^7.0.13",
+		"pg": "^8.23.1",
+		"pg-hstore": "^2.3.4",
 		"sequelize": "^6.37.8",
 		"sqlite3": "^5.1.7",
 		"stripe": "^18.5.0",

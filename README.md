@@ -1,6 +1,6 @@
 # Common Goods
 
-A demo e-commerce store built with SvelteKit 2, Svelte 5, Tailwind CSS 4, Sequelize (SQLite) and Stripe Checkout.
+A demo e-commerce store built with SvelteKit 2, Svelte 5, Tailwind CSS 4, Sequelize (SQLite locally, Postgres in production) and Stripe Checkout.
 
 ## Setup
 
@@ -12,12 +12,13 @@ bun run dev
 
 ### Environment (`.env`)
 
-| Variable         | Purpose                                       |
-| ---------------- | --------------------------------------------- |
-| `STRIPE_SECRET`  | Stripe secret key (use a `sk_test_` key)      |
-| `WEBHOOK_SECRET` | Signing secret for `/api/stripe/webhook`      |
-| `EMAIL_ADDRESS`  | Gmail address used to send verification codes |
-| `EMAIL_CODE`     | Gmail app password for that address           |
+| Variable         | Purpose                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------- |
+| `STRIPE_SECRET`  | Stripe secret key (use a `sk_test_` key)                                                |
+| `WEBHOOK_SECRET` | Signing secret for `/api/stripe/webhook`                                                |
+| `EMAIL_ADDRESS`  | Gmail address used to send verification codes                                           |
+| `EMAIL_CODE`     | Gmail app password for that address                                                     |
+| `DATABASE_URL`   | Production only: a `postgres://` URL. Anything else (or unset) uses `./database.sqlite` |
 
 Seeded users sign in with `<FirstLast>@seed.email` and their full name as the password
 (see `src/scripts/createFakeUsers.ts`). The first seeded user is an admin (`/admin`).
@@ -31,13 +32,21 @@ what the store shows. Orders are recorded by the webhook; forward events locally
 stripe listen --forward-to localhost:5173/api/stripe/webhook
 ```
 
+### Production database
+
+`bun run start` first runs `src/scripts/prepareDb.ts`, which creates missing tables and, when the
+catalog is empty, loads `seed/catalog.json`. Refresh that snapshot from your local database with
+`bun run db:export`. Demo users are not exported, so create an account on the live site and set its
+`role` column to `admin` to grant admin access.
+
 ## Scripts
 
-| Command           | What it does                    |
-| ----------------- | ------------------------------- |
-| `bun run dev`     | Start the dev server            |
-| `bun run build`   | Production build (adapter-node) |
-| `bun run start`   | Serve the production build      |
-| `bun run check`   | Type-check with svelte-check    |
-| `bun run lint`    | Prettier + ESLint               |
-| `bun run db:seed` | Sync tables and seed demo data  |
+| Command             | What it does                                          |
+| ------------------- | ----------------------------------------------------- |
+| `bun run dev`       | Start the dev server                                  |
+| `bun run build`     | Production build (adapter-node)                       |
+| `bun run start`     | Prepare the database, then serve the production build |
+| `bun run check`     | Type-check with svelte-check                          |
+| `bun run lint`      | Prettier + ESLint                                     |
+| `bun run db:seed`   | Sync tables and seed demo data                        |
+| `bun run db:export` | Snapshot the local catalog to `seed/catalog.json`     |
