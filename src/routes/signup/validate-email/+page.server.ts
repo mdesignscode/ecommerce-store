@@ -2,12 +2,21 @@ import { fail, redirect } from '@sveltejs/kit';
 import { z } from 'zod';
 import { User } from 'models';
 import { parseForm, requireUser } from 'utils';
-import { checkVerificationCode, sendVerificationEmail } from 'utils/emailVerification';
+import {
+	checkVerificationCode,
+	emailEnabled,
+	sendVerificationEmail
+} from 'utils/emailVerification';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = ({ locals }) => {
+export const load: PageServerLoad = async ({ locals }) => {
 	const user = requireUser(locals);
 	if (user.get('isVerified')) redirect(303, '/');
+	// Without email configured there is no code to send; verify and move on.
+	if (!emailEnabled()) {
+		await user.update({ isVerified: true });
+		redirect(303, '/');
+	}
 	return { email: user.get('email') };
 };
 

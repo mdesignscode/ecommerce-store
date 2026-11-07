@@ -6,6 +6,13 @@ import { EmailVerification } from 'models';
 const STORE_NAME = 'Common Goods';
 const CODE_TTL_MINUTES = 10;
 
+/**
+ * Email verification only runs when mail credentials are configured. Hosts that
+ * block SMTP (such as Render's free plan) leave them unset and accounts are
+ * verified on sign-up instead.
+ */
+export const emailEnabled = () => Boolean(env.EMAIL_ADDRESS && env.EMAIL_CODE);
+
 const transporter = nodemailer.createTransport({
 	host: 'smtp.gmail.com',
 	port: 587,

@@ -4,7 +4,7 @@ import { Op } from 'sequelize';
 import { z } from 'zod';
 import { User } from 'models';
 import { DEFAULT_AVATAR, parseForm } from 'utils';
-import { sendVerificationEmail } from 'utils/emailVerification';
+import { emailEnabled, sendVerificationEmail } from 'utils/emailVerification';
 import { startSession } from 'utils/session';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -31,13 +31,16 @@ export const actions = {
 			return fail(400, { error: `${field} is already taken.`, username, email });
 		}
 
+		const verify = emailEnabled();
 		const user = await User.create({
 			username,
 			email,
 			password: await bcrypt.hash(password, 10),
-			avatar: DEFAULT_AVATAR
+			avatar: DEFAULT_AVATAR,
+			isVerified: !verify
 		});
 		await startSession(cookies, user.get('id'));
+		if (!verify) redirect(303, '/');
 
 		// A failed send is recoverable: the verify page offers "resend".
 		await sendVerificationEmail({ email, username });

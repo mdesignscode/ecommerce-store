@@ -19,6 +19,9 @@ bun run dev
 | `EMAIL_ADDRESS`  | Gmail address used to send verification codes |
 | `EMAIL_CODE`     | Gmail app password for that address           |
 
+The two `EMAIL_` variables are optional. Without them, new accounts skip email verification, which
+is how the store runs on hosts that block SMTP (Render's free plan does).
+
 Seeded users sign in with `<FirstLast>@seed.email` and their full name as the password
 (see `src/scripts/createFakeUsers.ts`). The first seeded user is an admin (`/admin`).
 
