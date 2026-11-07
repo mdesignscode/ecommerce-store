@@ -1,57 +1,35 @@
-import dotenv from 'dotenv'
-import _stripe from 'stripe';
+import Stripe from 'stripe';
 
-dotenv.config()
-const stripe = new _stripe(process.env.STRIPE_SECRET!);
+// Seed scripts run under Bun, which loads .env automatically.
+const stripe = new Stripe(process.env.STRIPE_SECRET!);
 
-async function createStripeProduct(title: string, description: string, images: string[]) {
-        const createProduct = async () => await stripe.products.create({
-                name: title,
-                description,
-                images
-        })
-
-        try {
-                const product = await createProduct();
-                return product
-        } catch (error: any) {
-                if (error.statusCode === 429) {
-                        return new Promise(resolve => setTimeout(async () => {
-                                resolve(await createProduct())
-                        }, 1500))
-                }
-        }
+/** Retry once after a short pause when Stripe rate-limits us (HTTP 429). */
+async function withRateLimitRetry<T>(request: () => Promise<T>): Promise<T> {
+	try {
+		return await request();
+	} catch (error) {
+		if (error instanceof Stripe.errors.StripeError && error.statusCode === 429) {
+			await new Promise((resolve) => setTimeout(resolve, 1500));
+			return request();
+		}
+		throw error;
+	}
 }
 
-async function createStripePrice(amount: number, productId: string) {
-        const createPrice = async () => await stripe.prices.create({
-                currency: 'usd',
-                unit_amount: amount,
-                product: productId,
-                billing_scheme: "per_unit"
-        });
-
-        try {
-                const price = await createPrice()
-                return price
-        } catch (error: any) {
-                if (error.statusCode === 429) {
-                        return new Promise(resolve => setTimeout(async () => {
-                                resolve(await createPrice())
-                        }, 1500))
-                }
-        }
+export async function createStripeObjects(
+	product: { title: string; description: string; price: number },
+	images: string[]
+) {
+	const stripeProduct = await withRateLimitRetry(() =>
+		stripe.products.create({ name: product.title, description: product.description, images })
+	);
+	const stripePrice = await withRateLimitRetry(() =>
+		stripe.prices.create({
+			currency: 'usd',
+			unit_amount: product.price,
+			product: stripeProduct.id,
+			billing_scheme: 'per_unit'
+		})
+	);
+	return { stripeProduct, stripePrice };
 }
-
-export async function createStripeObjects(product: {
-        title: string, description: string, price: number
-}, images: string[]) {
-        // create stripe product
-        const stripeProduct = await createStripeProduct(product.title, product.description, images)
-
-        // create stripe price
-        const stripePrice = await createStripePrice(product.price, stripeProduct.id)
-
-        return { stripeProduct, stripePrice }
-}
-

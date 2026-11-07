@@ -1,11 +1,6 @@
-import { redirect } from "@sveltejs/kit";
+import { requireAdmin } from 'utils';
+import type { LayoutServerLoad } from './$types';
 
-export const load = async ({ locals }) => {
-        const { user } = locals;
-
-        if (!user) throw redirect(302, '/sign-in');
-        if (user.get('role') !== 'admin') throw redirect(302, '/sign-in');
-
-        return { user: user.get({ plain: true }) };
-}
-
+export const load: LayoutServerLoad = ({ locals }) => {
+	requireAdmin(locals);
+};

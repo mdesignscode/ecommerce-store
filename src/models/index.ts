@@ -34,23 +34,13 @@ ProductState.belongsTo(Product, { foreignKey: 'productId' });
 Session.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(Session, { foreignKey: 'userId' });
 
-export {
-        sequelize,
-        User,
-        Product,
-        Image,
-        Price,
-        ProductState,
-        Session,
-        EmailVerification,
-};
+export { sequelize, User, Product, Image, Price, ProductState, Session, EmailVerification };
 
 export type {
-        TUserAttributes,
-        TProductAttributes,
-        TImageAttributes,
-        TPriceAttributes,
-        TProductStateAttributes,
-        TUser,
+	TUserAttributes,
+	TProductAttributes,
+	TImageAttributes,
+	TPriceAttributes,
+	TProductStateAttributes,
+	TUser
 };
-

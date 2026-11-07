@@ -1,100 +1,53 @@
-import { redirect, fail, type Actions } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
+import { z } from 'zod';
 import { User } from 'models';
-import { sendEmail, validateEmailVerificationCode } from 'utils/emailVerification';
-import type { PageServerLoad } from './$types';
-import z from 'zod';
-import type { ExtractSuccess } from 'utils';
+import { parseForm, requireUser } from 'utils';
+import { checkVerificationCode, sendVerificationEmail } from 'utils/emailVerification';
+import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ url, locals }) => {
-        const sessionUser = locals.user;
-        if (!sessionUser) throw redirect(302, '/login');
+export const load: PageServerLoad = ({ locals }) => {
+	const user = requireUser(locals);
+	if (user.get('isVerified')) redirect(303, '/');
+	return { email: user.get('email') };
+};
 
-        const email = url.searchParams.get('email') ?? "";
-        const user = await User.findOne({
-                where: { email }
-        });
-
-        if (!user) throw redirect(302, '/login');
-        if (user.get('isVerified')) throw redirect(302, '/');
-        return { email }
-}
-
-const EmailVerificationSchema = z.object({
-        code: z.string().length(6),
-});
-
-const ChangeEmailSchema = z.object({
-        newEmail: z.email(),
-});
+const CodeSchema = z.object({ code: z.string().regex(/^\d{6}$/, 'Enter the 6-digit code') });
+const ChangeEmailSchema = z.object({ newEmail: z.email('Enter a valid email') });
 
 export const actions = {
-        verifyCode: async ({ request, locals }) => {
-                const user = locals.user;
-                if (!user) redirect(302, '/login');
+	verifyCode: async ({ request, locals }) => {
+		const user = requireUser(locals);
+		const form = await parseForm(CodeSchema, request);
+		if (!form.ok) return form.failure;
 
-                const form = await request.formData();
-                const formData = Object.fromEntries(form.entries())
+		const valid = await checkVerificationCode(user.get('email'), form.data.code);
+		if (!valid) return fail(400, { error: 'That code is invalid or has expired.' });
 
-                const formParseResult = EmailVerificationSchema.safeParse(formData);
-                if (!formParseResult.success) {
-                        return fail(400, {
-                                error: 'Verification code required',
-                                issues: formParseResult.error.issues,
-                        });
-                }
-                const { code } = formParseResult.data;
+		await user.update({ isVerified: true });
+		redirect(303, '/');
+	},
+	resendCode: async ({ locals }) => {
+		const user = requireUser(locals);
+		const sent = await sendVerificationEmail({
+			username: user.get('username'),
+			email: user.get('email')
+		});
+		if (!sent.ok) return fail(502, { error: sent.error });
+		return { message: 'A new code is on its way.' };
+	},
+	changeEmail: async ({ request, locals }) => {
+		const user = requireUser(locals);
+		const form = await parseForm(ChangeEmailSchema, request);
+		if (!form.ok) return form.failure;
+		const newEmail = form.data.newEmail.toLowerCase();
 
-                const { success, message } = await validateEmailVerificationCode(user.get('email'), code);
+		if (await User.findOne({ where: { email: newEmail } })) {
+			return fail(400, { error: 'That email is already in use.' });
+		}
 
-                if (success) {
-                        user.setDataValue('isVerified', true);
-                        await user.save();
-                        return {
-                                message: 'Email verified',
-                                user: user.get(),
-                                redirectTo: '/',
-                        };
-                }
-                else return fail(400, { error: message })
-        },
-        resendCode: async ({ locals }) => {
-                const user = locals.user;
-                if (!user) throw redirect(302, '/login');
-
-                const { status, data } = await sendEmail({ username: user.get('username'), email: user.get('email') })
-                if (status === 'fail') return fail(400, { error: data })
-                return { user: user.get(), message: 'New code sent' };
-        },
-        changeEmail: async ({ request, locals }) => {
-                const user = locals.user;
-                if (!user) throw redirect(302, '/login');
-
-                const form = await request.formData();
-                const formData = Object.fromEntries(form.entries())
-
-                const formParseResult = ChangeEmailSchema.safeParse(formData);
-                if (!formParseResult.success) {
-                        return fail(400, {
-                                error: 'Missing new email',
-                                issues: formParseResult.error.issues,
-                        });
-                }
-                const { newEmail } = formParseResult.data;
-
-                const validateEmailUri = `/signup/validate-email?email=${newEmail}`;
-
-                user.setDataValue('email', newEmail);
-                await user.save();
-                return {
-                        message: 'Email updated',
-                        user: user.get(),
-                        redirectTo: validateEmailUri,
-                        newEmail,
-                };
-        }
+		await user.update({ email: newEmail });
+		const sent = await sendVerificationEmail({ username: user.get('username'), email: newEmail });
+		if (!sent.ok) return fail(502, { error: sent.error });
+		return { message: `Email updated. We sent a new code to ${newEmail}.` };
+	}
 } satisfies Actions;
-
-export type TEmailVerificationSuccess = ExtractSuccess<typeof actions.verifyCode>;
-export type TChangeEmailSuccess = ExtractSuccess<typeof actions.changeEmail>;
-export type TResendCodeSuccess = ExtractSuccess<typeof actions.resendCode>;
-

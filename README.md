@@ -1,38 +1,43 @@
-# sv
+# Common Goods
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A demo e-commerce store built with SvelteKit 2, Svelte 5, Tailwind CSS 4, Sequelize (SQLite) and Stripe Checkout.
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
+## Setup
 
 ```sh
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
+bun install
+bun run db:seed   # creates tables, products (with Stripe test objects) and demo users
+bun run dev
 ```
 
-## Developing
+### Environment (`.env`)
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+| Variable         | Purpose                                       |
+| ---------------- | --------------------------------------------- |
+| `STRIPE_SECRET`  | Stripe secret key (use a `sk_test_` key)      |
+| `WEBHOOK_SECRET` | Signing secret for `/api/stripe/webhook`      |
+| `EMAIL_ADDRESS`  | Gmail address used to send verification codes |
+| `EMAIL_CODE`     | Gmail app password for that address           |
+
+Seeded users sign in with `<FirstLast>@seed.email` and their full name as the password
+(see `src/scripts/createFakeUsers.ts`). The first seeded user is an admin (`/admin`).
+
+### Payments
+
+Checkout creates a Stripe Checkout session priced from the database, so customers pay exactly
+what the store shows. Orders are recorded by the webhook; forward events locally with:
 
 ```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+stripe listen --forward-to localhost:5173/api/stripe/webhook
 ```
 
-## Building
+## Scripts
 
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+| Command           | What it does                    |
+| ----------------- | ------------------------------- |
+| `bun run dev`     | Start the dev server            |
+| `bun run build`   | Production build (adapter-node) |
+| `bun run start`   | Serve the production build      |
+| `bun run check`   | Type-check with svelte-check    |
+| `bun run lint`    | Prettier + ESLint               |
+| `bun run db:seed` | Sync tables and seed demo data  |

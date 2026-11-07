@@ -1,26 +1,32 @@
-import { Product } from "models";
-import type { TProductState } from "store";
-import type { PageServerLoad } from "./$types";
-import { Op } from "sequelize";
+import { error } from '@sveltejs/kit';
+import { Op } from 'sequelize';
+import { findProducts } from '$lib/server/catalog';
+import { finalPrice } from '$lib/pricing';
+import type { TProduct } from '$lib/types';
+import type { PageServerLoad } from './$types';
 
-export const load = (async ({ params }) => {
-        const { categoryTitle } = params;
+const sorters = {
+	featured: () => 0,
+	'price-asc': (a: TProduct, b: TProduct) => finalPrice(a) - finalPrice(b),
+	'price-desc': (a: TProduct, b: TProduct) => finalPrice(b) - finalPrice(a),
+	rating: (a: TProduct, b: TProduct) => b.rating - a.rating,
+	discount: (a: TProduct, b: TProduct) => (b.discountPercentage ?? 0) - (a.discountPercentage ?? 0)
+};
+export type TSort = keyof typeof sorters;
 
-        const decodedTitle = decodeURI(categoryTitle);
-        const isDiscountedProducts = decodedTitle === "discountedProducts";
-        const categoryProductsRaw = await Product.findAll({
-                where: isDiscountedProducts
-                        ? {
-                                discountPercentage: {
-                                        [Op.not]: null,
-                                },
-                        }
-                        : { category: decodedTitle },
-        });
-        const categoryProducts = categoryProductsRaw.map(p => p.get({ plain: true })) as TProductState['Product'][];
+export const load: PageServerLoad = async ({ params, url }) => {
+	const category = params.categoryTitle;
+	const isDeals = category === 'deals';
 
-        return { categoryProducts, isDiscountedProducts, category: decodedTitle };
-}) satisfies PageServerLoad;
+	const products = await findProducts(
+		isDeals ? { discountPercentage: { [Op.not]: null } } : { category }
+	);
+	if (!isDeals && products.length === 0) error(404, 'Category not found');
 
-export type TCategoryProducts = Awaited<ReturnType<typeof load>>;
+	const requested = url.searchParams.get('sort') as TSort | null;
+	const sort: TSort =
+		requested && requested in sorters ? requested : isDeals ? 'discount' : 'featured';
+	products.sort(sorters[sort]);
 
+	return { category, isDeals, products, sort };
+};

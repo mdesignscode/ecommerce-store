@@ -1,13 +1,133 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/inter';
 
-@layer utilities {
-        .apply-outline-styles {
-                @apply focus:outline-dotted outline-2 outline-offset-2 outline-light;
-        }
+@theme {
+	--font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+	--font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
 
-        .col {
-                @apply flex flex-col;
-        }
+	--color-paper: #fbf8f1;
+	--color-surface: #ffffff;
+	--color-sand: #f1ece1;
+	--color-line: #e4ddcf;
+	--color-ink: #1f1d1a;
+	--color-muted: #6b655c;
+	--color-accent: #c4471a;
+	--color-accent-strong: #a63a12;
+	--color-accent-soft: #fbe6dc;
+	--color-success: #2f6b3f;
+	--color-danger: #b42318;
+}
+
+@layer base {
+	:root {
+		color-scheme: light;
+	}
+
+	html {
+		@apply bg-paper text-ink antialiased;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	body {
+		@apply min-h-dvh font-sans;
+	}
+
+	h1,
+	h2,
+	h3 {
+		@apply font-display tracking-tight text-balance;
+		font-variation-settings: 'opsz' 96;
+	}
+
+	:focus-visible {
+		@apply outline-2 outline-offset-2 outline-accent;
+	}
+
+	::selection {
+		@apply bg-accent-soft;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			transition-duration: 0.01ms !important;
+		}
+	}
+}
+
+@utility container-page {
+	@apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+@utility btn {
+	@apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+@utility btn-primary {
+	@apply btn bg-ink text-paper hover:bg-accent-strong;
+}
+
+@utility btn-accent {
+	@apply btn bg-accent text-white hover:bg-accent-strong;
+}
+
+@utility btn-outline {
+	@apply btn border border-line bg-surface text-ink hover:border-ink;
+}
+
+@utility btn-danger {
+	@apply btn bg-danger text-white hover:bg-red-800;
+}
+
+@utility btn-icon {
+	@apply inline-flex size-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-sand disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+@utility field {
+	@apply grid gap-1.5 text-sm font-medium;
+}
+
+@utility input {
+	@apply w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-base font-normal text-ink placeholder:text-muted/70 focus:border-ink focus:outline-none;
+}
+
+@utility card {
+	@apply rounded-2xl border border-line bg-surface;
+}
+
+@utility eyebrow {
+	@apply text-xs font-semibold tracking-[0.14em] text-muted uppercase;
+}
+
+@layer components {
+	.drawer[open] {
+		animation: drawer-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+
+	.drawer[open]::backdrop {
+		animation: fade-in 0.28s ease-out;
+	}
+
+	.no-scrollbar {
+		scrollbar-width: none;
+	}
+
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+@keyframes drawer-in {
+	from {
+		transform: translateX(100%);
+	}
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
 }

@@ -1,69 +1,147 @@
 <script lang="ts">
-	import { ProductsGroup } from 'components';
-	import type { THomePageProducts } from './+page.server';
-	interface Props {
-		data: THomePageProducts;
-	}
-	const { data }: Props = $props();
-	const { products, discountedProducts } = data;
+	import ArrowRight from '@lucide/svelte/icons/arrow-right';
+	import Truck from '@lucide/svelte/icons/truck';
+	import RotateCcw from '@lucide/svelte/icons/rotate-ccw';
+	import Lock from '@lucide/svelte/icons/lock';
+	import ProductGrid from '$lib/components/ProductGrid.svelte';
+	import { finalPrice, money, titleCase } from '$lib/pricing';
+
+	let { data } = $props();
+	const [lead, ...rest] = $derived(data.deals);
+	const productCount = $derived(data.categories.reduce((sum, c) => sum + c.count, 0));
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Ecommerce store home page" />
+	<title>Common Goods — everyday things, fairly priced</title>
+	<meta
+		name="description"
+		content="Shop {productCount} everyday products across {data.categories
+			.length} categories, with free shipping on every order."
+	/>
 </svelte:head>
 
-<main class="flex flex-col gap-4 relative">
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="fixed top-0 left-0 -z-10">
-		<path
-			fill="#ccc5b9"
-			fill-opacity="1"
-			d="M0,256L48,229.3C96,203,192,149,288,122.7C384,96,480,96,576,112C672,128,768,160,864,181.3C960,203,1056,213,1152,197.3C1248,181,1344,139,1392,117.3L1440,96L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"
-		></path>
-	</svg>
+{#snippet sectionHead(title: string, href: string, cta: string)}
+	<div class="mb-8 flex items-end justify-between gap-4">
+		<h2 class="text-3xl sm:text-4xl">{title}</h2>
+		<a {href} class="group inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold">
+			{cta}<ArrowRight class="size-4 transition-transform group-hover:translate-x-0.5" />
+		</a>
+	</div>
+{/snippet}
 
-	<div class="space-y-4">
-		<div class="col md:flex-row-reverse">
-			<div class="md:w-1/2 p-[2%] md:flex-1 grid place-content-center">
-				<img class="w-screen h-auto" src="/Ecommerce web page-pana.svg" alt="Hero" />
-			</div>
-
-			<div class="md:flex-1 py-2 px-8 md:p-10">
-				<h1 class="text-lg font-bold mb-2">Welcome to our online store</h1>
-
-				<p>
-					Est sit est dignissimos. Aliquam nihil odit et voluptates. Quia id et consequatur animi
-					expedita aut voluptas ratione. Mollitia doloribus id omnis voluptatem impedit. Numquam
-					quia et a non autem. Quos rerum ut rerum exercitationem et.
-				</p>
-				<p class="hidden lg:block mt-2">
-					Qui exercitationem a quisquam. Quibusdam voluptate qui id harum nisi inventore vero quo.
-					Temporibus praesentium vel recusandae voluptas. Soluta occaecati perspiciatis doloremque
-					nesciunt tenetur. Magnam consequatur perferendis dolore quaerat qui occaecati neque omnis.
-					Mollitia voluptatem possimus. Numquam est minima. Et distinctio eaque consequatur beatae
-					aperiam eaque non vero adipisci.
-				</p>
-			</div>
-		</div>
-
-		<div class="">
-			<div class="px-4 md space-y-4">
-				<ProductsGroup
-					groupTitle="Browse our discounted products"
-					groupUrl="discountedProducts"
-					products={discountedProducts}
-					category="discounted products"
-				/>
-				{#each products as { products: categoryProducts, category }}
-					<ProductsGroup
-						groupTitle={`Browse products in ${category}`}
-						groupUrl={`${category}`}
-						products={categoryProducts}
-						category={`products in ${category}`}
-					/>
-				{/each}
-			</div>
+<section
+	class="container-page grid items-center gap-10 pt-10 pb-16 lg:grid-cols-12 lg:pt-16 lg:pb-24"
+>
+	<div class="lg:col-span-6">
+		<p class="eyebrow text-accent">Free shipping on every order</p>
+		<h1 class="mt-4 text-5xl leading-[1.02] sm:text-6xl xl:text-7xl">
+			Good things for <em class="font-normal text-accent italic">every</em> day.
+		</h1>
+		<p class="mt-6 max-w-md text-lg text-muted">
+			{productCount} carefully priced products across {data.categories.length} categories — from the kitchen
+			drawer to the garden shed.
+		</p>
+		<div class="mt-8 flex flex-wrap gap-3">
+			<a href="/categories/deals" class="btn-primary px-6 py-3 text-base">
+				Shop deals<ArrowRight class="size-4" />
+			</a>
+			<a href="#categories" class="btn-outline px-6 py-3 text-base">Browse categories</a>
 		</div>
 	</div>
-</main>
 
+	{#if lead}
+		<div class="grid grid-cols-5 grid-rows-2 gap-3 lg:col-span-6 lg:gap-4">
+			<a
+				href="/products/{lead.id}"
+				class="group relative col-span-3 row-span-2 overflow-hidden rounded-3xl bg-sand"
+			>
+				<img
+					src={lead.Images[0]?.url}
+					alt={lead.title}
+					width="512"
+					height="512"
+					class="size-full object-cover transition duration-700 group-hover:scale-[1.03]"
+				/>
+				<span
+					class="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3 rounded-2xl bg-surface/95 px-4 py-3 text-sm shadow-sm backdrop-blur"
+				>
+					<span class="truncate font-medium">{lead.title}</span>
+					<span class="shrink-0 font-semibold text-accent">{money(finalPrice(lead))}</span>
+				</span>
+			</a>
+			{#each rest.slice(0, 2) as product (product.id)}
+				<a
+					href="/products/{product.id}"
+					class="group col-span-2 overflow-hidden rounded-3xl bg-sand"
+				>
+					<img
+						src={product.Images[0]?.url}
+						alt={product.title}
+						width="512"
+						height="512"
+						class="aspect-square size-full object-cover transition duration-700 group-hover:scale-[1.04]"
+					/>
+				</a>
+			{/each}
+		</div>
+	{/if}
+</section>
+
+<section class="border-y border-line bg-sand/60">
+	<ul class="container-page grid gap-4 py-5 text-sm sm:grid-cols-3">
+		<li class="flex items-center gap-3">
+			<Truck class="size-5 text-accent" />Free shipping, no minimum
+		</li>
+		<li class="flex items-center gap-3">
+			<RotateCcw class="size-5 text-accent" />30-day easy returns
+		</li>
+		<li class="flex items-center gap-3">
+			<Lock class="size-5 text-accent" />Secure checkout with Stripe
+		</li>
+	</ul>
+</section>
+
+{#if data.deals.length}
+	<section class="container-page pt-20">
+		{@render sectionHead('This week’s best deals', '/categories/deals', 'All deals')}
+		<ProductGrid products={data.deals} />
+	</section>
+{/if}
+
+<section id="categories" class="container-page scroll-mt-32 pt-24">
+	<h2 class="mb-8 text-3xl sm:text-4xl">Shop by category</h2>
+	<ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+		{#each data.categories as category (category.name)}
+			<li>
+				<a href="/categories/{encodeURIComponent(category.name)}" class="group block">
+					<div class="aspect-[4/5] overflow-hidden rounded-2xl bg-sand">
+						<img
+							src={category.cover.Images[0]?.url}
+							alt=""
+							loading="lazy"
+							width="512"
+							height="512"
+							class="size-full object-cover transition duration-500 group-hover:scale-[1.05]"
+						/>
+					</div>
+					<p class="mt-2.5 font-medium group-hover:underline">{titleCase(category.name)}</p>
+					<p class="text-sm text-muted">
+						{category.count}
+						{category.count === 1 ? 'item' : 'items'}
+					</p>
+				</a>
+			</li>
+		{/each}
+	</ul>
+</section>
+
+{#each data.featured as group (group.name)}
+	<section class="container-page pt-24">
+		{@render sectionHead(
+			`Popular in ${titleCase(group.name)}`,
+			`/categories/${encodeURIComponent(group.name)}`,
+			'See all'
+		)}
+		<ProductGrid products={group.items} />
+	</section>
+{/each}

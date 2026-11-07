@@ -1,183 +1,160 @@
 <script lang="ts">
-	import { LogoutButton, PasswordInput, SettingForm } from 'components';
 	import { enhance } from '$app/forms';
-	import { goto } from '$app/navigation';
-	import { globalStore } from 'store';
-	import { createDisclosure } from 'svelte-headlessui';
-	import { Button } from 'flowbite-svelte';
-	import { customEnhanceHandler } from 'utils';
-	import type { ActionData } from './$types';
-	import type {
-		TChangeAvatarSuccess,
-		TChangePasswordSuccess,
-		TChangeUsernameSuccess,
-		TDeleteAccountSuccess
-	} from './+page.server';
+	import FormMessage from '$lib/components/FormMessage.svelte';
+	import PasswordInput from '$lib/components/PasswordInput.svelte';
+	import { newFormState, submit } from '$lib/forms';
+	import { shop } from '$lib/shop.svelte';
 
-	const changeAvatar = createDisclosure({ expanded: false });
-	const changeUsername = createDisclosure({ expanded: false });
-	const changePassword = createDisclosure({ expanded: false });
-	const deleteAccount = createDisclosure({ expanded: false });
+	const avatar = $state(newFormState());
+	const name = $state(newFormState());
+	const password = $state(newFormState());
+	const remove = $state(newFormState());
+	let confirmDelete: HTMLDialogElement;
 
-	let newUsername = $state('');
-	let currentPass = $state('');
-	let newPass = $state('');
-	let updating = $state(false);
-	let showCurrentPass = $state(false);
-	let showNewPass = $state(false);
-	let sessionDestroyed = $state(false);
-
-	let changeAvatarFeedback = $state('');
-	let changePassFeedback = $state('');
-	let changeUsernameFeedback = $state('');
-
-	type RequestSuccessMap = {
-		avatar: TChangeAvatarSuccess;
-		delete: TDeleteAccountSuccess;
-		password: TChangePasswordSuccess;
-		username: TChangeUsernameSuccess;
-	};
-	type TRequestState = { loading: boolean; message: string; error: string };
-
-	let updateAvatar: TRequestState = $state({ loading: false, message: '', error: '' });
-	let destroyAccount: TRequestState = $state({ loading: false, message: '', error: '' });
-	let updatePassword: TRequestState = $state({ loading: false, message: '', error: '' });
-	let updateUsername: TRequestState = $state({ loading: false, message: '', error: '' });
-
-	const handleChangeUserInfo = <K extends keyof RequestSuccessMap>(
-		type: K,
-		requestState: TRequestState
-	) =>
-		customEnhanceHandler<ActionData, RequestSuccessMap[K]>((data) => {
-			const isSessiondestroy = ['logout', 'delete'].includes(type);
-			requestState.message = data.message;
-
-			globalStore.user = data.user;
-
-			if (isSessiondestroy && 'redirectTo' in data) {
-				// keep session destroy buttons disabled
-				updating = false;
-				sessionDestroyed = true;
-				goto(data.redirectTo);
-			}
-		}, requestState);
+	const user = $derived(shop.user!);
+	const hasCustomAvatar = $derived(user.avatar.startsWith('/avatars/'));
 </script>
 
-<div class="bg-gray-500 size-full overflow-y-auto px-6 py-4 md:py-8">
-	<div class="mx-auto space-y-2 md:w-[55%] md:space-y-4">
-		<div class="mx-auto mb-4 flex w-fit items-center gap-4 md:mb-6">
-			<img
-				class="aspect-square size-12 rounded-full border"
-				src={globalStore.user?.avatar}
-				alt="User icon"
-			/>
+<svelte:head><title>Settings · Common Goods</title></svelte:head>
 
-			<div>
-				<p class="text-xl">{globalStore.user?.username}</p>
-				<p class="text-xs italic text-gray-500 dark:text-gray-200">@{globalStore.user?.email}</p>
-			</div>
-		</div>
-		<h1 class="text-center text-lg font-bold md:text-xl">Settings</h1>
-		<div class="space-y-2 rounded-sm border p-2 md:rounded-md md:px-6 md:py-4">
-			<!-- change avatar -->
-			<div class="relative">
-				<SettingForm
-					heading="Change avatar"
-					disclosure={changeAvatar}
-					action="?/changeAvatar"
-					handler={handleChangeUserInfo('avatar', updateAvatar)}
-					{updating}
-					feedback={changeAvatarFeedback}
-				>
-					<input
-						required
-						class="mr-1 rounded-sm bg-white p-1"
-						type="file"
-						accept="image/*"
-						name="avatar"
-					/>
-				</SettingForm>
+{#snippet section(title: string, description: string)}
+	<div>
+		<h2 class="font-sans text-base font-semibold tracking-normal">{title}</h2>
+		<p class="mt-1 text-sm text-muted">{description}</p>
+	</div>
+{/snippet}
 
-				<!-- set to default if not already default avatar -->
-				{#if globalStore.user?.avatar !== '/images/icons8-user-64.png' && $changeAvatar.expanded}
-					<form
-						class="absolute bottom-4 right-4 px-2"
-						method="POST"
-						action="?/setDefaultAvatar"
-						use:enhance={handleChangeUserInfo('avatar', updateAvatar)}
-					>
-						<input type="hidden" bind:value={globalStore.user!.username} name="username" />
-						<Button disabled={updating}>Set default</Button>
-					</form>
-				{/if}
-			</div>
-
-			<!-- change username -->
-			<SettingForm
-				heading="Change display name"
-				disclosure={changeUsername}
-				action="?/changeUsername"
-				handler={handleChangeUserInfo('username', updateUsername)}
-				feedback={changeUsernameFeedback}
-				{updating}
-			>
-				<input
-					required
-					class="mr-1 rounded-sm p-1"
-					type="text"
-					bind:value={newUsername}
-					name="newUsername"
-					placeholder="New display name"
-				/>
-			</SettingForm>
-
-			<!-- change password -->
-			<SettingForm
-				{updating}
-				heading="Change password"
-				disclosure={changePassword}
-				action="?/changePassword"
-				handler={handleChangeUserInfo('password', updatePassword)}
-				feedback={changePassFeedback}
-			>
-				<PasswordInput
-					label="Show current password"
-					name="currentPassword"
-					placeholder="Current password"
-					show={showCurrentPass}
-					value={currentPass}
-				/>
-				<PasswordInput
-					label="Show new password"
-					name="newPassword"
-					placeholder="New password"
-					show={showNewPass}
-					value={newPass}
-				/>
-			</SettingForm>
-
-			<!-- log out -->
-			<LogoutButton />
-
-			<!-- delete account -->
-			<SettingForm
-				heading="Delete my account"
-				disclosure={deleteAccount}
-				action="?/deleteAccount"
-				handler={handleChangeUserInfo('delete', destroyAccount)}
-				{updating}
-				cta="I am sure"
-				{sessionDestroyed}
-			>
-				<p class="text-sm">Are you sure? This action cannot be undone</p>
-			</SettingForm>
+<section class="container-page max-w-3xl pt-10 sm:pt-14">
+	<div class="flex items-center gap-5">
+		<img
+			src={user.avatar}
+			alt=""
+			class="size-16 rounded-full border border-line bg-sand object-cover"
+		/>
+		<div>
+			<h1 class="text-4xl">{user.username}</h1>
+			<p class="text-muted">{user.email}</p>
 		</div>
 	</div>
-</div>
 
-<style>
-	input {
-		@apply dark:bg-gray-100 dark:text-dark;
-	}
-</style>
+	<div class="mt-10 divide-y divide-line card">
+		<div class="grid gap-4 p-6 sm:grid-cols-[14rem_1fr]">
+			{@render section('Avatar', 'PNG, JPEG, GIF or WebP, up to 2 MB.')}
+			<div class="grid gap-3">
+				<form
+					method="POST"
+					action="?/changeAvatar"
+					enctype="multipart/form-data"
+					use:enhance={submit(avatar)}
+					class="flex flex-wrap items-center gap-3"
+				>
+					<label for="avatar" class="sr-only">Avatar image</label>
+					<input
+						id="avatar"
+						name="avatar"
+						type="file"
+						accept="image/png,image/jpeg,image/gif,image/webp"
+						required
+						class="text-sm file:mr-3 file:rounded-full file:border file:border-line file:bg-surface file:px-4 file:py-2 file:text-sm file:font-semibold"
+					/>
+					<button class="btn-primary" disabled={avatar.pending}>Upload</button>
+				</form>
+				{#if hasCustomAvatar}
+					<form method="POST" action="?/resetAvatar" use:enhance={submit(avatar)}>
+						<button
+							class="text-sm text-muted underline underline-offset-4 hover:text-ink"
+							disabled={avatar.pending}>Use default avatar</button
+						>
+					</form>
+				{/if}
+				<FormMessage form={avatar} />
+			</div>
+		</div>
 
+		<div class="grid gap-4 p-6 sm:grid-cols-[14rem_1fr]">
+			{@render section('Display name', 'Shown in your account menu.')}
+			<form
+				method="POST"
+				action="?/changeUsername"
+				use:enhance={submit(name, { reset: false })}
+				class="grid gap-3"
+			>
+				<label for="username" class="sr-only">Display name</label>
+				<div class="flex gap-2">
+					<input
+						id="username"
+						name="username"
+						value={user.username}
+						required
+						minlength="2"
+						class="input"
+					/>
+					<button class="btn-primary" disabled={name.pending}>Save</button>
+				</div>
+				<FormMessage form={name} />
+			</form>
+		</div>
+
+		<div class="grid gap-4 p-6 sm:grid-cols-[14rem_1fr]">
+			{@render section('Password', 'Changing it signs out your other devices.')}
+			<form
+				method="POST"
+				action="?/changePassword"
+				use:enhance={submit(password)}
+				class="grid gap-4"
+			>
+				<PasswordInput
+					name="currentPassword"
+					label="Current password"
+					autocomplete="current-password"
+				/>
+				<PasswordInput
+					name="newPassword"
+					label="New password"
+					autocomplete="new-password"
+					minlength={8}
+				/>
+				<FormMessage form={password} />
+				<button class="btn-primary justify-self-start" disabled={password.pending}
+					>Update password</button
+				>
+			</form>
+		</div>
+
+		<div class="grid gap-4 p-6 sm:grid-cols-[14rem_1fr]">
+			{@render section(
+				'Delete account',
+				'Permanently removes your account, cart, wishlist and order history.'
+			)}
+			<div>
+				<button
+					class="btn-outline border-red-200 text-danger hover:border-danger"
+					onclick={() => confirmDelete.showModal()}
+				>
+					Delete account…
+				</button>
+			</div>
+		</div>
+	</div>
+</section>
+
+<dialog
+	bind:this={confirmDelete}
+	aria-labelledby="delete-title"
+	class="m-auto w-[calc(100%-2rem)] max-w-md rounded-3xl bg-surface p-6 text-ink backdrop:bg-ink/40"
+>
+	<h2 id="delete-title" class="text-2xl">Delete your account?</h2>
+	<p class="mt-2 text-muted">
+		This can’t be undone. Your cart, wishlist and order history will be removed.
+	</p>
+	<form
+		method="POST"
+		action="?/deleteAccount"
+		use:enhance={submit(remove)}
+		class="mt-6 flex justify-end gap-3"
+	>
+		<button type="button" class="btn-outline" onclick={() => confirmDelete.close()}>Cancel</button>
+		<button class="btn-danger" disabled={remove.pending}>Delete account</button>
+	</form>
+	<FormMessage form={remove} />
+</dialog>

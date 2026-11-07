@@ -1,34 +1,49 @@
 <script lang="ts">
-	import { AuthForm, PasswordInput } from 'components';
-	import { globalStore } from 'store';
-	import { goto } from '$app/navigation';
-	import { customEnhanceHandler } from 'utils';
-	import type { ActionData } from './$types';
-	import type { TSignupSuccess } from './+page.server';
+	import { enhance } from '$app/forms';
+	import LoaderCircle from '@lucide/svelte/icons/loader-circle';
+	import FormMessage from '$lib/components/FormMessage.svelte';
+	import PasswordInput from '$lib/components/PasswordInput.svelte';
+	import { newFormState, submit } from '$lib/forms';
 
-	let email = $state('');
-	let username = $state('');
-	let password = $state('');
-	let showPassword = $state(false);
-
-	let formState = $state({ error: '', loading: false });
-
-	const handleSignup = customEnhanceHandler<ActionData, TSignupSuccess>((data) => {
-		globalStore.user = data.user;
-		formState.loading = false;
-		goto(data.redirectTo);
-	}, formState);
+	const form = $state(newFormState());
 </script>
 
-<AuthForm {formState} handler={handleSignup} route="/signup">
-	<input type="text" bind:value={username} name="username" placeholder="Username" required />
-	<input type="email" bind:value={email} name="email" placeholder="Email" required />
-	<PasswordInput
-		label="Create password"
-		name="password"
-		placeholder="Password"
-		show={showPassword}
-		value={password}
-	/>
-</AuthForm>
+<svelte:head><title>Create an account · Common Goods</title></svelte:head>
 
+<section class="container-page grid place-items-center py-16 sm:py-24">
+	<div class="w-full max-w-sm">
+		<h1 class="text-4xl">Create an account</h1>
+		<p class="mt-2 text-muted">Save favourites, keep a cart, and check out faster.</p>
+
+		<form method="POST" use:enhance={submit(form, { reset: false })} class="mt-8 grid gap-5">
+			<div class="field">
+				<label for="username">Display name</label>
+				<input
+					id="username"
+					name="username"
+					autocomplete="nickname"
+					required
+					minlength="2"
+					class="input"
+				/>
+			</div>
+			<div class="field">
+				<label for="email">Email</label>
+				<input id="email" name="email" type="email" autocomplete="email" required class="input" />
+			</div>
+			<PasswordInput name="password" label="Password" autocomplete="new-password" minlength={8} />
+			<FormMessage {form} />
+			<button class="btn-primary py-3 text-base" disabled={form.pending}>
+				{#if form.pending}<LoaderCircle class="size-4 animate-spin" />{/if}
+				Create account
+			</button>
+		</form>
+
+		<p class="mt-6 text-center text-sm text-muted">
+			Already have an account? <a
+				href="/sign-in"
+				class="font-semibold text-ink underline underline-offset-4">Sign in</a
+			>
+		</p>
+	</div>
+</section>

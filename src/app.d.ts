@@ -1,17 +1,16 @@
-// See https://svelte.dev/docs/kit/types#app.d.ts
-// for information about these interfaces
+import type { TUser } from 'models';
+import type { TProductState, TPublicUser } from '$lib/types';
+
 declare global {
-        namespace App {
-                interface Locals {
-                        user: TUser;
-                }
-                // interface Error {}
-                // interface Locals {}
-                // interface PageData {}
-                // interface PageState {}
-                // interface Platform {}
-        }
+	namespace App {
+		interface Locals {
+			user: TUser | undefined;
+		}
+		interface PageData {
+			user?: TPublicUser;
+			userProducts?: TProductState[];
+		}
+	}
 }
 
-export { };
-
+export {};

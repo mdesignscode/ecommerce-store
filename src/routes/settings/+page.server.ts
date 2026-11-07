@@ -1,176 +1,96 @@
-import bcrypt from 'bcryptjs';
-import fs from 'fs/promises';
-import path from 'path';
 import { fail, redirect } from '@sveltejs/kit';
+import bcrypt from 'bcryptjs';
+import { randomUUID } from 'node:crypto';
+import { mkdir, unlink, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { Op } from 'sequelize';
+import { z } from 'zod';
+import { ProductState, Session, User } from 'models';
+import { DEFAULT_AVATAR, parseForm, requireUser } from 'utils';
+import { endOtherSessions, endSession } from 'utils/session';
+import { AVATAR_DIR, AVATAR_MAX_BYTES, detectImageType } from '$lib/server/avatars';
 import type { Actions, PageServerLoad } from './$types';
-import { User, Session } from 'models';
-import { encodeHexLowerCase } from '@oslojs/encoding';
-import { sha256 } from '@oslojs/crypto/sha2';
-import { randomUUID } from 'crypto';
-import { unlink } from 'fs/promises';
-import z from 'zod';
-import { validateFormSubmission, type ExtractSuccess } from 'utils';
 
 export const load: PageServerLoad = ({ locals }) => {
-        const user = locals.user;
-        if (!user) throw redirect(302, '/sign-in');
+	requireUser(locals);
+};
+
+const UsernameSchema = z.object({
+	username: z.string().trim().min(2, 'Display name must be at least 2 characters')
+});
+
+const PasswordSchema = z.object({
+	currentPassword: z.string().min(1, 'Enter your current password'),
+	newPassword: z.string().min(8, 'New password must be at least 8 characters')
+});
+
+async function removeUploadedAvatar(avatar: string) {
+	if (!avatar.startsWith('/avatars/')) return;
+	await unlink(path.join(AVATAR_DIR, path.basename(avatar))).catch(() => {});
 }
-
-const ChangeAvatarSchema = z.object({
-        avatar: z.file(),
-})
-
-const ChangeUsernameSchema = z.object({
-        newUsername: z.string().min(2, "New username required (min 2 characters)"),
-});
-
-const ChangePasswordSchema = z.object({
-        currentPassword: z.string(),
-        newPassword: z.string(),
-});
 
 export const actions = {
-        setDefaultAvatar: async ({ locals }) => {
-                const user = locals.user;
-               if (!user) throw redirect(302, '/sign-in')
+	changeAvatar: async ({ request, locals }) => {
+		const user = requireUser(locals);
+		const file = (await request.formData()).get('avatar');
+		if (!(file instanceof File) || file.size === 0)
+			return fail(400, { error: 'Choose an image to upload.' });
+		if (file.size > AVATAR_MAX_BYTES)
+			return fail(400, { error: 'Images must be 2 MB or smaller.' });
 
-                const defaultPath = '/images/icons8-user-64.png';
+		const buffer = Buffer.from(await file.arrayBuffer());
+		const type = detectImageType(buffer);
+		if (!type) return fail(400, { error: 'Upload a PNG, JPEG, GIF or WebP image.' });
 
-                if (user.get('avatar') === defaultPath)
-                        return { message: "Avatar unchanged", user: user.get() };
+		const filename = `${randomUUID()}.${type.ext}`;
+		await mkdir(AVATAR_DIR, { recursive: true });
+		await writeFile(path.join(AVATAR_DIR, filename), buffer);
 
-                // remove prev avatar
-                try {
-                        await unlink('static' + user.get('avatar'));
-                } catch { ; }
+		await removeUploadedAvatar(user.get('avatar'));
+		await user.update({ avatar: `/avatars/${filename}` });
+		return { message: 'Avatar updated.' };
+	},
+	resetAvatar: async ({ locals }) => {
+		const user = requireUser(locals);
+		await removeUploadedAvatar(user.get('avatar'));
+		await user.update({ avatar: DEFAULT_AVATAR });
+		return { message: 'Avatar reset.' };
+	},
+	changeUsername: async ({ request, locals }) => {
+		const user = requireUser(locals);
+		const form = await parseForm(UsernameSchema, request);
+		if (!form.ok) return form.failure;
+		const { username } = form.data;
 
-                user.setDataValue('avatar', defaultPath);
-                await user.save()
+		const taken = await User.findOne({ where: { username, id: { [Op.ne]: user.id } } });
+		if (taken) return fail(400, { error: 'That display name is taken.' });
 
-                return { message: "Avatar updated", user: user.get() };
-        },
-        changeAvatar: async ({ request, locals }) => {
-                const user = locals.user;
-                if (!user) throw redirect(302, '/sign-in');
+		await user.update({ username });
+		return { message: 'Display name updated.' };
+	},
+	changePassword: async ({ request, locals, cookies }) => {
+		const sessionUser = requireUser(locals);
+		const form = await parseForm(PasswordSchema, request);
+		if (!form.ok) return form.failure;
+		const { currentPassword, newPassword } = form.data;
 
-                const formParser = await validateFormSubmission<z.infer<typeof ChangeAvatarSchema>>(
-                        ChangeAvatarSchema, request, 'Provide a valid image type'
-                );
-                if (formParser.isInvalid) return formParser.failure();
-                const { avatar } = formParser.result;
+		// locals.user is loaded without the password hash, so fetch it here.
+		const user = await User.findByPk(sessionUser.id);
+		if (!user || !(await bcrypt.compare(currentPassword, user.get('password')))) {
+			return fail(400, { error: 'Your current password is incorrect.' });
+		}
 
-                const defaultPath = '/images/icons8-user-64.png';
-
-                if (!avatar) return fail(400, { error: 'Missing avatar' });
-
-                // generate image buffer
-                const arrayBuffer = await (avatar as any).arrayBuffer() as ArrayBuffer;
-                const buffer = Buffer.from(arrayBuffer);
-
-                if (!isImageBuffer(buffer)) return fail(400, { error: 'Upload images only' });
-
-                // generate file name
-                const basePath = '/images/uploads/';
-                const extension = avatar.name.split('.').at(-1);
-                const filename = `${user.get.username}_${randomUUID()}.${extension}`;
-
-                // remove prev avatar
-                if (user.get('avatar') !== defaultPath)
-                        await unlink('static' + user.get('avatar'));
-
-                // save image to disc
-                const filePath = path.resolve('static' + basePath, filename)
-                await fs.writeFile(filePath, buffer);
-
-                // update user data
-                user.setDataValue('avatar', basePath + filename);
-                await user.save();
-
-                return { message: "Avatar updated", user: user.get };
-        },
-        changeUsername: async ({ request, locals }) => {
-                const user = locals.user;
-                if (!user) throw redirect(302, '/sign-in');
-
-                const formParser = await validateFormSubmission<z.infer<typeof ChangeUsernameSchema>>(
-                        ChangeUsernameSchema, request, 'New and old password required'
-                );
-                if (formParser.isInvalid) return formParser.failure();
-                const { newUsername } = formParser.result;
-
-                user.setDataValue('username', newUsername);
-                await user.save();
-                return {
-                        message: "Display name changed",
-                        user: user.get(),
-                };
-        },
-        changePassword: async ({ request, locals }) => {
-                const user = locals.user;
-                if (!user) throw redirect(302, '/sign-in');
-
-                const formParser = await validateFormSubmission<z.infer<typeof ChangePasswordSchema>>(
-                        ChangePasswordSchema, request, 'New and old password required'
-                );
-                if (formParser.isInvalid) return formParser.failure();
-                const { newPassword, currentPassword } = formParser.result;
-
-                const validPassword = await bcrypt.compare(currentPassword, user.get('password'));
-                if (!validPassword) {
-                        return fail(400, { error: 'Invalid password.' });
-                }
-
-                const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-                user.setDataValue('password', hashedPassword);
-                await user.save();
-                const userData = user.get();
-                delete userData.password;
-
-                return { user: userData, message: 'Password updated' }
-        },
-        logout: async ({ cookies }) => {
-                const token = cookies.get('session');
-                if (!token) throw redirect(302, "/sign-in");
-                const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-                await Session.destroy({ where: { id: sessionId } })
-                cookies.delete('session', { path: '/' });
-                return { user: null, redirectTo: '/sign-in', message: 'Logged out' };
-        },
-        deleteAccount: async ({ locals }) => {
-                const user = locals.user;
-                if (!user) throw redirect(302, '/sign-in');
-
-                await User.destroy({
-                        where: { username: user.get('username') },
-                });
-                return { user: null, redirectTo: '/signup', message: 'Account deleted' };
-        },
+		await user.update({ password: await bcrypt.hash(newPassword, 10) });
+		await endOtherSessions(cookies, user.id);
+		return { message: 'Password updated. Other devices have been signed out.' };
+	},
+	deleteAccount: async ({ locals, cookies }) => {
+		const user = requireUser(locals);
+		await endSession(cookies);
+		await removeUploadedAvatar(user.get('avatar'));
+		await ProductState.destroy({ where: { userId: user.id } });
+		await Session.destroy({ where: { userId: user.id } });
+		await user.destroy();
+		redirect(303, '/');
+	}
 } satisfies Actions;
-
-export type TSetDefaultAvatarSuccess = ExtractSuccess<typeof actions.setDefaultAvatar>;
-export type TChangeAvatarSuccess = ExtractSuccess<typeof actions.changeAvatar>;
-export type TChangeUsernameSuccess = ExtractSuccess<typeof actions.changeUsername>;
-export type TChangePasswordSuccess = ExtractSuccess<typeof actions.changePassword>;
-export type TLogoutSuccess = ExtractSuccess<typeof actions.logout>;
-export type TDeleteAccountSuccess = ExtractSuccess<typeof actions.deleteAccount>;
-
-function isImageBuffer(buffer: Buffer): boolean {
-        const magicNumbers = [
-                { type: 'image/png', magic: [0x89, 0x50, 0x4E, 0x47] }, // PNG
-                { type: 'image/jpeg', magic: [0xFF, 0xD8, 0xFF, 0xE0] }, // JPEG (JFIF)
-                { type: 'image/gif', magic: [0x47, 0x49, 0x46, 0x38] }, // GIF
-                { type: 'image/webp', magic: [0x52, 0x49, 0x46, 0x46] }, // WebP
-                { type: 'image/bmp', magic: [0x42, 0x4D] } // BMP (BM)
-        ];
-
-        // Check the first few bytes of the buffer
-        for (let img of magicNumbers) {
-                if (buffer.slice(0, img.magic.length).every((byte, index) => byte === img.magic[index])) {
-                        return true;
-                }
-        }
-
-        return false;
-}
-

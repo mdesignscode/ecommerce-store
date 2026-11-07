@@ -1,143 +1,83 @@
 <script lang="ts">
-	import { VerificationCodeInput, SpinningLoader } from 'components';
-	import { createDisclosure } from 'svelte-headlessui';
 	import { enhance } from '$app/forms';
-	import { goto } from '$app/navigation';
-	import { globalStore } from 'store';
-	import { customEnhanceHandler } from 'utils';
-	import type { ActionData } from './$types.js';
-	import type {
-		TChangeEmailSuccess,
-		TEmailVerificationSuccess,
-		TResendCodeSuccess
-	} from './+page.server.js';
-	import { Button } from 'flowbite-svelte';
-
-	const changeEmail = createDisclosure({ expanded: false });
+	import LoaderCircle from '@lucide/svelte/icons/loader-circle';
+	import FormMessage from '$lib/components/FormMessage.svelte';
+	import { newFormState, submit } from '$lib/forms';
 
 	let { data } = $props();
-
-	type TRequestState = { loading: boolean; message: string; error: string };
-
-	let email = $state(data.email);
-	let newEmail = $state('');
-	let updatingEmail: TRequestState = $state({ loading: false, message: '', error: '' });
-	let resendingEmail: TRequestState = $state({ loading: false, message: '', error: '' });
-	let verifyingEmail: TRequestState = $state({ loading: false, message: '', error: '' });
-	let loading = $derived(
-		[updatingEmail, resendingEmail, verifyingEmail].some(({ loading }) => loading)
-	);
-
-	type RequestSuccessMap = {
-		verify: TEmailVerificationSuccess;
-		change: TChangeEmailSuccess;
-		resend: TResendCodeSuccess;
-	};
-
-	const handleUserAction = <K extends keyof RequestSuccessMap>(
-		type: K,
-		requestState: TRequestState,
-	) =>
-		customEnhanceHandler<ActionData, RequestSuccessMap[K]>((data) => {
-			globalStore.user = data.user;
-			requestState.loading = false;
-
-			if ('newEmail' in data) {
-				// newEmail exists only on the change response
-				email = data.newEmail;
-				newEmail = '';
-				changeEmail.close();
-			} else if (type === 'resend') {
-				requestState.error = '';
-				verifyingEmail.error = '';
-			}
-
-			if ('redirectTo' in data && data.redirectTo) goto(data.redirectTo);
-		}, requestState);
+	const verify = $state(newFormState());
+	const resend = $state(newFormState());
+	const change = $state(newFormState());
 </script>
 
-<div class="col mx-auto gap-4 p-8 md:w-3/6">
-	<p>Enter the code sent to {email}</p>
+<svelte:head><title>Verify your email · Common Goods</title></svelte:head>
 
-	<div
-		class="col gap-2 space-y-2 overflow-y-auto rounded-lg border-2 p-4 shadow-md dark:border-transparent dark:bg-neutral-500"
-	>
-		<form
-			id="verification-form"
-			action="?/verifyCode"
-			class="col gap-2"
-			use:enhance={handleUserAction('verify', verifyingEmail)}
-			method="POST"
-		>
-			<VerificationCodeInput error={verifyingEmail.error} />
-			<Button disabled={loading}>
-				Send
-				{#if verifyingEmail.loading}
-					<SpinningLoader size="8" />
-				{/if}
-			</Button>
+<section class="container-page grid place-items-center py-16 sm:py-24">
+	<div class="w-full max-w-sm">
+		<h1 class="text-4xl">Check your inbox</h1>
+		<p class="mt-2 text-muted">
+			We sent a 6-digit code to <strong class="text-ink">{data.email}</strong>. It expires in 10
+			minutes.
+		</p>
 
-			{#if verifyingEmail.error}
-				<p class="text-red-800">{verifyingEmail.error}</p>
-			{/if}
-		</form>
-
-		<form
-			id="verification-form"
-			use:enhance={handleUserAction('resend', resendingEmail)}
-			action="?/resendCode"
-			method="POST"
-		>
-			{#if resendingEmail.loading}
-				<div class="flex items-center gap-2">
-					Requesting new code
-					<SpinningLoader size="8" />
-				</div>
-			{:else}
-				<button class="underline">Request new code</button>
-			{/if}
-		</form>
-
-		<div class="col gap-3">
-			<div class="flex gap-2 text-sm">
-				<p>Didn't receive a code?</p>
-				<button class={{ underline: !$changeEmail.expanded }} type="button" use:changeEmail.button
-					>Change email</button
-				>
+		<form method="POST" action="?/verifyCode" use:enhance={submit(verify)} class="mt-8 grid gap-4">
+			<div class="field">
+				<label for="code">Verification code</label>
+				<input
+					id="code"
+					name="code"
+					required
+					inputmode="numeric"
+					autocomplete="one-time-code"
+					pattern="\d{6}"
+					maxlength="6"
+					class="input text-center font-mono text-2xl tracking-[0.5em]"
+				/>
 			</div>
+			<FormMessage form={verify} />
+			<button class="btn-primary py-3 text-base" disabled={verify.pending}>
+				{#if verify.pending}<LoaderCircle class="size-4 animate-spin" />{/if}
+				Verify email
+			</button>
+		</form>
 
-			{#if $changeEmail.expanded}
+		<div class="mt-8 space-y-4 border-t border-line pt-6 text-sm">
+			<form method="POST" action="?/resendCode" use:enhance={submit(resend)} class="space-y-3">
+				<p class="text-muted">
+					Didn’t get it?
+					<button
+						class="font-semibold text-ink underline underline-offset-4"
+						disabled={resend.pending}
+					>
+						{resend.pending ? 'Sending…' : 'Send a new code'}
+					</button>
+				</p>
+				<FormMessage form={resend} />
+			</form>
+
+			<details class="group">
+				<summary class="cursor-pointer text-muted marker:text-line">Wrong email address?</summary>
 				<form
-					use:changeEmail.panel
-					class="flex flex-wrap gap-2"
-					action="?/changeEmail"
 					method="POST"
-					use:enhance={handleUserAction('change', updatingEmail)}
+					action="?/changeEmail"
+					use:enhance={submit(change)}
+					class="mt-3 grid gap-3"
 				>
-					<input
-						class="rounded-md p-2 dark:text-dark"
-						placeholder="New email"
-						type="email"
-						bind:value={newEmail}
-						name="newEmail"
-					/>
-					<Button disabled={loading}>
-						Change
-						{#if updatingEmail.loading}
-							<SpinningLoader size="8" />
-						{/if}
-					</Button>
+					<label for="newEmail" class="sr-only">New email</label>
+					<div class="flex gap-2">
+						<input
+							id="newEmail"
+							name="newEmail"
+							type="email"
+							required
+							placeholder="you@example.com"
+							class="input"
+						/>
+						<button class="btn-outline" disabled={change.pending}>Update</button>
+					</div>
+					<FormMessage form={change} />
 				</form>
-			{/if}
+			</details>
 		</div>
 	</div>
-</div>
-
-<style>
-	@media (prefers-color-scheme: dark) {
-		:global(#verification-form button:hover) {
-			@apply border-dark text-dark;
-		}
-	}
-</style>
-
+</section>

@@ -1,46 +1,36 @@
 <script lang="ts">
-	import { Navbar } from 'components';
-	import favicon from '$lib/assets/favicon.svg';
 	import '../app.css';
-	import type { Snippet } from 'svelte';
-	import type { TUserAttributes } from 'models';
-	import { globalStore, type TProductState } from 'store';
-	import { updateUserLists } from 'utils';
+	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/state';
+	import Header from '$lib/components/Header.svelte';
+	import Footer from '$lib/components/Footer.svelte';
+	import CartDrawer from '$lib/components/CartDrawer.svelte';
+	import Toast from '$lib/components/Toast.svelte';
 
-	const isAdminPage = new RegExp('/admin(?=\/|$)').test(page.url.pathname);
-
-	interface Props {
-		children: Snippet<[]> | undefined;
-		data: {
-			user: TUserAttributes;
-			userProducts: TProductState[];
-		};
-	}
-
-	let { children, data }: Props = $props();
-	const { userProducts, user } = data;
-
-	if (user && !globalStore.user) {
-		globalStore.user = user;
-		updateUserLists(userProducts);
-		globalStore.products = Object.fromEntries(userProducts.map((p) => [p.productId, p]));
-	}
+	let { children, data } = $props();
+	const isAdmin = $derived(page.route.id?.startsWith('/admin') ?? false);
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="col h-full">
-	{#if isAdminPage}
-		{@render children?.()}
-	{:else}
-		<main class="flex-1 overflow-y-auto">
-			{@render children?.()}
+<a
+	href="#main"
+	class="sr-only z-50 rounded-full bg-ink px-4 py-2 text-paper focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+	>Skip to content</a
+>
+
+{#if isAdmin}
+	{@render children()}
+{:else}
+	<div class="flex min-h-dvh flex-col">
+		<Header categories={data.categories} />
+		<main id="main" class="flex-1">
+			{@render children()}
 		</main>
-
-		<Navbar />
-	{/if}
-</div>
-
+		<Footer />
+	</div>
+	<CartDrawer />
+{/if}
+<Toast />

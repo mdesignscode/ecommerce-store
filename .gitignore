@@ -25,3 +25,7 @@ vite.config.ts.timestamp-*
 # db
 database.sqlite
 
+uploads
+
+# seeded product images (regenerate with bun run db:seed)
+/static/products
