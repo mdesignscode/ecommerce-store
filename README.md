@@ -1,78 +1,38 @@
+# sv
 
-# E-commerce store
+Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
-A basic implementation of an e-commerce web app implementing features such as payment gateway, user authentication, add to cart and product listing.
+## Creating a project
 
+If you're seeing this, you've probably already done this step. Congrats!
 
-## Demo
+```sh
+# create a new project in the current directory
+npx sv create
 
-https://mdesigns-estore.vercel.app/
-
-
-## Dependancies
-
-[Bun](https://bun.sh/)
-
-[Clerk.js](https://clerk.com/) - Create an account and a new app
-
-[PostgreSQL](https://www.postgresql.org/)
-
-[Stripe.js](https://stripe.com/) - Create an account
-## Installation
-
-1. Clone this project:
-
-```bash
-  git clone https://github.com/mdesignscode/ecommerce-store
+# create a new project in my-app
+npx sv create my-app
 ```
 
-2. Install dependancies
+## Developing
 
-```bash
-  cd ecommerce-store
-  bun install
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+
+```sh
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
 ```
 
-3. Run the project locally
+## Building
 
-```bash
-  bun start
+To create a production version of your app:
+
+```sh
+npm run build
 ```
-## Environment Variables
 
-To run this project, you will need to add the following environment variables to your .env file
+You can preview the production build with `npm run preview`.
 
-`DATABASE_URL="url to connect to your databse"`
-
-`DIRECT_URL="url used for database migrations"`
-
-`NEXT_PUBLIC_HOST_URL="url for your site"`
-
-`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="get public key from Clerk`
-`CLERK_SECRET_KEY="get secretkey from Clerk"`
-
-`NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in`
-`NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up`
-`NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/`
-`NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/`
-
-`WEBHOOK_SECRET="get webhook secret from Clerk"`
-
-`STRIPE_SECRET="get secret key from Stripe"`
-`NEXT_PUBLIC_STRIPE_PUBLIC="get public key from Stripe`
-
-## Dependancies
-
-[Bun](https://bun.sh/)
-
-[Clerk.js](https://clerk.com/) - Create an account and a new app
-
-[PostgreSQL](https://www.postgresql.org/)
-
-[Stripe.js](https://stripe.com/) - Create an account
-## Acknowledgements
-
- - [Dummy JSON](https://dummyjson.com)
- - [EscuelaJS](https://api.escuelajs.co)
- - [Picsum Photos](https://picsum.photost)
-
+> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.

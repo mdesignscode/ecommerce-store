@@ -1,0 +1,94 @@
+<script lang="ts">
+	import { ShoppingBagOutline, CloseCircleSolid } from 'flowbite-svelte-icons';
+	import { Button, Tooltip } from 'flowbite-svelte';
+	import ShoppingCartUnavailable from './ShoppingCartUnavailable.svelte';
+	import { globalStore } from 'store';
+	import { customEnhanceHandler, getDiscountPrice } from 'utils';
+	import type { TAddToListSuccess } from 'addToUserList/+page.server';
+	import type { ActionData } from '../../addToUserList/$types';
+	import { enhance } from '$app/forms';
+	import type { TProductAttributes } from 'models';
+
+	let removingCartItem = $derived(
+		Object.fromEntries(globalStore.shoppingCart.map((p) => [p.productId, false]))
+	);
+	let formState = $state({ error: '', loading: false });
+	const removeFromShoppingCart = (productId: TProductAttributes['id']) =>
+		customEnhanceHandler<ActionData, TAddToListSuccess>(
+			(data) => {
+				const { productState: cartItemState } = data;
+
+				// remove product state from cart
+				const filteredList = globalStore.shoppingCart.filter((p) => p.productId !== productId);
+				globalStore.shoppingCart = filteredList;
+
+				globalStore.products[productId] = cartItemState;
+				removingCartItem[productId] = false;
+			},
+			formState,
+			() => (removingCartItem[productId] = true)
+		);
+</script>
+
+{#if !globalStore.user}
+	<ShoppingCartUnavailable reason="no user" />
+{:else if !globalStore.shoppingCart || !globalStore.shoppingCart.length}
+	<ShoppingCartUnavailable reason="cart empty" />
+{:else}
+	<section class="flex flex-col gap-2 p-2 flex-1 overflow-y-auto">
+		{#each globalStore.shoppingCart as { Product: item }}
+			<div class="rounded-lg p-4 relative border-2 flex flex-col gap-2 border-dark">
+				<div class="flex gap-4">
+					<img
+						src={item.Images[0].url || ''}
+						class="rounded-lg w-14 md:w-16 h-auto"
+						alt="Product Preview"
+						width={56}
+						height={56}
+					/>
+
+					<strong class={item.discountPercentage ? 'text-pink-400' : 'text-secondary-dark'}>
+						${''}
+						{item.discountPercentage
+							? getDiscountPrice(item.Price.amount, item.discountPercentage)
+							: item.Price.amount}
+					</strong>
+				</div>
+
+				<p>{item.title}</p>
+
+				<form
+					method="POST"
+					use:enhance={removeFromShoppingCart(item.id)}
+					action="/addToUserList?/addToList"
+				>
+					<Button
+						type="submit"
+						disabled={removingCartItem[item.id]}
+						class={[
+							'absolute -top-2 -right-2 rounded-full text-dark',
+							{
+								'animate-spin': removingCartItem[item.id]
+							},
+							{ 'cursor-not-allowed': removingCartItem[item.id] }
+						]}
+						aria-label="Remove from shopping cart"
+					>
+						<CloseCircleSolid width={30} />
+					</Button>
+					<input type="hidden" name="listKey" value="isInCart" />
+					<input type="hidden" value={item.id} name="productId" />
+					<Tooltip>Remove from Shopping Cart</Tooltip>
+				</form>
+			</div>
+		{/each}
+
+		<a href="/checkout" class="mt-auto mx-auto">
+			<Button color="primary" class="flex gap-4 text-dark">
+				<span>Checkout</span>
+				<ShoppingBagOutline width={25} />
+			</Button>
+		</a>
+	</section>
+{/if}
+
