@@ -20,7 +20,7 @@
 	aria-labelledby="cart-title"
 	onclose={() => (ui.cartOpen = false)}
 	onclick={(e) => e.target === dialog && (ui.cartOpen = false)}
-	class="drawer m-0 ml-auto h-dvh max-h-none w-full max-w-md bg-paper text-ink backdrop:bg-ink/40 backdrop:backdrop-blur-[2px] open:flex open:flex-col"
+	class="drawer m-0 ml-auto h-dvh max-h-none w-full max-w-md bg-paper text-ink backdrop:bg-scrim/40 backdrop:backdrop-blur-[2px] open:flex open:flex-col"
 >
 	<header class="flex items-center justify-between border-b border-line px-5 py-4">
 		<h2 id="cart-title" class="text-2xl">Your cart</h2>

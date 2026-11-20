@@ -128,7 +128,7 @@
 			)}
 			<div>
 				<button
-					class="btn-outline border-red-200 text-danger hover:border-danger"
+					class="btn-outline border-danger-line text-danger hover:border-danger"
 					onclick={() => confirmDelete.showModal()}
 				>
 					Delete account…
@@ -141,7 +141,7 @@
 <dialog
 	bind:this={confirmDelete}
 	aria-labelledby="delete-title"
-	class="m-auto w-[calc(100%-2rem)] max-w-md rounded-3xl bg-surface p-6 text-ink backdrop:bg-ink/40"
+	class="m-auto w-[calc(100%-2rem)] max-w-md rounded-3xl bg-surface p-6 text-ink backdrop:bg-scrim/40"
 >
 	<h2 id="delete-title" class="text-2xl">Delete your account?</h2>
 	<p class="mt-2 text-muted">

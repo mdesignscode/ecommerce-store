@@ -1,3 +1,26 @@
+<script lang="ts">
+	import { onMount } from 'svelte';
+
+	let theme = $state('system');
+
+	onMount(() => {
+		theme = document.documentElement.dataset.theme ?? 'system';
+	});
+
+	function changeTheme(event: Event) {
+		theme = (event.currentTarget as HTMLSelectElement).value;
+		if (theme === 'system') delete document.documentElement.dataset.theme;
+		else document.documentElement.dataset.theme = theme;
+
+		try {
+			if (theme === 'system') localStorage.removeItem('store-theme');
+			else localStorage.setItem('store-theme', theme);
+		} catch {
+			// The selection still applies for this visit.
+		}
+	}
+</script>
+
 <footer class="mt-24 border-t border-line">
 	<div class="container-page grid gap-8 py-12 text-sm sm:grid-cols-3">
 		<div class="space-y-2">
@@ -18,7 +41,24 @@
 			<a href="/settings" class="hover:underline">Settings</a>
 		</nav>
 	</div>
-	<div class="container-page border-t border-line py-6 text-xs text-muted">
-		© {new Date().getFullYear()} Common Goods. A demo store — no real orders are shipped.
+	<div
+		class="container-page flex flex-wrap items-center justify-between gap-4 border-t border-line py-6 text-xs text-muted"
+	>
+		<span
+			>© {new Date().getFullYear()} Common Goods. A demo store — no real orders are shipped.</span
+		>
+		<div class="flex items-center gap-2">
+			<label for="store-theme">Theme</label>
+			<select
+				id="store-theme"
+				value={theme}
+				onchange={changeTheme}
+				class="rounded-lg border border-line bg-surface px-2 py-1.5 text-sm text-ink"
+			>
+				<option value="system">System</option>
+				<option value="light">Light</option>
+				<option value="dark">Dark</option>
+			</select>
+		</div>
 	</div>
 </footer>

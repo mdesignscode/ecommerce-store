@@ -19,7 +19,7 @@
 		/>
 		{#if product.discountPercentage}
 			<span
-				class="absolute top-3 left-3 rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-white"
+				class="absolute top-3 left-3 rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-on-accent"
 			>
 				−{product.discountPercentage}%
 			</span>

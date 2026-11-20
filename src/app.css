@@ -6,21 +6,36 @@
 	--font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
 	--font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
 
-	--color-paper: #fbf8f1;
-	--color-surface: #ffffff;
-	--color-sand: #f1ece1;
-	--color-line: #e4ddcf;
-	--color-ink: #1f1d1a;
-	--color-muted: #6b655c;
-	--color-accent: #c4471a;
-	--color-accent-strong: #a63a12;
-	--color-accent-soft: #fbe6dc;
-	--color-success: #2f6b3f;
-	--color-danger: #b42318;
+	--color-paper: light-dark(#fbf8f1, #191714);
+	--color-surface: light-dark(#ffffff, #24211e);
+	--color-sand: light-dark(#f1ece1, #302c27);
+	--color-line: light-dark(#e4ddcf, #4b453d);
+	--color-ink: light-dark(#1f1d1a, #f7f1e6);
+	--color-muted: light-dark(#6b655c, #bdb4a7);
+	--color-accent: light-dark(#c4471a, #ff9b70);
+	--color-accent-strong: light-dark(#a63a12, #ffb491);
+	--color-accent-soft: light-dark(#fbe6dc, #492d22);
+	--color-success: light-dark(#2f6b3f, #91d39f);
+	--color-danger: light-dark(#b42318, #ff9990);
+	--color-on-accent: light-dark(white, #241810);
+	--color-on-danger: light-dark(white, #2b1716);
+	--color-danger-hover: light-dark(var(--color-red-800), #ffb4ad);
+	--color-danger-soft: light-dark(var(--color-red-50), #432827);
+	--color-success-soft: light-dark(var(--color-emerald-50), #23382b);
+	--color-danger-line: light-dark(var(--color-red-200), #82514c);
+	--color-scrim: light-dark(#1f1d1a, #000);
 }
 
 @layer base {
 	:root {
+		color-scheme: light dark;
+	}
+
+	:root[data-theme='dark'] {
+		color-scheme: dark;
+	}
+
+	:root[data-theme='light'] {
 		color-scheme: light;
 	}
 
@@ -71,7 +86,7 @@
 }
 
 @utility btn-accent {
-	@apply btn bg-accent text-white hover:bg-accent-strong;
+	@apply btn bg-accent text-on-accent hover:bg-accent-strong;
 }
 
 @utility btn-outline {
@@ -79,7 +94,7 @@
 }
 
 @utility btn-danger {
-	@apply btn bg-danger text-white hover:bg-red-800;
+	@apply btn bg-danger text-on-danger hover:bg-danger-hover;
 }
 
 @utility btn-icon {

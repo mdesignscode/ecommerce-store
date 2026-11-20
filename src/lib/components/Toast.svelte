@@ -13,7 +13,7 @@
 				transition:fly={{ y: 16, duration: 200 }}
 				class={[
 					'rounded-full px-5 py-3 text-sm font-medium shadow-lg',
-					ui.toast.tone === 'error' ? 'bg-danger text-white' : 'bg-ink text-paper'
+					ui.toast.tone === 'error' ? 'bg-danger text-on-danger' : 'bg-ink text-paper'
 				]}
 			>
 				{ui.toast.text}
