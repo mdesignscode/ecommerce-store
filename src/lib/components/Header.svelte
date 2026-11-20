@@ -22,7 +22,7 @@
 {#snippet count(n: number)}
 	{#if n > 0}
 		<span
-			class="absolute -top-0.5 -right-0.5 grid min-w-5 place-items-center rounded-full bg-accent px-1 text-[0.7rem] leading-5 font-semibold text-white tabular-nums"
+			class="absolute -top-0.5 -right-0.5 grid min-w-5 place-items-center rounded-full bg-accent px-1 text-[0.7rem] leading-5 font-semibold text-on-accent tabular-nums"
 			aria-hidden="true">{n}</span
 		>
 	{/if}

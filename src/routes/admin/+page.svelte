@@ -119,7 +119,7 @@
 	bind:this={dialog}
 	aria-labelledby="del-title"
 	onclose={() => (pendingDelete = null)}
-	class="m-auto w-[calc(100%-2rem)] max-w-md rounded-3xl bg-surface p-6 text-ink backdrop:bg-ink/40"
+	class="m-auto w-[calc(100%-2rem)] max-w-md rounded-3xl bg-surface p-6 text-ink backdrop:bg-scrim/40"
 >
 	<h2 id="del-title" class="text-2xl">Delete product?</h2>
 	<p class="mt-2 text-muted">

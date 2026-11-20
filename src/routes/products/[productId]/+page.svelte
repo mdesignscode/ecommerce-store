@@ -68,7 +68,7 @@
 				/>
 				{#if product.discountPercentage}
 					<span
-						class="absolute top-4 left-4 rounded-full bg-accent px-3 py-1.5 text-sm font-semibold text-white"
+						class="absolute top-4 left-4 rounded-full bg-accent px-3 py-1.5 text-sm font-semibold text-on-accent"
 					>
 						Save {product.discountPercentage}%
 					</span>

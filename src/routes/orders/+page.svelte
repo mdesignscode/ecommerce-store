@@ -15,7 +15,7 @@
 
 	{#if data.justCheckedOut}
 		<p
-			class="mt-6 flex items-center gap-3 rounded-2xl bg-emerald-50 px-5 py-4 text-success"
+			class="mt-6 flex items-center gap-3 rounded-2xl bg-success-soft px-5 py-4 text-success"
 			role="status"
 		>
 			<Check class="size-5" />
